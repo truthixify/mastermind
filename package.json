@@ -1,0 +1,39 @@
+{
+  "name": "mastermind",
+  "version": "1.0.12",
+  "author": "truthixify",
+  "license": "MIT",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "packages/contracts",
+      "packages/app"
+    ]
+  },
+  "scripts": {
+    "chain": "yarn workspace @mastermind/contracts chain",
+    "deploy": "yarn workspace @mastermind/contracts deploy",
+    "deploy:clear": "yarn workspace @mastermind/contracts deploy:clear",
+    "deploy:no-reset": "yarn workspace @mastermind/contracts deploy --no-reset",
+    "test": "yarn workspace @mastermind/contracts test",
+    "compile": "yarn workspace @mastermind/contracts compile",
+    "start": "yarn workspace @mastermind/app dev",
+    "vercel": "yarn workspace @mastermind/app vercel",
+    "vercel:yolo": "yarn workspace @mastermind/app vercel:yolo",
+    "test:app": "yarn workspace @mastermind/app test",
+    "format": "yarn workspace @mastermind/app format && yarn workspace @mastermind/contracts format",
+    "format:check": "yarn workspace @mastermind/app format:check && yarn workspace @mastermind/contracts format:check",
+    "prepare": "husky",
+    "verify": "yarn workspace @mastermind/contracts verify"
+  },
+  "packageManager": "yarn@3.2.3",
+  "devDependencies": {
+    "daisyui": "^4.7.3",
+    "husky": "^9.0.11",
+    "pinst": "^3.0.0",
+    "prettier": "^3.2.5"
+  },
+  "dependencies": {
+    "postcss": "^8.4.38"
+  }
+}
