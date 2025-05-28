@@ -3,233 +3,225 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --background: 0 0% 97%;
-    --foreground: 0 0% 18%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 18%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 18%;
-    --primary: 0 100% 66%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 198 100% 58%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 200 16% 93%;
-    --muted-foreground: 0 0% 40%;
-    --accent: 50 100% 50%;
-    --accent-foreground: 0 0% 0%;
-    --destructive: 0 100% 66%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 200 16% 90%;
-    --input: 200 16% 90%;
-    --ring: 0 0% 18%;
-    --radius: 0.75rem;
-  }
+    :root {
+        --background: 0 0% 97%;
+        --foreground: 0 0% 18%;
+        --card: 0 0% 100%;
+        --card-foreground: 0 0% 18%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 0 0% 18%;
+        --primary: 0 100% 66%;
+        --primary-foreground: 0 0% 100%;
+        --secondary: 198 100% 58%;
+        --secondary-foreground: 0 0% 100%;
+        --muted: 200 16% 93%;
+        --muted-foreground: 0 0% 40%;
+        --accent: 50 100% 50%;
+        --accent-foreground: 0 0% 0%;
+        --destructive: 0 100% 66%;
+        --destructive-foreground: 0 0% 100%;
+        --border: 200 16% 90%;
+        --input: 200 16% 90%;
+        --ring: 0 0% 18%;
+        --radius: 0.75rem;
+    }
 
-  .dark {
-    --background: 0 0% 24%;
-    --foreground: 0 0% 100%;
-    --card: 0 0% 24%;
-    --card-foreground: 0 0% 100%;
-    --popover: 0 0% 24%;
-    --popover-foreground: 0 0% 100%;
-    --primary: 0 100% 66%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 198 100% 58%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 0 0% 20%;
-    --muted-foreground: 0 0% 80%;
-    --accent: 50 100% 50%;
-    --accent-foreground: 0 0% 0%;
-    --destructive: 0 100% 66%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 30%;
-    --input: 0 0% 30%;
-    --ring: 0 0% 80%;
-  }
+    .dark {
+        --background: 0 0% 24%;
+        --foreground: 0 0% 100%;
+        --card: 0 0% 24%;
+        --card-foreground: 0 0% 100%;
+        --popover: 0 0% 24%;
+        --popover-foreground: 0 0% 100%;
+        --primary: 0 100% 66%;
+        --primary-foreground: 0 0% 100%;
+        --secondary: 198 100% 58%;
+        --secondary-foreground: 0 0% 100%;
+        --muted: 0 0% 20%;
+        --muted-foreground: 0 0% 80%;
+        --accent: 50 100% 50%;
+        --accent-foreground: 0 0% 0%;
+        --destructive: 0 100% 66%;
+        --destructive-foreground: 0 0% 100%;
+        --border: 0 0% 30%;
+        --input: 0 0% 30%;
+        --ring: 0 0% 80%;
+    }
 }
 
 @layer components {
-  /* Retro/Cartoon Game Components */
-  .retro-container {
-    @apply max-w-4xl mx-auto p-4 md:p-8;
-  }
+    /* Retro/Cartoon Game Components */
+    .retro-container {
+        @apply max-w-4xl mx-auto p-4 md:p-8;
+    }
 
-  .retro-title {
-    @apply text-3xl md:text-5xl font-bold text-center text-retro-red drop-shadow-cartoon-text-lg mb-8;
-  }
+    .retro-title {
+        @apply text-3xl md:text-5xl font-bold text-center text-retro-red drop-shadow-cartoon-text-lg mb-8;
+    }
 
-  .retro-card {
-    @apply bg-white dark:bg-gray-800 rounded-retro border-4 border-black dark:border-gray-700 shadow-cartoon p-6 transition-all;
-  }
+    .retro-card {
+        @apply bg-white dark:bg-gray-800 rounded-retro border-4 border-black dark:border-gray-700 shadow-cartoon p-6 transition-all;
+    }
 
-  .retro-button {
-    @apply font-bold py-3 px-6 rounded-retro border-4 border-black dark:border-gray-700 bg-retro-yellow text-black shadow-cartoon-button transform transition-all duration-200 hover:translate-y-1 hover:shadow-cartoon-button-hover active:translate-y-2 active:shadow-cartoon-button-active;
-  }
+    .retro-button {
+        @apply font-bold py-3 px-6 rounded-retro border-4 border-black dark:border-gray-700 bg-retro-yellow text-black shadow-cartoon-button transform transition-all duration-200 hover:translate-y-1 hover:shadow-cartoon-button-hover active:translate-y-2 active:shadow-cartoon-button-active;
+    }
 
-  .retro-button-primary {
-    @apply bg-retro-red text-white;
-  }
+    .retro-button-primary {
+        @apply bg-retro-red text-white;
+    }
 
-  .retro-button-secondary {
-    @apply bg-retro-blue text-white;
-  }
+    .retro-button-secondary {
+        @apply bg-retro-blue text-white;
+    }
 
-  .retro-button-success {
-    @apply bg-retro-green text-white;
-  }
+    .retro-button-success {
+        @apply bg-retro-green text-white;
+    }
 
-  .retro-button-outline {
-    @apply bg-white dark:bg-gray-800 text-black dark:text-white;
-  }
+    .retro-button-outline {
+        @apply bg-white dark:bg-gray-800 text-black dark:text-white;
+    }
 
-  .retro-input {
-    @apply text-lg py-3 px-4 rounded-retro border-4 border-black dark:border-gray-700 bg-white dark:bg-gray-700 shadow-cartoon-inner focus:outline-none focus:ring-2 focus:ring-retro-blue;
-  }
+    .retro-input {
+        @apply text-lg py-3 px-4 rounded-retro border-4 border-black dark:border-gray-700 bg-white dark:bg-gray-700 shadow-cartoon-inner focus:outline-none focus:ring-2 focus:ring-retro-blue;
+    }
 
-  .retro-badge {
-    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-bold border-2 border-black dark:border-gray-700;
-  }
+    .retro-badge {
+        @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-bold border-2 border-black dark:border-gray-700;
+    }
 
-  .retro-badge-primary {
-    @apply bg-retro-red text-white;
-  }
+    .retro-badge-primary {
+        @apply bg-retro-red text-white;
+    }
 
-  .retro-badge-secondary {
-    @apply bg-retro-blue text-white;
-  }
+    .retro-badge-secondary {
+        @apply bg-retro-blue text-white;
+    }
 
-  .retro-badge-accent {
-    @apply bg-retro-yellow text-black;
-  }
+    .retro-badge-accent {
+        @apply bg-retro-yellow text-black;
+    }
 
-  .retro-badge-success {
-    @apply bg-retro-green text-white;
-  }
+    .retro-badge-success {
+        @apply bg-retro-green text-white;
+    }
 
-  /* Game Board Elements */
-  .retro-game-board {
-    @apply grid gap-4 p-6 rounded-retro bg-white dark:bg-gray-800 border-4 border-black dark:border-gray-700 shadow-cartoon;
-  }
+    /* Game Board Elements */
+    .retro-game-board {
+        @apply grid gap-4 p-6 rounded-retro bg-white dark:bg-gray-800 border-4 border-black dark:border-gray-700 shadow-cartoon;
+    }
 
-  .retro-letter {
-    @apply flex items-center justify-center w-12 h-12 md:w-16 md:h-16 text-xl md:text-2xl font-bold rounded-retro border-4 border-black dark:border-gray-700 transition-all shadow-cartoon-sm;
-  }
+    .retro-letter {
+        @apply flex items-center justify-center w-12 h-12 md:w-16 md:h-16 text-xl md:text-2xl font-bold rounded-retro border-4 border-black dark:border-gray-700 transition-all shadow-cartoon-sm;
+    }
 
-  .retro-letter-correct {
-    @apply bg-retro-green text-white;
-  }
+    .retro-letter-correct {
+        @apply bg-retro-green text-white;
+    }
 
-  .retro-letter-partial {
-    @apply bg-retro-yellow text-black;
-  }
+    .retro-letter-partial {
+        @apply bg-retro-yellow text-black;
+    }
 
-  .retro-letter-incorrect {
-    @apply bg-gray-300 dark:bg-gray-600 text-black dark:text-white;
-  }
+    .retro-letter-incorrect {
+        @apply bg-gray-300 dark:bg-gray-600 text-black dark:text-white;
+    }
 
-  .retro-letter-empty {
-    @apply bg-gray-100 dark:bg-gray-800 border-dashed;
-  }
+    .retro-letter-empty {
+        @apply bg-gray-100 dark:bg-gray-800 border-dashed;
+    }
 
-  .retro-letter-active {
-    @apply bg-white dark:bg-gray-700 text-retro-red dark:text-retro-red border-retro-red;
-  }
+    .retro-letter-active {
+        @apply bg-white dark:bg-gray-700 text-retro-red dark:text-retro-red border-retro-red;
+    }
 
-  .retro-letter-secret {
-    @apply bg-black dark:bg-gray-900 text-transparent;
-  }
+    .retro-letter-secret {
+        @apply bg-black dark:bg-gray-900 text-transparent;
+    }
 
-  .retro-letter-secret-revealed {
-    @apply bg-retro-purple text-white;
-  }
+    .retro-letter-secret-revealed {
+        @apply bg-retro-purple text-white;
+    }
 
-  /* Virtual Keyboard */
-  .retro-keyboard {
-    @apply p-2 rounded-retro bg-white dark:bg-gray-800 border-4 border-black dark:border-gray-700 shadow-cartoon;
-  }
+    /* Virtual Keyboard */
+    .retro-keyboard {
+        @apply p-2 rounded-retro bg-white dark:bg-gray-800 border-4 border-black dark:border-gray-700 shadow-cartoon;
+    }
 
-  .retro-key {
-    @apply flex items-center justify-center h-10 md:h-12 min-w-[2rem] md:min-w-[2.5rem] px-1 font-bold rounded-md border-2 border-black dark:border-gray-700 shadow-cartoon-sm hover:shadow-none hover:translate-y-1 transition-all;
-  }
+    .retro-key {
+        @apply flex items-center justify-center h-10 md:h-12 min-w-[2rem] md:min-w-[2.5rem] px-1 font-bold rounded-md border-2 border-black dark:border-gray-700 shadow-cartoon-sm hover:shadow-none hover:translate-y-1 transition-all;
+    }
 
-  .retro-key-unused {
-    @apply bg-white dark:bg-gray-700 text-black dark:text-white;
-  }
+    .retro-key-unused {
+        @apply bg-white dark:bg-gray-700 text-black dark:text-white;
+    }
 
-  .retro-key-correct {
-    @apply bg-retro-green text-white;
-  }
+    .retro-key-correct {
+        @apply bg-retro-green text-white;
+    }
 
-  .retro-key-partial {
-    @apply bg-retro-yellow text-black;
-  }
+    .retro-key-partial {
+        @apply bg-retro-yellow text-black;
+    }
 
-  .retro-key-incorrect {
-    @apply bg-gray-400 dark:bg-gray-600 text-white;
-  }
+    .retro-key-incorrect {
+        @apply bg-gray-400 dark:bg-gray-600 text-white;
+    }
 
-  .retro-key-action {
-    @apply bg-retro-blue text-white px-2;
-  }
+    .retro-key-action {
+        @apply bg-retro-blue text-white px-2;
+    }
 
-  /* Feedback Legend */
-  .retro-legend {
-    @apply flex items-center justify-center gap-4 text-sm mt-4;
-  }
+    /* Feedback Legend */
+    .retro-legend {
+        @apply flex items-center justify-center gap-4 text-sm mt-4;
+    }
 
-  .retro-legend-item {
-    @apply flex items-center;
-  }
+    .retro-legend-item {
+        @apply flex items-center;
+    }
 
-  .retro-legend-indicator {
-    @apply w-4 h-4 rounded-sm border-2 border-black dark:border-gray-700 mr-2;
-  }
+    .retro-legend-indicator {
+        @apply w-4 h-4 rounded-sm border-2 border-black dark:border-gray-700 mr-2;
+    }
 
-  /* Background pattern */
-  .retro-bg-pattern {
-    background-image:
-      radial-gradient(
-        circle at 25px 25px,
-        rgba(0, 0, 0, 0.1) 2%,
-        transparent 0%
-      ),
-      radial-gradient(
-        circle at 75px 75px,
-        rgba(0, 0, 0, 0.1) 2%,
-        transparent 0%
-      );
-    background-size: 100px 100px;
-  }
+    /* Background pattern */
+    .retro-bg-pattern {
+        background-image:
+            radial-gradient(circle at 25px 25px, rgba(0, 0, 0, 0.1) 2%, transparent 0%),
+            radial-gradient(circle at 75px 75px, rgba(0, 0, 0, 0.1) 2%, transparent 0%);
+        background-size: 100px 100px;
+    }
 
-  /* Dark mode background pattern */
-  .dark .retro-bg-pattern {
-    background-image:
-      linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-    background-size: 20px 20px;
-  }
+    /* Dark mode background pattern */
+    .dark .retro-bg-pattern {
+        background-image:
+            linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+        background-size: 20px 20px;
+    }
 }
 
 /* Responsive adjustments */
 @media (max-width: 640px) {
-  .retro-letter {
-    @apply w-10 h-10 text-lg;
-  }
+    .retro-letter {
+        @apply w-10 h-10 text-lg;
+    }
 
-  .retro-title {
-    @apply text-2xl;
-  }
+    .retro-title {
+        @apply text-2xl;
+    }
 
-  .retro-card {
-    @apply p-4;
-  }
+    .retro-card {
+        @apply p-4;
+    }
 
-  .retro-button {
-    @apply py-2 px-4 text-sm;
-  }
+    .retro-button {
+        @apply py-2 px-4 text-sm;
+    }
 
-  .retro-key {
-    @apply h-9 min-w-[1.75rem] text-sm;
-  }
+    .retro-key {
+        @apply h-9 min-w-[1.75rem] text-sm;
+    }
 }

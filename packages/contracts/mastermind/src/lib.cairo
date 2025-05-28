@@ -175,7 +175,7 @@ pub mod Mastermind {
 
             assert!(
                 player_id >= 0 && total_players_count > 0,
-                "You need to register first before you can start a game",
+                "You need to register first before you can join a game",
             );
             assert!(game.creator.read() != opponent_address, "You cannot join your own game");
             assert!(game.opponent.read().is_zero(), "Opponent already joined");
@@ -480,6 +480,32 @@ pub mod Mastermind {
             }
 
             available_game_ids
+        }
+
+
+        fn get_player_total_games_won(
+            self: @ContractState, player_address: ContractAddress,
+        ) -> u32 {
+            self.players.entry(player_address).games_won.read()
+        }
+
+        fn get_player_total_games_lost(
+            self: @ContractState, player_address: ContractAddress,
+        ) -> u32 {
+            self.players.entry(player_address).games_lost.read()
+        }
+
+        fn get_player_total_games_tied(
+            self: @ContractState, player_address: ContractAddress,
+        ) -> u32 {
+            self.players.entry(player_address).games_tied.read()
+        }
+
+        fn get_player_total_games_played(
+            self: @ContractState, player_address: ContractAddress,
+        ) -> u32 {
+            let player = self.players.entry(player_address);
+            player.games_won.read() + player.games_lost.read() + player.games_tied.read()
         }
     }
 }

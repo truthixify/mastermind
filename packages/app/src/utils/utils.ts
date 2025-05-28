@@ -1,68 +1,60 @@
-import { BigNumberish } from "starknet";
-import { FourLetters } from "~~/types";
+import { BigNumberish } from 'starknet'
+import { FourLetters } from '~~/types'
 
-const solutionInfoKeys = ["solutionArray", "solutionHash", "salt"];
+const solutionInfoKeys = ['solutionArray', 'solutionHash', 'salt']
 
 export enum Stage {
-  None = -1,
-  Register,
-  CommitSolutionHash,
-  Playing,
-  Reveal,
+    None = -1,
+    Register,
+    CommitSolutionHash,
+    Playing,
+    Reveal
 }
 
 export const saveSolutionInfo = (
-  solutionArray: FourLetters,
-  solutionHash: BigNumberish,
-  salt: BigNumberish,
+    solutionArray: FourLetters,
+    solutionHash: BigNumberish,
+    salt: BigNumberish
 ) => {
-  localStorage.setItem(solutionInfoKeys[0], JSON.stringify(solutionArray));
-  localStorage.setItem(solutionInfoKeys[1], solutionHash.toString());
-  localStorage.setItem(solutionInfoKeys[2], salt.toString());
+    localStorage.setItem(solutionInfoKeys[0], JSON.stringify(solutionArray))
+    localStorage.setItem(solutionInfoKeys[1], solutionHash.toString())
+    localStorage.setItem(solutionInfoKeys[2], salt.toString())
 
-  console.log("saveSolutionInfo");
-};
+    console.log('saveSolutionInfo')
+}
 
-export const retrieveSolutionInfo = (): [
-  FourLetters,
-  BigNumberish,
-  BigNumberish,
-] => {
-  const solutionArrayStr = localStorage.getItem(solutionInfoKeys[0]);
-  const solutionHashStr = localStorage.getItem(solutionInfoKeys[1]);
-  const saltStr = localStorage.getItem(solutionInfoKeys[2]);
+export const retrieveSolutionInfo = (): [FourLetters, BigNumberish, BigNumberish] => {
+    const solutionArrayStr = localStorage.getItem(solutionInfoKeys[0])
+    const solutionHashStr = localStorage.getItem(solutionInfoKeys[1])
+    const saltStr = localStorage.getItem(solutionInfoKeys[2])
 
-  if (solutionArrayStr && solutionHashStr && saltStr) {
-    return [
-      JSON.parse(solutionArrayStr),
-      BigInt(solutionHashStr),
-      BigInt(saltStr),
-    ];
-  } else {
-    throw new Error("SolutionInfo not found");
-  }
-};
+    if (solutionArrayStr && solutionHashStr && saltStr) {
+        return [JSON.parse(solutionArrayStr), BigInt(solutionHashStr), BigInt(saltStr)]
+    } else {
+        throw new Error('SolutionInfo not found')
+    }
+}
 
 export const removeSolutionInfo = () => {
-  console.log("removeSolutionInfo");
-  localStorage.removeItem(solutionInfoKeys[0]);
-  localStorage.removeItem(solutionInfoKeys[1]);
-  localStorage.removeItem(solutionInfoKeys[2]);
-};
+    console.log('removeSolutionInfo')
+    localStorage.removeItem(solutionInfoKeys[0])
+    localStorage.removeItem(solutionInfoKeys[1])
+    localStorage.removeItem(solutionInfoKeys[2])
+}
 
 export async function generateProof() {}
 
 export const calculateHB = (guess: FourLetters, solution: FourLetters) => {
-  const hit = solution.filter((sol, i) => {
-    return sol === guess[i];
-  }).length;
+    const hit = solution.filter((sol, i) => {
+        return sol === guess[i]
+    }).length
 
-  const blow = solution.filter((sol, i) => {
-    return sol !== guess[i] && guess.some((g) => g === sol);
-  }).length;
+    const blow = solution.filter((sol, i) => {
+        return sol !== guess[i] && guess.some(g => g === sol)
+    }).length
 
-  return [hit, blow];
-};
+    return [hit, blow]
+}
 
 // function permutations(array: number[], r: number) {
 //   // Algorythm copied from Python `itertools.permutations`.
@@ -149,15 +141,15 @@ export const calculateHB = (guess: FourLetters, solution: FourLetters) => {
 // };
 
 export const randomSample = (items: FourLetters[]) => {
-  return items[Math.floor(Math.random() * items.length)];
-};
+    return items[Math.floor(Math.random() * items.length)]
+}
 
 export const feltToString = (input: bigint | undefined): string => {
-  return (
-    input
-      ?.toString(16)
-      .match(/.{2}/g)
-      ?.map((c: string) => String.fromCharCode(parseInt(c, 16)))
-      .join("") || ""
-  );
-};
+    return (
+        input
+            ?.toString(16)
+            .match(/.{2}/g)
+            ?.map((c: string) => String.fromCharCode(parseInt(c, 16)))
+            .join('') || ''
+    )
+}

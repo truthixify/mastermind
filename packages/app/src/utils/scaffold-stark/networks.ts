@@ -1,56 +1,54 @@
-import scaffoldConfig from "../../../scaffold.config";
-import { devnet, sepolia, mainnet, Chain } from "@starknet-react/chains";
+import scaffoldConfig from '../../../scaffold.config'
+import { devnet, sepolia, mainnet, Chain } from '@starknet-react/chains'
 export const chains = {
-  devnet,
-  sepolia,
-  mainnet,
-};
+    devnet,
+    sepolia,
+    mainnet
+}
 
 type ChainAttributes = {
-  // color | [lightThemeColor, darkThemeColor]
-  color: string | [string, string];
-  nativeCurrencyTokenAddress?: string;
-};
+    // color | [lightThemeColor, darkThemeColor]
+    color: string | [string, string]
+    nativeCurrencyTokenAddress?: string
+}
 
-export type ChainWithAttributes = Chain & Partial<ChainAttributes>;
+export type ChainWithAttributes = Chain & Partial<ChainAttributes>
 
 export const NETWORKS_EXTRA_DATA: Record<string, ChainAttributes> = {
-  [chains.devnet.network]: {
-    color: "#b8af0c",
-  },
-  [chains.mainnet.network]: {
-    color: "#ff8b9e",
-  },
-  [chains.sepolia.network]: {
-    color: ["#5f4bb6", "#87ff65"],
-  },
-};
+    [chains.devnet.network]: {
+        color: '#b8af0c'
+    },
+    [chains.mainnet.network]: {
+        color: '#ff8b9e'
+    },
+    [chains.sepolia.network]: {
+        color: ['#5f4bb6', '#87ff65']
+    }
+}
 /**
  * Gives the block explorer transaction URL, returns empty string if the network is a local chain
  */
 export function getBlockExplorerTxLink(network: string, txnHash: string) {
-  const chainNames = Object.keys(chains);
+    const chainNames = Object.keys(chains)
 
-  const targetChainArr = chainNames.filter((chainName) => {
-    const starknetReactChain = chains[
-      chainName as keyof typeof chains
-    ] as Chain;
-    return starknetReactChain.network === network;
-  });
+    const targetChainArr = chainNames.filter(chainName => {
+        const starknetReactChain = chains[chainName as keyof typeof chains] as Chain
+        return starknetReactChain.network === network
+    })
 
-  if (targetChainArr.length === 0) {
-    return "";
-  }
+    if (targetChainArr.length === 0) {
+        return ''
+    }
 
-  const targetChain = targetChainArr[0] as keyof typeof chains;
-  // @ts-expect-error : ignoring error since `blockExplorers` key may or may not be present on some chains
-  const blockExplorerBaseURL = chains[targetChain].explorers?.starkscan[0];
+    const targetChain = targetChainArr[0] as keyof typeof chains
+    // @ts-expect-error : ignoring error since `blockExplorers` key may or may not be present on some chains
+    const blockExplorerBaseURL = chains[targetChain].explorers?.starkscan[0]
 
-  if (!blockExplorerBaseURL) {
-    return `https://starkscan.co/tx/${txnHash}`;
-  }
+    if (!blockExplorerBaseURL) {
+        return `https://starkscan.co/tx/${txnHash}`
+    }
 
-  return `${blockExplorerBaseURL}/tx/${txnHash}`;
+    return `${blockExplorerBaseURL}/tx/${txnHash}`
 }
 
 /**
@@ -58,16 +56,16 @@ export function getBlockExplorerTxLink(network: string, txnHash: string) {
  * Defaults to Starkscan if no block explorer is configured for the network.
  */
 export function getBlockExplorerAddressLink(network: Chain, address: string) {
-  const blockExplorerBaseURL = network.explorers?.starkscan[0];
-  if (network.network === chains.devnet.network) {
-    return `/blockexplorer/address/${address}`;
-  }
+    const blockExplorerBaseURL = network.explorers?.starkscan[0]
+    if (network.network === chains.devnet.network) {
+        return `/blockexplorer/address/${address}`
+    }
 
-  if (!blockExplorerBaseURL) {
-    return `https://starkscan.co/contract/${address}`;
-  }
+    if (!blockExplorerBaseURL) {
+        return `https://starkscan.co/contract/${address}`
+    }
 
-  return `${blockExplorerBaseURL}/contract/${address}`;
+    return `${blockExplorerBaseURL}/contract/${address}`
 }
 
 /**
@@ -75,31 +73,31 @@ export function getBlockExplorerAddressLink(network: Chain, address: string) {
  * Defaults to Starkscan if no block explorer is configured for the network.
  */
 export function getBlockExplorerClasshashLink(network: Chain, address: string) {
-  const blockExplorerBaseURL = network.explorers?.starkscan[0];
-  if (network.network === chains.devnet.network) {
-    return `/blockexplorer/class/${address}`;
-  }
+    const blockExplorerBaseURL = network.explorers?.starkscan[0]
+    if (network.network === chains.devnet.network) {
+        return `/blockexplorer/class/${address}`
+    }
 
-  if (!blockExplorerBaseURL) {
-    return `https://starkscan.co/class/${address}`;
-  }
+    if (!blockExplorerBaseURL) {
+        return `https://starkscan.co/class/${address}`
+    }
 
-  return `${blockExplorerBaseURL}/class/${address}`;
+    return `${blockExplorerBaseURL}/class/${address}`
 }
 
 export function getBlockExplorerLink(network: Chain) {
-  switch (network) {
-    case chains.mainnet:
-      return "https://starkscan.co/";
-    default:
-    case chains.devnet:
-    case chains.sepolia:
-      return "https://sepolia.starkscan.co/";
-  }
+    switch (network) {
+        case chains.mainnet:
+            return 'https://starkscan.co/'
+        default:
+        case chains.devnet:
+        case chains.sepolia:
+            return 'https://sepolia.starkscan.co/'
+    }
 }
 
 export function getTargetNetworks(): ChainWithAttributes[] {
-  return scaffoldConfig.targetNetworks.map((targetNetwork) => ({
-    ...targetNetwork,
-  }));
+    return scaffoldConfig.targetNetworks.map(targetNetwork => ({
+        ...targetNetwork
+    }))
 }

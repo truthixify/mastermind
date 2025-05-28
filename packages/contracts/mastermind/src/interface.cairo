@@ -49,4 +49,12 @@ pub trait IMastermind<T> {
     fn get_player_active_game_ids(self: @T, player_address: ContractAddress) -> Array<u32>;
 
     fn get_available_game_ids(self: @T) -> Array<u32>;
+
+    fn get_player_total_games_won(self: @T, player_address: ContractAddress) -> u32;
+
+    fn get_player_total_games_lost(self: @T, player_address: ContractAddress) -> u32;
+
+    fn get_player_total_games_tied(self: @T, player_address: ContractAddress) -> u32;
+
+    fn get_player_total_games_played(self: @T, player_address: ContractAddress) -> u32;
 }

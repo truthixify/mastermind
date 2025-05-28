@@ -3,483 +3,483 @@
 @tailwind utilities;
 
 :root {
-  --background: 0 0% 97%;
-  --foreground: 0 0% 18%;
-  --card: 0 0% 100%;
-  --card-foreground: 0 0% 18%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 0 0% 18%;
-  --primary: 0 100% 66%;
-  --primary-foreground: 0 0% 100%;
-  --secondary: 198 100% 58%;
-  --secondary-foreground: 0 0% 100%;
-  --muted: 200 16% 93%;
-  --muted-foreground: 0 0% 40%;
-  --accent: 50 100% 50%;
-  --accent-foreground: 0 0% 0%;
-  --destructive: 0 100% 66%;
-  --destructive-foreground: 0 0% 100%;
-  --border: 200 16% 90%;
-  --input: 200 16% 90%;
-  --ring: 0 0% 18%;
-  --radius: 0.75rem;
+    --background: 0 0% 97%;
+    --foreground: 0 0% 18%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 18%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 18%;
+    --primary: 0 100% 66%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 198 100% 58%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 200 16% 93%;
+    --muted-foreground: 0 0% 40%;
+    --accent: 50 100% 50%;
+    --accent-foreground: 0 0% 0%;
+    --destructive: 0 100% 66%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 200 16% 90%;
+    --input: 200 16% 90%;
+    --ring: 0 0% 18%;
+    --radius: 0.75rem;
 }
 
 .dark {
-  --background: 0 0% 24%;
-  --foreground: 0 0% 100%;
-  --card: 0 0% 24%;
-  --card-foreground: 0 0% 100%;
-  --popover: 0 0% 24%;
-  --popover-foreground: 0 0% 100%;
-  --primary: 0 100% 66%;
-  --primary-foreground: 0 0% 100%;
-  --secondary: 198 100% 58%;
-  --secondary-foreground: 0 0% 100%;
-  --muted: 0 0% 20%;
-  --muted-foreground: 0 0% 80%;
-  --accent: 50 100% 50%;
-  --accent-foreground: 0 0% 0%;
-  --destructive: 0 100% 66%;
-  --destructive-foreground: 0 0% 100%;
-  --border: 0 0% 30%;
-  --input: 0 0% 30%;
-  --ring: 0 0% 80%;
+    --background: 0 0% 24%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 24%;
+    --card-foreground: 0 0% 100%;
+    --popover: 0 0% 24%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 0 100% 66%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 198 100% 58%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 80%;
+    --accent: 50 100% 50%;
+    --accent-foreground: 0 0% 0%;
+    --destructive: 0 100% 66%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 30%;
+    --input: 0 0% 30%;
+    --ring: 0 0% 80%;
 }
 
 /* Retro/Cartoon Game Components */
 .retro-container {
-  max-width: 72rem;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 1rem;
+    max-width: 72rem;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 1rem;
 }
 
 .retro-title {
-  font-size: 1.875rem;
-  line-height: 2.25rem;
-  font-weight: 700;
-  text-align: center;
-  color: #ff5252;
-  filter: drop-shadow(3px 3px 0 rgba(0, 0, 0, 0.3));
-  margin-bottom: 2rem;
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+    font-weight: 700;
+    text-align: center;
+    color: #ff5252;
+    filter: drop-shadow(3px 3px 0 rgba(0, 0, 0, 0.3));
+    margin-bottom: 2rem;
 }
 
 .retro-card {
-  background-color: white;
-  border-radius: 1rem;
-  border-width: 4px;
-  border-color: black;
-  box-shadow: 0 8px 0 0 rgba(0, 0, 0, 0.2);
-  padding: 1.5rem;
-  transition-property: all;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
+    background-color: white;
+    border-radius: 1rem;
+    border-width: 4px;
+    border-color: black;
+    box-shadow: 0 8px 0 0 rgba(0, 0, 0, 0.2);
+    padding: 1.5rem;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
 }
 
 .dark .retro-card {
-  background-color: #1f2937;
-  border-color: #374151;
+    background-color: #1f2937;
+    border-color: #374151;
 }
 
 .retro-button {
-  font-weight: 700;
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
-  border-radius: 1rem;
-  border-width: 4px;
-  border-color: black;
-  background-color: #ffd600;
-  color: black;
-  box-shadow: 0 6px 0 0 #2d2d2d;
-  transform: translateY(0);
-  transition-property: all;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 200ms;
+    font-weight: 700;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    border-radius: 1rem;
+    border-width: 4px;
+    border-color: black;
+    background-color: #ffd600;
+    color: black;
+    box-shadow: 0 6px 0 0 #2d2d2d;
+    transform: translateY(0);
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
 }
 
 .retro-button:hover {
-  transform: translateY(0.25rem);
-  box-shadow: 0 4px 0 0 #2d2d2d;
+    transform: translateY(0.25rem);
+    box-shadow: 0 4px 0 0 #2d2d2d;
 }
 
 .retro-button:active {
-  transform: translateY(0.5rem);
-  box-shadow: 0 2px 0 0 #2d2d2d;
+    transform: translateY(0.5rem);
+    box-shadow: 0 2px 0 0 #2d2d2d;
 }
 
 .dark .retro-button {
-  border-color: #374151;
+    border-color: #374151;
 }
 
 .retro-button-primary {
-  background-color: #ff5252;
-  color: white;
+    background-color: #ff5252;
+    color: white;
 }
 
 .retro-button-secondary {
-  background-color: #29adff;
-  color: white;
+    background-color: #29adff;
+    color: white;
 }
 
 .retro-button-success {
-  background-color: #4caf50;
-  color: white;
+    background-color: #4caf50;
+    color: white;
 }
 
 .retro-button-outline {
-  background-color: white;
-  color: black;
+    background-color: white;
+    color: black;
 }
 
 .dark .retro-button-outline {
-  background-color: #1f2937;
-  color: white;
+    background-color: #1f2937;
+    color: white;
 }
 
 .retro-letter {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 3rem;
-  height: 3rem;
-  font-size: 1.25rem;
-  line-height: 1.75rem;
-  font-weight: 700;
-  border-radius: 1rem;
-  border-width: 4px;
-  border-color: black;
-  transition-property: all;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
-  box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+    font-weight: 700;
+    border-radius: 1rem;
+    border-width: 4px;
+    border-color: black;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+    box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.2);
 }
 
 .dark .retro-letter {
-  border-color: #374151;
+    border-color: #374151;
 }
 
 .retro-letter-correct {
-  background-color: #4caf50;
-  color: white;
+    background-color: #4caf50;
+    color: white;
 }
 
 .retro-letter-partial {
-  background-color: #ffd600;
-  color: black;
+    background-color: #ffd600;
+    color: black;
 }
 
 .retro-letter-incorrect {
-  background-color: #d1d5db;
-  color: black;
+    background-color: #d1d5db;
+    color: black;
 }
 
 .dark .retro-letter-incorrect {
-  background-color: #4b5563;
-  color: white;
+    background-color: #4b5563;
+    color: white;
 }
 
 .retro-letter-empty {
-  background-color: #f3f4f6;
-  border-style: dashed;
+    background-color: #f3f4f6;
+    border-style: dashed;
 }
 
 .dark .retro-letter-empty {
-  background-color: #1f2937;
+    background-color: #1f2937;
 }
 
 .retro-letter-active {
-  background-color: white;
-  color: #ff5252;
-  border-color: #ff5252;
+    background-color: white;
+    color: #ff5252;
+    border-color: #ff5252;
 }
 
 .dark .retro-letter-active {
-  background-color: #374151;
+    background-color: #374151;
 }
 
 .retro-letter-secret {
-  background-color: black;
-  color: transparent;
+    background-color: black;
+    color: transparent;
 }
 
 .dark .retro-letter-secret {
-  background-color: #111827;
+    background-color: #111827;
 }
 
 .retro-letter-secret-revealed {
-  background-color: #b388ff;
-  color: white;
+    background-color: #b388ff;
+    color: white;
 }
 
 /* Background pattern */
 .retro-bg-pattern {
-  background-image:
-    radial-gradient(circle at 25px 25px, rgba(0, 0, 0, 0.1) 2%, transparent 0%),
-    radial-gradient(circle at 75px 75px, rgba(0, 0, 0, 0.1) 2%, transparent 0%);
-  background-size: 100px 100px;
+    background-image:
+        radial-gradient(circle at 25px 25px, rgba(0, 0, 0, 0.1) 2%, transparent 0%),
+        radial-gradient(circle at 75px 75px, rgba(0, 0, 0, 0.1) 2%, transparent 0%);
+    background-size: 100px 100px;
 }
 
 .dark .retro-bg-pattern {
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-  background-size: 20px 20px;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
 }
 
 .retro-key-disabled {
-  background-color: #e5e7eb;
-  color: #9ca3af;
-  cursor: not-allowed;
+    background-color: #e5e7eb;
+    color: #9ca3af;
+    cursor: not-allowed;
 }
 
 .dark .retro-key-disabled {
-  background-color: #4b5563;
-  color: #6b7280;
+    background-color: #4b5563;
+    color: #6b7280;
 }
 
 /* Dashboard components */
 .retro-tabs {
-  display: flex;
-  border-bottom: 4px solid #e5e7eb;
-  margin-bottom: 1rem;
+    display: flex;
+    border-bottom: 4px solid #e5e7eb;
+    margin-bottom: 1rem;
 }
 
 .dark .retro-tabs {
-  border-bottom-color: #374151;
+    border-bottom-color: #374151;
 }
 
 .retro-tab {
-  padding: 0.75rem 1.5rem;
-  font-weight: 700;
-  cursor: pointer;
-  border-bottom: 4px solid transparent;
-  margin-bottom: -4px;
-  transition: all 0.2s;
+    padding: 0.75rem 1.5rem;
+    font-weight: 700;
+    cursor: pointer;
+    border-bottom: 4px solid transparent;
+    margin-bottom: -4px;
+    transition: all 0.2s;
 }
 
 .retro-tab-active {
-  border-bottom-color: #ff5252;
-  color: #ff5252;
+    border-bottom-color: #ff5252;
+    color: #ff5252;
 }
 
 .retro-tab-inactive {
-  color: #6b7280;
+    color: #6b7280;
 }
 
 .dark .retro-tab-inactive {
-  color: #9ca3af;
+    color: #9ca3af;
 }
 
 .retro-dashboard-card {
-  background-color: white;
-  border-radius: 1rem;
-  border-width: 4px;
-  border-color: #e5e7eb;
-  padding: 1.25rem;
-  transition: all 0.2s;
+    background-color: white;
+    border-radius: 1rem;
+    border-width: 4px;
+    border-color: #e5e7eb;
+    padding: 1.25rem;
+    transition: all 0.2s;
 }
 
 .dark .retro-dashboard-card {
-  background-color: #1f2937;
-  border-color: #374151;
+    background-color: #1f2937;
+    border-color: #374151;
 }
 
 .retro-dashboard-card-active {
-  border-color: #4caf50;
-  box-shadow: 0 4px 0 0 rgba(76, 175, 80, 0.3);
+    border-color: #4caf50;
+    box-shadow: 0 4px 0 0 rgba(76, 175, 80, 0.3);
 }
 
 .retro-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.25rem 0.75rem;
-  border-radius: 9999px;
-  font-size: 0.875rem;
-  font-weight: 700;
-  border-width: 2px;
-  border-color: black;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    border-width: 2px;
+    border-color: black;
 }
 
 .dark .retro-badge {
-  border-color: #374151;
+    border-color: #374151;
 }
 
 .retro-badge-primary {
-  background-color: #ff5252;
-  color: white;
+    background-color: #ff5252;
+    color: white;
 }
 
 .retro-badge-secondary {
-  background-color: #29adff;
-  color: white;
+    background-color: #29adff;
+    color: white;
 }
 
 .retro-badge-success {
-  background-color: #4caf50;
-  color: white;
+    background-color: #4caf50;
+    color: white;
 }
 
 .retro-game-board {
-  background-color: white;
-  border-radius: 1rem;
-  border-width: 4px;
-  border-color: black;
-  padding: 1.5rem;
-  box-shadow: 0 8px 0 0 rgba(0, 0, 0, 0.2);
+    background-color: white;
+    border-radius: 1rem;
+    border-width: 4px;
+    border-color: black;
+    padding: 1.5rem;
+    box-shadow: 0 8px 0 0 rgba(0, 0, 0, 0.2);
 }
 
 .dark .retro-game-board {
-  background-color: #1f2937;
-  border-color: #374151;
+    background-color: #1f2937;
+    border-color: #374151;
 }
 
 .retro-keyboard {
-  background-color: white;
-  border-radius: 1rem;
-  border-width: 4px;
-  border-color: black;
-  padding: 0.5rem;
-  box-shadow: 0 8px 0 0 rgba(0, 0, 0, 0.2);
+    background-color: white;
+    border-radius: 1rem;
+    border-width: 4px;
+    border-color: black;
+    padding: 0.5rem;
+    box-shadow: 0 8px 0 0 rgba(0, 0, 0, 0.2);
 }
 
 .dark .retro-keyboard {
-  background-color: #1f2937;
-  border-color: #374151;
+    background-color: #1f2937;
+    border-color: #374151;
 }
 
 .retro-key {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 3rem;
-  min-width: 2.5rem;
-  padding: 0 0.25rem;
-  font-weight: 700;
-  border-radius: 0.5rem;
-  border-width: 2px;
-  border-color: black;
-  box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.2);
-  transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 3rem;
+    min-width: 2.5rem;
+    padding: 0 0.25rem;
+    font-weight: 700;
+    border-radius: 0.5rem;
+    border-width: 2px;
+    border-color: black;
+    box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.2);
+    transition: all 0.2s;
 }
 
 .dark .retro-key {
-  border-color: #374151;
+    border-color: #374151;
 }
 
 .retro-key:hover:not(:disabled) {
-  transform: translateY(0.25rem);
-  box-shadow: 0 2px 0 0 rgba(0, 0, 0, 0.2);
+    transform: translateY(0.25rem);
+    box-shadow: 0 2px 0 0 rgba(0, 0, 0, 0.2);
 }
 
 .retro-key-unused {
-  background-color: white;
-  color: black;
+    background-color: white;
+    color: black;
 }
 
 .dark .retro-key-unused {
-  background-color: #374151;
-  color: white;
+    background-color: #374151;
+    color: white;
 }
 
 .retro-key-correct {
-  background-color: #4caf50;
-  color: white;
+    background-color: #4caf50;
+    color: white;
 }
 
 .retro-key-partial {
-  background-color: #ffd600;
-  color: black;
+    background-color: #ffd600;
+    color: black;
 }
 
 .retro-key-incorrect {
-  background-color: #9ca3af;
-  color: white;
+    background-color: #9ca3af;
+    color: white;
 }
 
 .retro-key-action {
-  background-color: #29adff;
-  color: white;
-  min-width: 4rem;
+    background-color: #29adff;
+    color: white;
+    min-width: 4rem;
 }
 
 .retro-legend {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: 1rem;
-  font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    font-size: 0.875rem;
 }
 
 .retro-legend-item {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .retro-legend-indicator {
-  width: 1rem;
-  height: 1rem;
-  border-radius: 0.25rem;
-  border-width: 2px;
-  border-color: black;
-  margin-right: 0.5rem;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 0.25rem;
+    border-width: 2px;
+    border-color: black;
+    margin-right: 0.5rem;
 }
 
 .dark .retro-legend-indicator {
-  border-color: #374151;
+    border-color: #374151;
 }
 
 /* Media queries */
 @media (min-width: 768px) {
-  .retro-title {
-    font-size: 3rem;
-    line-height: 1;
-  }
+    .retro-title {
+        font-size: 3rem;
+        line-height: 1;
+    }
 
-  .retro-letter {
-    width: 4rem;
-    height: 4rem;
-    font-size: 1.5rem;
-    line-height: 2rem;
-  }
+    .retro-letter {
+        width: 4rem;
+        height: 4rem;
+        font-size: 1.5rem;
+        line-height: 2rem;
+    }
 }
 
 @media (max-width: 640px) {
-  .retro-letter {
-    width: 2.5rem;
-    height: 2.5rem;
-    font-size: 1.125rem;
-    line-height: 1.75rem;
-  }
+    .retro-letter {
+        width: 2.5rem;
+        height: 2.5rem;
+        font-size: 1.125rem;
+        line-height: 1.75rem;
+    }
 
-  .retro-title {
-    font-size: 1.5rem;
-    line-height: 2rem;
-  }
+    .retro-title {
+        font-size: 1.5rem;
+        line-height: 2rem;
+    }
 
-  .retro-card {
-    padding: 1rem;
-  }
+    .retro-card {
+        padding: 1rem;
+    }
 
-  .retro-button {
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    font-size: 0.875rem;
-    line-height: 1.25rem;
-  }
+    .retro-button {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+    }
 
-  .retro-key {
-    height: 2.5rem;
-    min-width: 1.75rem;
-    font-size: 0.875rem;
-  }
+    .retro-key {
+        height: 2.5rem;
+        min-width: 1.75rem;
+        font-size: 0.875rem;
+    }
 
-  .retro-key-action {
-    min-width: 3rem;
-  }
+    .retro-key-action {
+        min-width: 3rem;
+    }
 }

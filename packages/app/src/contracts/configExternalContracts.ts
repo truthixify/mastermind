@@ -3,6 +3,6 @@
  * You should not edit it manually or your changes might be overwritten.
  */
 
-const configExternalContracts = {} as const;
+const configExternalContracts = {} as const
 
-export default configExternalContracts;
+export default configExternalContracts
