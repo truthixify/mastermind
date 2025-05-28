@@ -13,15 +13,16 @@ export type ScaffoldConfig = {
 }
 
 const scaffoldConfig = {
-    targetNetworks: [chains.devnet],
+    targetNetworks: [chains.sepolia],
     // Only show the Burner Wallet when running on devnet
     onlyLocalBurnerWallet: false,
     rpcProviderUrl: {
-        devnet: 'http://127.0.0.1:5050'
+        devnet: 'http://127.0.0.1:5050',
         // process.env.NEXT_PUBLIC_DEVNET_PROVIDER_URL ||
         // process.env.NEXT_PUBLIC_PROVIDER_URL ||
         // "",
-        // sepolia:
+        sepolia:
+            'https://starknet-sepolia.blastapi.io/64168c77-3fa5-4e1e-9fe4-41675d212522/rpc/v0_8'
         //   process.env.NEXT_PUBLIC_SEPOLIA_PROVIDER_URL ||
         //   process.env.NEXT_PUBLIC_PROVIDER_URL ||
         //   "",

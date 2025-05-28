@@ -17,7 +17,7 @@ import { addAddressPadding, CairoCustomEnum } from 'starknet'
 import { useAccount } from '../../hooks/useAccount'
 import { feltToHex } from '../../utils/scaffold-stark/common'
 import { useGameStorage } from '../../hooks/use-game-storage'
-import { TxnNotification } from '../../hooks/scaffold-stark'
+import ViewStats from './view-stats'
 
 export type GameState =
     | 'dashboard'
@@ -30,6 +30,7 @@ export type GameState =
     | 'lost'
     | 'draw'
     | 'reveal'
+    | 'stats'
 
 export default function GameContainer() {
     const isMobile = useMobile()
@@ -314,6 +315,10 @@ export default function GameContainer() {
         }
     }
 
+    const onViewStats = () => {
+        setGameState('stats')
+    }
+
     // Play sound effects
     const playSound = (type: 'play' | 'finish') => {
         const sounds = {
@@ -462,6 +467,7 @@ export default function GameContainer() {
                     onJoinGame={() => setGameState('join')}
                     onContinueGame={continueGame}
                     onJoinAvalaibleGame={onJoinAvalaibleGame}
+                    onViewStats={onViewStats}
                     isPlayerTurn={isPlayerTurn}
                 />
                 <Toaster />
@@ -527,8 +533,8 @@ export default function GameContainer() {
         )
     }
 
-    if (awaitingGameCreateEvent) {
-        return <TxnNotification message="Awaiting for user confirmation" />
+    if (gameState === 'stats') {
+        return <ViewStats playerAddress={address} onBack={() => setGameState('dashboard')} />
     }
 
     return (

@@ -15,7 +15,7 @@ export async function generateProof(input: Record<string, any>, vkUrl: string) {
     // Generate Witness
     const noir = new Noir({ bytecode, abi: abi as any })
     const execResult = await noir.execute(input)
-    console.log('Witness Generated:', execResult)
+    // console.log('Witness Generated:', execResult)
 
     // Generate Proof
     const honk = new UltraHonkBackend(bytecode, { threads: 2 })
@@ -23,7 +23,7 @@ export async function generateProof(input: Record<string, any>, vkUrl: string) {
         starknet: true
     })
     honk.destroy()
-    console.log('Proof Generated:', proof)
+    // console.log('Proof Generated:', proof)
 
     // Prepare Calldata
     const callData = getHonkCallData(
@@ -32,7 +32,7 @@ export async function generateProof(input: Record<string, any>, vkUrl: string) {
         vKey,
         1 // HonkFlavor.STARKNET
     )
-    console.log('Calldata Prepared:', callData)
+    // console.log('Calldata Prepared:', callData)
 
     return {
         execResult,

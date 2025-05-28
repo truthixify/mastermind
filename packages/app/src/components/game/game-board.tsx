@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowLeft, User, Users, Clock, Check, AlertCircle, Send } from 'lucide-react'
 import { useToast } from '../../hooks/use-toast'
-import { WordDictionary } from '../../lib/dict'
 import { useScaffoldWriteContract } from '../../hooks/scaffold-stark/useScaffoldWriteContract'
 import { useGameStore } from '../../stores/gameStore'
 import { BigNumberish } from 'starknet'
@@ -172,7 +171,8 @@ export default function GameBoard({
         } catch (error: any) {
             toast({
                 title: 'Error submitting proof',
-                description: extractKnownErrorMessage(error) || 'Unexpected error occurred.',
+                description:
+                    getGameData(gameId as number)?.solution || 'Unexpected error occurred.',
                 variant: 'destructive'
             })
             setIsProving(false)

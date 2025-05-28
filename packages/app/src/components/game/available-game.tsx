@@ -3,6 +3,7 @@ import { useScaffoldReadContract } from '../../hooks/scaffold-stark/useScaffoldR
 import { useScaffoldWriteContract } from '../../hooks/scaffold-stark/useScaffoldWriteContract'
 import { useGameStore } from '../../stores/gameStore'
 import { feltToString } from '../../utils/utils'
+import { Button } from '../ui/button'
 
 type AvailableGameProps = {
     id: number
@@ -20,12 +21,6 @@ const AvailableGame = ({ id, onJoinAvalaibleGame }: AvailableGameProps) => {
     const { data: creatorAddress } = useScaffoldReadContract({
         contractName: 'Mastermind',
         functionName: 'get_game_creator_address',
-        args: [id]
-    })
-
-    const { data: opponentAddress } = useScaffoldReadContract({
-        contractName: 'Mastermind',
-        functionName: 'get_game_opponent_address',
         args: [id]
     })
 
@@ -47,13 +42,13 @@ const AvailableGame = ({ id, onJoinAvalaibleGame }: AvailableGameProps) => {
         <div className="retro-dashboard-card">
             <h3 className="font-bold text-lg mb-2">Game #{id}</h3>
             <p className="mb-2">Created by {feltToString(creatorName)}</p>
-            <button
+            <Button
                 onClick={handleJoinGame}
                 className="retro-button retro-button-secondary w-full flex items-center justify-center"
             >
                 Join Game
                 <Users className="ml-2 h-4 w-4 inline" />
-            </button>
+            </Button>
         </div>
     )
 }

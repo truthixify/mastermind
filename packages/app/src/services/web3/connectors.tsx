@@ -5,6 +5,7 @@ import scaffoldConfig from '../../../scaffold.config'
 import { LAST_CONNECTED_TIME_LOCALSTORAGE_KEY } from '../../utils/Constants'
 import { KeplrConnector } from './keplr'
 import { supportedChains } from '../../../supportedChains'
+import { controllerInstance } from '../../utils/scaffold-stark/controller'
 
 const targetNetworks = getTargetNetworks()
 
@@ -34,6 +35,11 @@ function getConnectors() {
         const burnerConnector = new BurnerConnector()
         burnerConnector.chain = supportedChains.devnet
         connectors.push(burnerConnector as unknown as InjectedConnector)
+    }
+
+    // Add Cartridge Controller for non-devnet networks
+    if (!targetNetworks.some(network => (network.network as string) === 'devnet')) {
+        connectors.push(controllerInstance as unknown as InjectedConnector)
     }
 
     return connectors.sort(() => Math.random() - 0.5).map(withDisconnectWrapper)

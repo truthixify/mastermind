@@ -5,13 +5,11 @@ import { motion } from 'framer-motion'
 import { useToast } from '../../hooks/use-toast'
 import { Loader2 } from 'lucide-react'
 import { useScaffoldWriteContract } from '../../hooks/scaffold-stark/useScaffoldWriteContract'
-import { usePlayerStore } from '../../stores/playerStore'
 
 export default function PlayerRegistration() {
     const [username, setUsername] = useState('')
     const [isLoading, setIsLoading] = useState(false)
     const [errors, setErrors] = useState<string[]>([])
-    const { setPlayerName } = usePlayerStore()
     const { toast } = useToast()
 
     const { sendAsync: registerPlayer } = useScaffoldWriteContract({

@@ -1,15 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import {
-    Plus,
-    Users,
-    Clock,
-    Trophy,
-    ArrowRight,
-    RefreshCw,
-    HelpCircle,
-    Settings
-} from 'lucide-react'
+import { Plus, Users, Clock, Trophy, RefreshCw, HelpCircle } from 'lucide-react'
 import { useToast } from '../../hooks/use-toast'
 import HelpModal from './help-modal'
 import { useScaffoldReadContract } from '../../hooks/scaffold-stark/useScaffoldReadContract'
@@ -23,6 +14,7 @@ interface GameDashboardProps {
     onJoinGame: () => void
     onContinueGame: (gameId: number) => void
     onJoinAvalaibleGame: () => void
+    onViewStats: () => void
     isCreatingGame?: boolean
     isPlayerTurn: boolean
 }
@@ -32,6 +24,7 @@ export default function GameDashboard({
     onJoinGame,
     onContinueGame,
     onJoinAvalaibleGame,
+    onViewStats,
     isCreatingGame,
     isPlayerTurn
 }: GameDashboardProps) {
@@ -86,6 +79,7 @@ export default function GameDashboard({
                 <Button
                     onClick={onCreateGame}
                     className="retro-button retro-button-primary flex items-center gap-2 justify-center"
+                    size={'xl'}
                     disabled={isCreatingGame}
                 >
                     <Plus className="h-5 w-5" />
@@ -94,18 +88,17 @@ export default function GameDashboard({
                 <Button
                     onClick={onJoinGame}
                     className="retro-button retro-button-secondary flex items-center gap-2 justify-center"
+                    size={'xl'}
+                    variant={'secondary'}
                 >
                     <Users className="h-5 w-5" />
                     Join Game by ID
                 </Button>
                 <Button
-                    onClick={() =>
-                        toast({
-                            title: 'Coming Soon',
-                            description: 'Stats feature is under development'
-                        })
-                    }
+                    onClick={onViewStats}
                     className="retro-button retro-button-outline w-full py-3 flex items-center justify-center gap-3"
+                    size={'xl'}
+                    variant={'outline'}
                 >
                     <Trophy className="h-5 w-5" />
                     View Stats
@@ -113,7 +106,9 @@ export default function GameDashboard({
                 <Button
                     onClick={refreshGames}
                     className="retro-button retro-button-outline flex items-center gap-2 justify-center"
+                    size={'xl'}
                     disabled={isLoading}
+                    variant={'ghost'}
                 >
                     <RefreshCw className={`h-5 w-5 ${isLoading ? 'animate-spin' : ''}`} />
                     Refresh Games

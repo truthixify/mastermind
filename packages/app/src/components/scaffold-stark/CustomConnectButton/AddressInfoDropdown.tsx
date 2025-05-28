@@ -167,7 +167,7 @@ export const AddressInfoDropdown = ({
                                 className="retro-button retro-button-outline w-full py-2 px-3 flex items-center gap-2 text-sm"
                             >
                                 <ExternalLink className="h-4 w-4" />
-                                <span className="whitespace-nowrap">View on Block Explorer</span>
+                                <span className="whitespace-nowrap">View on Explorer</span>
                             </a>
                         </li>
                     )}

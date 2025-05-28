@@ -1,0 +1,92 @@
+import { Chain } from '@starknet-react/chains'
+import {
+    jsonRpcProvider,
+    publicProvider,
+    starknetChainId,
+    InjectedConnector
+} from '@starknet-react/core'
+import ControllerConnector from '@cartridge/connector/controller'
+import { constants } from 'starknet'
+import scaffoldConfig from '../../../scaffold.config'
+import { SessionPolicies } from '@cartridge/controller'
+
+// Standard contract addresses
+export const ETH_CONTRACT_ADDRESS =
+    '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7'
+export const STRK_CONTRACT_ADDRESS =
+    '0x04718f5a0Fc34cC1AF16A1cdee98fFB20C31f5cD61D6Ab07201858f4287c938D'
+export const MASTERMIND_CONTRACT_ADDRESS =
+    '0x6211bd22c8ab0b8131bc8ae4875de958c1da492365bfddac4af8a8d0f5a1dfb'
+
+// Function to check for devnet networks
+const containsDevnet = (networks: readonly Chain[]) => {
+    return networks.some(it => it.network === 'devnet')
+}
+
+// Provider configuration based on Scaffold settings
+export const getProvider = () => {
+    if (scaffoldConfig.rpcProviderUrl.sepolia || containsDevnet(scaffoldConfig.targetNetworks)) {
+        return publicProvider()
+    }
+
+    return jsonRpcProvider({
+        rpc: () => ({
+            nodeUrl: scaffoldConfig.rpcProviderUrl.sepolia,
+            chainId: starknetChainId(scaffoldConfig.targetNetworks[0].id)
+        })
+    })
+}
+
+// Supported chains configuration
+const chains = [
+    {
+        id: constants.StarknetChainId.SN_SEPOLIA,
+        name: 'Sepolia',
+        rpcUrl:
+            import.meta.env.NEXT_PUBLIC_RPC_SEPOLIA ?? 'https://api.cartridge.gg/x/starknet/sepolia'
+    },
+    {
+        id: constants.StarknetChainId.SN_MAIN,
+        name: 'Mainnet',
+        rpcUrl:
+            import.meta.env.NEXT_PUBLIC_RPC_MAINNET ?? 'https://api.cartridge.gg/x/starknet/mainnet'
+    }
+]
+
+// Session policies for contracts
+const policies: SessionPolicies = {
+    contracts: {
+        [ETH_CONTRACT_ADDRESS]: {
+            methods: [
+                { name: 'approve', entrypoint: 'approve' },
+                { name: 'transfer', entrypoint: 'transfer' }
+            ]
+        },
+        [STRK_CONTRACT_ADDRESS]: {
+            methods: [
+                { name: 'approve', entrypoint: 'approve' },
+                { name: 'transfer', entrypoint: 'transfer' }
+            ]
+        },
+        [MASTERMIND_CONTRACT_ADDRESS]: {
+            methods: [
+                { name: 'register_player', entrypoint: 'register_player' },
+                { name: 'init_game', entrypoint: 'init_game' },
+                { name: 'join_game', entrypoint: 'join_game' },
+                { name: 'submit_guess', entrypoint: 'submit_guess' },
+                { name: 'commit_solution_hash', entrypoint: 'commit_solution_hash' },
+                { name: 'submit_hit_and_blow_proof', entrypoint: 'submit_hit_and_blow_proof' },
+                { name: 'reveal_solution', entrypoint: 'reveal_solution' }
+            ]
+        }
+    }
+}
+
+// Create Cartridge Controller instance
+export const controllerInstance = new ControllerConnector({
+    policies,
+    defaultChainId: constants.StarknetChainId.SN_SEPOLIA,
+    chains: chains,
+    url: import.meta.env.NEXT_PUBLIC_KEYCHAIN_DEPLOYMENT_URL,
+    profileUrl: import.meta.env.NEXT_PUBLIC_PROFILE_DEPLOYMENT_URL
+}) as unknown as InjectedConnector

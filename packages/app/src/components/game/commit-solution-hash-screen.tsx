@@ -10,7 +10,6 @@ import { MaxUint256, randomBytes } from 'ethers'
 import { ReloadIcon } from '@radix-ui/react-icons'
 import { useScaffoldWriteContract } from '../../hooks/scaffold-stark/useScaffoldWriteContract'
 import { useGameStore } from '../../stores/gameStore'
-import { WordDictionary } from '../../lib/dict'
 import { useGameStorage } from '../../hooks/use-game-storage'
 import { poseidonHashBN254, init as initGaraga } from 'garaga'
 import { useDictionary } from '../../context/dictionary'
@@ -184,7 +183,7 @@ export default function commitSolutionHash({
                     </form>
                 </CardContent>
                 <CardFooter className="flex justify-center">
-                    <Button variant="ghost" size="sm" onClick={onBack}>
+                    <Button variant="ghost" onClick={onBack} size={'lg'} className="w-full">
                         <ArrowLeft className="mr-2 h-4 w-4" />
                         Back to Dashboard
                     </Button>
