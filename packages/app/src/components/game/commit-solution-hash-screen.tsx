@@ -1,5 +1,5 @@
 import type React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -19,9 +19,10 @@ import { useScaffoldWriteContract } from "../../hooks/scaffold-stark/useScaffold
 import { useGameStore } from "../../stores/gameStore";
 import { WordDictionary } from "../../lib/dict";
 import { useGameStorage } from "../../hooks/use-game-storage";
-import { poseidonHashBN254, init } from "garaga";
+import { poseidonHashBN254, init as initGaraga } from "garaga";
+import { useDictionary } from "../../context/dictionary";
 
-interface CommitSolutionHashProps {
+interface commitSolutionHashProps {
   onCommit: () => void;
   isMobile: boolean;
   onBack: () => void;
@@ -35,11 +36,11 @@ const randomBigInt = (num_bytes: number = 31) => {
   return randomU256;
 };
 
-export default function CommitSolutionHash({
+export default function commitSolutionHash({
   onCommit,
   isMobile,
   onBack,
-}: CommitSolutionHashProps) {
+}: commitSolutionHashProps) {
   const [secretWord, setSecretWord] = useState("");
   const [salt, setSalt] = useState<Uint256>(() =>
     uint256.bnToUint256(randomBigInt()),
@@ -50,10 +51,9 @@ export default function CommitSolutionHash({
   const { gameId } = useGameStore();
   const { setGameData } = useGameStorage("game-data", gameId);
 
-  const dict = new WordDictionary();
-  dict.load();
+  const dict = useDictionary();
 
-  const { sendAsync: CommitSolutionHash } = useScaffoldWriteContract({
+  const { sendAsync: commitSolutionHash } = useScaffoldWriteContract({
     contractName: "Mastermind",
     functionName: "commit_solution_hash",
     args: [gameId, solutionHash],
@@ -61,21 +61,7 @@ export default function CommitSolutionHash({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     const word = secretWord.trim().toUpperCase();
-    const solutionArray = word.split("").map((letter) => letter.charCodeAt(0));
-    const prepSolution =
-      solutionArray[0] +
-      solutionArray[1] * 256 +
-      solutionArray[2] * 256 * 256 +
-      solutionArray[3] * 256 * 256 * 256;
-
-    await init();
-    let poseidonHashRes = poseidonHashBN254(
-      BigInt(prepSolution),
-      uint256.uint256ToBN(salt),
-    );
-    setSolutionHash(poseidonHashRes);
 
     // Validate word
     if (word.length !== 4) {
@@ -97,19 +83,68 @@ export default function CommitSolutionHash({
       return;
     }
 
-    const res = await CommitSolutionHash();
+    const solutionArray = word.split("").map((letter) => letter.charCodeAt(0));
+    const prepSolution =
+      solutionArray[0] +
+      solutionArray[1] * 256 +
+      solutionArray[2] * 256 * 256 +
+      solutionArray[3] * 256 * 256 * 256;
 
-    if (res) {
-      if (gameId !== undefined) {
-        setGameData({
-          solution: solutionArray,
-          salt: uint256.uint256ToBN(salt).toString(),
-          gameId: Number(gameId),
+    await initGaraga();
+    const poseidonHashRes = poseidonHashBN254(
+      BigInt(prepSolution),
+      uint256.uint256ToBN(salt),
+    );
+
+    if (!poseidonHashRes) {
+      toast({
+        title: "Invalid solution hash",
+        description: "Solution hash is not generated. Please try again.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setSolutionHash(poseidonHashRes); // Trigger useEffect
+  };
+
+  // Effect to handle commit when solutionHash is updated
+  useEffect(() => {
+    const commit = async () => {
+      if (!solutionHash) return;
+
+      const res = await commitSolutionHash({
+        args: [gameId, solutionHash],
+      });
+
+      if (res) {
+        if (gameId !== undefined) {
+          setGameData({
+            solution: secretWord
+              .trim()
+              .toUpperCase()
+              .split("")
+              .map((letter) => letter.charCodeAt(0)),
+            salt: uint256.uint256ToBN(salt).toString(),
+            gameId: Number(gameId),
+          });
+        }
+        onCommit();
+        toast({
+          title: "Secret word committed",
+          description: "Your secret word has been successfully committed.",
+        });
+      } else {
+        toast({
+          title: "Commit failed",
+          description: "Failed to commit your secret word. Please try again.",
+          variant: "destructive",
         });
       }
-      onCommit();
-    }
-  };
+    };
+
+    commit();
+  }, [solutionHash]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
@@ -129,7 +164,7 @@ export default function CommitSolutionHash({
               <div className="w-full flex justify-between">
                 <h2 className="card-title">Salt</h2>
                 <div className="card-actions">
-                  <Button type="button" variant="link">
+                  <Button type="button" variant="link" size={"icon"}>
                     <ReloadIcon
                       onClick={() =>
                         setSalt(uint256.bnToUint256(randomBigInt()))
@@ -157,7 +192,7 @@ export default function CommitSolutionHash({
                 </span>
               </div>
             </div>
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full" size={"lg"}>
               Confirm Secret Word
             </Button>
           </form>

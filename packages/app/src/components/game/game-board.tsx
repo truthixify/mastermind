@@ -1,5 +1,5 @@
 import type React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft,
@@ -19,9 +19,8 @@ import { generateProof } from "../../lib/generate-proof-utils";
 import vkUrl from "../../assets/vk.bin?url";
 import { useGameStorage } from "../../hooks/use-game-storage";
 import { useScaffoldReadContract } from "../../hooks/scaffold-stark/useScaffoldReadContract";
-import { useScaffoldEventHistory } from "../../hooks/scaffold-stark/useScaffoldEventHistory";
-import { useBlockNumber } from "@starknet-react/core";
-import { feltToHex } from "../../utils/scaffold-stark/common";
+import { extractKnownErrorMessage } from "../../lib/error";
+import { useDictionary } from "../../context/dictionary";
 
 interface GameBoardProps {
   guesses: string[];
@@ -38,12 +37,8 @@ interface GameBoardProps {
 type TabType = "combined" | "opponent" | "you";
 
 export default function GameBoard({
-  // secretWord,
   guesses,
   hb,
-  // currentGuess,
-  // maxAttempts,
-  // onSubmitGuess,
   opponentGuesses,
   opponentHb,
   isPlayerTurn,
@@ -54,20 +49,23 @@ export default function GameBoard({
 }: GameBoardProps) {
   const [activeTab, setActiveTab] = useState<TabType>("combined");
   const [inputGuess, setInputGuess] = useState("");
+  const [isSubmittingGuess, setIsSubmittingGuess] = useState(false);
   const [guess, setGuess] = useState<number[]>([]);
   const [inputError, setInputError] = useState<string | null>(null);
-  const [provenGuesses, setProvenGuesses] = useState<Record<number, boolean>>(
-    {},
-  );
+  const [isProving, setIsProving] = useState<boolean>(false);
   const [proof, setProof] = useState<BigNumberish[]>([]);
   const { toast } = useToast();
   const { gameId } = useGameStore();
   const { getGameData } = useGameStorage("game-data", Number(gameId));
+  const [shouldSubmitGuess, setShouldSubmitGuess] = useState(false);
+  const [shouldSubmitProof, setShouldSubmitProof] = useState(false);
 
-  const dict = new WordDictionary();
-  dict.load();
+  const dict = useDictionary();
 
   const maxAttempts = 10;
+
+  const firstEmptyIndex = opponentGuesses.findIndex((g) => g === "");
+  const isLastHBSubmitted = opponentHb[firstEmptyIndex - 1]?.submitted;
 
   const { sendAsync: submitGuess } = useScaffoldWriteContract({
     contractName: "Mastermind",
@@ -126,6 +124,7 @@ export default function GameBoard({
   // Handle guess submission
   const handleSubmitGuess = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmittingGuess(true);
 
     if (!isPlayerTurn) {
       toast({
@@ -133,6 +132,7 @@ export default function GameBoard({
         description: "Please wait for your opponent to make their move",
         variant: "destructive",
       });
+      setIsSubmittingGuess(false);
       return;
     }
 
@@ -144,39 +144,44 @@ export default function GameBoard({
         description: error,
         variant: "destructive",
       });
+      setIsSubmittingGuess(false);
       return;
     }
 
-    let guessArray = inputGuess.split("").map((letter) => letter.charCodeAt(0));
-    setGuess(guessArray);
-    const res = await submitGuess();
-
-    if (res) setInputGuess("");
-  };
-
-  const handleSubmitHBProof = async () => {
-    let currentGuessindex = Math.floor((Number(round) - 1) / 2);
-    console.log(currentGuessindex, "currentGuessindex");
-    let currentOpponentGuess = opponentGuesses[0];
-    const { hit, blow } = calculateHitsAndBlows(currentOpponentGuess);
-    let guessArray = currentOpponentGuess
+    const guessArray = inputGuess
       .split("")
       .map((letter) => letter.charCodeAt(0));
+    setGuess(guessArray);
+    setShouldSubmitGuess(true);
+  };
 
-    const input = {
-      guess: guessArray,
-      solution: getGameData(gameId as number)?.solution,
-      salt: getGameData(gameId as number)?.salt,
-      solution_hash: getGameSolutionHash.toString(),
-      num_hit: hit,
-      num_blow: blow,
-    };
-    console.log("Input for proof:", input);
+  const handleSubmitHBProof = async (guess: string) => {
+    setIsProving(true);
+    try {
+      const { hit, blow } = calculateHitsAndBlows(guess);
+      const guessArray = guess.split("").map((letter) => letter.charCodeAt(0));
 
-    const { callData } = await generateProof(input, vkUrl);
-    console.log("Generated proof calldata:", callData);
-    setProof(callData);
-    await submitHBProof();
+      const input = {
+        guess: guessArray,
+        solution: getGameData(gameId as number)?.solution,
+        salt: getGameData(gameId as number)?.salt,
+        solution_hash: getGameSolutionHash.toString(),
+        num_hit: hit,
+        num_blow: blow,
+      };
+
+      const { callData } = await generateProof(input, vkUrl);
+      setProof(callData);
+      setShouldSubmitProof(true);
+    } catch (error: any) {
+      toast({
+        title: "Error submitting proof",
+        description:
+          extractKnownErrorMessage(error) || "Unexpected error occurred.",
+        variant: "destructive",
+      });
+      setIsProving(false);
+    }
   };
 
   // Calculate hits and blows from hb
@@ -213,11 +218,62 @@ export default function GameBoard({
     return { hit, blow };
   };
 
+  useEffect(() => {
+    const submit = async () => {
+      if (!shouldSubmitGuess || !guess) return;
+
+      const res = await submitGuess();
+
+      if (res) {
+        setInputGuess("");
+        setGuess([]);
+        toast({
+          title: "Guess submitted",
+          description: "Your guess has been submitted successfully.",
+        });
+      }
+
+      setShouldSubmitGuess(false);
+      setIsSubmittingGuess(false);
+    };
+
+    submit();
+  }, [guess, shouldSubmitGuess]);
+
+  useEffect(() => {
+    const submit = async () => {
+      if (!shouldSubmitProof || !proof) return;
+
+      const res = await submitHBProof();
+
+      if (res) {
+        toast({
+          title: "Proof submitted",
+          description:
+            "Your hit and blow proof has been submitted successfully.",
+        });
+      } else {
+        toast({
+          title: "Error submitting proof",
+          description: "Failed to submit your hit and blow proof.",
+          variant: "destructive",
+        });
+      }
+
+      setShouldSubmitProof(false);
+      setIsProving(false);
+    };
+
+    submit();
+  }, [proof, shouldSubmitProof]);
+
   // Render a single guess with hit/blow counts
   const renderGuess = (
     guess: string,
     oppnentHb: { hit: number; blow: number; submitted: boolean },
   ) => {
+    const isMyTurnToProve =
+      Number(round) % 2 === (playerRole === "creator" ? 1 : 0);
     return (
       <div className="flex items-center justify-between mb-4 p-3 bg-white dark:bg-gray-800 rounded-lg border-2 border-gray-300 dark:border-gray-700">
         <div className="flex items-center">
@@ -239,18 +295,30 @@ export default function GameBoard({
               <span className="text-sm">Blows</span>
             </div>
           </div>
+        ) : guess && isMyTurnToProve ? (
+          <button
+            onClick={() => handleSubmitHBProof(guess)}
+            className="retro-button retro-button-outline py-1 px-3 text-sm flex items-center mt-1"
+            disabled={isProving || !isPlayerTurn}
+          >
+            {isProving ? (
+              <span className="flex items-center">Proving ...</span>
+            ) : (
+              <span className="flex items-center">
+                <Check className="mr-2 h-3 w-3" />
+                Prove
+              </span>
+            )}
+          </button>
         ) : (
           <div className="flex items-center space-x-4">
-            <div className="flex items-center">
-              <div className="w-6 h-6 rounded-full border-2 border-dashed border-gray-300 dark:border-gray-700 bg-retro-dark flex items-center justify-center text-white font-bold mr-1 text-gray-300 dark:text-gray-700">
-                ?
+            {[...Array(2)].map((_, idx) => (
+              <div key={idx} className="flex items-center">
+                <div className="w-6 h-6 rounded-full border-2 border-dashed border-gray-300 dark:border-gray-700 bg-retro-dark flex items-center justify-center font-bold text-gray-300 dark:text-gray-700">
+                  ?
+                </div>
               </div>
-            </div>
-            <div className="flex items-center">
-              <div className="w-6 h-6 rounded-full border-2 border-dashed border-gray-300 dark:border-gray-700 bg-retro-dark flex items-center justify-center text-white font-bold mr-1 text-gray-300 dark:text-gray-700">
-                ?
-              </div>
-            </div>
+            ))}
           </div>
         )}
       </div>
@@ -293,13 +361,6 @@ export default function GameBoard({
               {renderGuess(guess, opponentHb[guessIndex])}
             </div>
           ))}
-          <button
-            onClick={handleSubmitHBProof}
-            className="retro-button retro-button-outline py-1 px-3 text-sm flex items-center mt-1 mx-auto"
-          >
-            <Check className="mr-1 h-3 w-3" />
-            Prove
-          </button>
         </div>
       </div>
     );
@@ -322,13 +383,6 @@ export default function GameBoard({
             {renderGuess(guess, opponentHb[guessIndex])}
           </div>
         ))}
-        <button
-          onClick={handleSubmitHBProof}
-          className="retro-button retro-button-outline py-1 px-3 text-sm flex items-center mt-1 mx-auto"
-        >
-          <Check className="mr-1 h-3 w-3" />
-          Prove
-        </button>
       </div>
     );
   };
@@ -478,7 +532,7 @@ export default function GameBoard({
                         ? "border-retro-green"
                         : ""
                   }`}
-                  disabled={!isPlayerTurn}
+                  disabled={!isPlayerTurn || !isLastHBSubmitted}
                   maxLength={4}
                 />
                 <button

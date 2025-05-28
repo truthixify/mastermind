@@ -1,16 +1,9 @@
 import { useState, useEffect, useRef } from "react";
-import { Noir } from "@noir-lang/noir_js";
-import { UltraHonkBackend } from "@aztec/bb.js";
-import { flattenFieldsAsArray } from "./helpers/proof";
-import { getHonkCallData, init, poseidonHashBN254 } from "garaga";
-import { bytecode, abi } from "./assets/circuit.json";
-import { abi as mainAbi } from "./assets/contract.json";
 import vkUrl from "./assets/vk.bin?url";
 import initNoirC from "@noir-lang/noirc_abi";
 import initACVM from "@noir-lang/acvm_js";
 import acvm from "@noir-lang/acvm_js/web/acvm_js_bg.wasm?url";
 import noirc from "@noir-lang/noirc_abi/web/noirc_abi_wasm_bg.wasm?url";
-import { useGameStore } from "./stores/gameStore";
 import { useScaffoldReadContract } from "./hooks/scaffold-stark/useScaffoldReadContract";
 import { useAccount } from "./hooks/useAccount";
 import { usePlayerStore } from "./stores/playerStore";
@@ -19,13 +12,14 @@ import PlayerRegistration from "./components/game/user-registration";
 import { feltToString } from "./utils/utils";
 import { Buffer } from "buffer";
 import { toast } from "./hooks/use-toast";
+import { useDictionary } from "./context/dictionary";
 
 window.Buffer = Buffer;
 
 function App() {
   const [vk, setVk] = useState<Uint8Array | null>(null);
   const { setPlayerName } = usePlayerStore();
-
+  const dictionary = useDictionary();
   const { address } = useAccount();
 
   const { data: getPlayerName } = useScaffoldReadContract({
@@ -33,6 +27,11 @@ function App() {
     functionName: "get_player_name",
     args: [address],
   });
+
+  // Load dictionary once when the app mounts
+  useEffect(() => {
+    dictionary.load();
+  }, [dictionary]);
 
   useEffect(() => {
     setPlayerName(feltToString(getPlayerName));

@@ -16,6 +16,9 @@ import { useScaffoldEventHistory } from "../../hooks/scaffold-stark/useScaffoldE
 import { addAddressPadding, CairoCustomEnum } from "starknet";
 import { useAccount } from "../../hooks/useAccount";
 import { feltToHex } from "../../utils/scaffold-stark/common";
+import { useGameStorage } from "../../hooks/use-game-storage";
+import { create } from "domain";
+import { TxnNotification } from "../../hooks/scaffold-stark";
 
 export type GameState =
   | "dashboard"
@@ -26,7 +29,8 @@ export type GameState =
   | "playing"
   | "won"
   | "lost"
-  | "draw";
+  | "draw"
+  | "reveal";
 
 export default function GameContainer() {
   const isMobile = useMobile();
@@ -47,7 +51,16 @@ export default function GameContainer() {
   const [opponentHB, setOpponentHB] = useState<
     Array<{ hit: number; blow: number; submitted: boolean }>
   >(Array.from({ length: 5 }, () => ({ hit: 0, blow: 0, submitted: false })));
-  const [vk, setVk] = useState<Uint8Array | null>(null);
+  const [gameResult, setGameResult] = useState<CairoCustomEnum>();
+  const [revealedSolution, setRevealedSolution] = useState<string>();
+  const [opponentRevealedSolution, setOpponentRevealedSolution] =
+    useState<string>();
+  // const [solution, setSolution] = useState<number[] | undefined>(undefined);
+  // const [salt, setSalt] = useState<string | undefined>(undefined);
+  const [isRevealed, setIsRevealed] = useState(false);
+  const [awaitingGameCreateEvent, setAwaitingGameCreateEvent] = useState(false);
+
+  const { getGameData } = useGameStorage("game-data", gameId);
 
   const { sendAsync: createGame } = useScaffoldWriteContract({
     contractName: "Mastermind",
@@ -58,6 +71,15 @@ export default function GameContainer() {
     contractName: "Mastermind",
     functionName: "join_game",
     args: [gameId],
+  });
+
+  const solution = getGameData(Number(gameId))?.solution;
+  const salt = getGameData(Number(gameId))?.salt;
+
+  const { sendAsync: revealSolution } = useScaffoldWriteContract({
+    contractName: "Mastermind",
+    functionName: "reveal_solution",
+    args: [gameId, solution, BigInt(salt || "0")],
   });
 
   const { data: getGameCurrentStage } = useScaffoldReadContract({
@@ -108,6 +130,12 @@ export default function GameContainer() {
     args: [gameId, opponentAddress],
   });
 
+  const { data: getGameResult } = useScaffoldReadContract({
+    contractName: "Mastermind",
+    functionName: "get_game_result",
+    args: [gameId],
+  });
+
   const { address } = useAccount();
 
   const [playerRole, setPlayerRole] = useState<"creator" | "opponent" | null>(
@@ -127,15 +155,82 @@ export default function GameContainer() {
     watch: true,
   });
 
+  const { data: gameFinishEvent } = useScaffoldEventHistory({
+    contractName: "Mastermind",
+    eventName: "mastermind::Mastermind::GameFinish",
+    fromBlock: blockNumber
+      ? blockNumber > 50n
+        ? BigInt(blockNumber - 50)
+        : 0n
+      : 0n,
+    watch: true,
+    filters: {
+      game_id: gameId,
+    },
+  });
+
+  const { data: revealSolutionEvent } = useScaffoldEventHistory({
+    contractName: "Mastermind",
+    eventName: "mastermind::Mastermind::RevealSolution",
+    fromBlock: blockNumber
+      ? blockNumber > 50n
+        ? BigInt(blockNumber - 50)
+        : 0n
+      : 0n,
+    watch: true,
+    filters: {
+      game_id: gameId,
+      account: creatorAddress,
+    },
+  });
+
+  const { data: opponentRevealSolutionEvent } = useScaffoldEventHistory({
+    contractName: "Mastermind",
+    eventName: "mastermind::Mastermind::RevealSolution",
+    fromBlock: blockNumber
+      ? blockNumber > 50n
+        ? BigInt(blockNumber - 50)
+        : 0n
+      : 0n,
+    watch: true,
+    filters: {
+      game_id: gameId,
+      account: opponentAddress,
+    },
+  });
+
+  // Reset game state when gameId changes
+  const resetGameState = () => {
+    setCreatorGuesses(Array.from({ length: 5 }));
+    setOpponentGuesses(Array.from({ length: 5 }));
+    setCreatorHB(
+      Array.from({ length: 5 }, () => ({ hit: 0, blow: 0, submitted: false })),
+    );
+    setOpponentHB(
+      Array.from({ length: 5 }, () => ({ hit: 0, blow: 0, submitted: false })),
+    );
+    setRevealedSolution(undefined);
+    setOpponentRevealedSolution(undefined);
+    setGameResult(undefined);
+    setPlayerRole(null);
+    setIsPlayerTurn(false);
+    setIsRevealed(false);
+    setAwaitingGameCreateEvent(false);
+    setGameStage(undefined);
+  };
+
   // Create a new multiplayer game
   const createNewGame = async () => {
+    setAwaitingGameCreateEvent(true);
     const res = await createGame();
 
-    if (res) {
-      const gameId = createEvent[0].parsedArgs.game_id;
-      setGameId(gameId);
-      setGameState("commit");
-      setGameStage(getGameCurrentStage);
+    if (!res) {
+      toast({
+        title: "Game Creation Failed",
+        description: "Failed to create a new game. Please try again.",
+        variant: "destructive",
+      });
+      setAwaitingGameCreateEvent(false);
     }
   };
 
@@ -182,6 +277,41 @@ export default function GameContainer() {
     setGameState("commit");
   };
 
+  const onRevealSolution = async () => {
+    if (solution && !solution.length) {
+      toast({
+        title: "Unable to Reveal",
+        description: "The solution couldn't be loaded. Please try again.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!salt || salt === "0") {
+      toast({
+        title: "Unable to Reveal",
+        description: "The salt couldn't be loaded. Please try again.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const res = await revealSolution();
+    if (res) {
+      toast({
+        title: "Solution Revealed",
+        description: "Your solution has been revealed successfully.",
+      });
+      setIsRevealed(true);
+    } else {
+      toast({
+        title: "Reveal Failed",
+        description: "Failed to reveal the solution. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   // Play sound effects
   const playSound = (type: "guess" | "win" | "lose") => {
     const sounds = {
@@ -197,6 +327,22 @@ export default function GameContainer() {
       console.error("Error playing sound:", error);
     }
   };
+
+  useEffect(() => {
+    if (!awaitingGameCreateEvent || !createEvent || createEvent.length === 0)
+      return;
+
+    const gameId = createEvent[0].parsedArgs.game_id;
+    setGameId(gameId);
+    setGameStage(getGameCurrentStage);
+    setGameState("commit");
+    setAwaitingGameCreateEvent(false);
+
+    toast({
+      title: "Game Created",
+      description: `Created new game with ID: #${gameId}`,
+    });
+  }, [awaitingGameCreateEvent, createEvent]);
 
   useEffect(() => {
     setGameStage(getGameCurrentStage);
@@ -239,7 +385,7 @@ export default function GameContainer() {
     if (opponentSubmittedGuesses && opponentSubmittedGuesses.length > 0) {
       let arr: string[] = Array.from({ length: 5 }, () => "");
 
-      for (let i = 0; i < creatorSubmittedGuesses.length; i++) {
+      for (let i = 0; i < opponentSubmittedGuesses.length; i++) {
         arr[i] =
           String.fromCharCode(Number(opponentSubmittedGuesses[i].g1)) +
           String.fromCharCode(Number(opponentSubmittedGuesses[i].g2)) +
@@ -281,7 +427,7 @@ export default function GameContainer() {
       for (let i = 0; i < opponentSubmittedHB.length; i++) {
         arr[i].hit = opponentSubmittedHB[i].hit;
         arr[i].blow = opponentSubmittedHB[i].blow;
-        arr[i].submitted = creatorSubmittedHB[i].submitted;
+        arr[i].submitted = opponentSubmittedHB[i].submitted;
       }
 
       setOpponentHB(arr);
@@ -290,9 +436,40 @@ export default function GameContainer() {
     gameId,
     creatorAddress,
     opponentAddress,
-    creatorSubmittedGuesses,
-    opponentSubmittedGuesses,
+    creatorSubmittedHB,
+    opponentSubmittedHB,
   ]);
+
+  useEffect(() => {
+    setGameResult(getGameResult);
+  }, [gameFinishEvent]);
+
+  useEffect(() => {
+    if (revealSolutionEvent && revealSolutionEvent.length > 0) {
+      const revealedSolution = revealSolutionEvent[0].parsedArgs.solution;
+
+      setRevealedSolution(
+        revealedSolution
+          .map((char: bigint) =>
+            String.fromCharCode(Number(char)).toUpperCase(),
+          )
+          .join(""),
+      );
+    }
+
+    if (opponentRevealSolutionEvent && opponentRevealSolutionEvent.length > 0) {
+      const opponentRevealedSolution =
+        opponentRevealSolutionEvent[0].parsedArgs.solution;
+
+      setOpponentRevealedSolution(
+        opponentRevealedSolution
+          .map((char: bigint) =>
+            String.fromCharCode(Number(char)).toUpperCase(),
+          )
+          .join(""),
+      );
+    }
+  }, [revealSolutionEvent, opponentRevealSolutionEvent, address]);
 
   // Render appropriate screen based on game state
   if (gameState === "dashboard") {
@@ -300,6 +477,7 @@ export default function GameContainer() {
       <>
         <GameDashboard
           onCreateGame={createNewGame}
+          isAwaitingGameCreateEvent={awaitingGameCreateEvent}
           onJoinGame={() => setGameState("join")}
           onContinueGame={continueGame}
           onJoinAvalaibleGame={onJoinAvalaibleGame}
@@ -347,21 +525,32 @@ export default function GameContainer() {
     );
   }
 
-  if (gameState === "won" || gameState === "lost" || gameState === "draw") {
+  if (gameStage?.activeVariant() === "Reveal" || gameState === "reveal") {
     return (
       <>
         <GameOverScreen
-          gameState={gameState}
-          attempts={
+          gameResult={gameResult}
+          revealedSolution={
             playerRole === "creator"
-              ? creatorSubmittedGuesses.length
-              : opponentSubmittedGuesses.length
+              ? revealedSolution
+              : opponentRevealedSolution
           }
+          opponentRevealedSolution={
+            playerRole === "creator"
+              ? opponentRevealedSolution
+              : revealedSolution
+          }
+          onRevealSolution={onRevealSolution}
+          isRevealed={isRevealed}
           onPlayAgain={() => setGameState("dashboard")}
         />
         <Toaster />
       </>
     );
+  }
+
+  if (awaitingGameCreateEvent) {
+    return <TxnNotification message="Awaiting for user confirmation" />;
   }
 
   return (

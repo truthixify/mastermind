@@ -1,4 +1,3 @@
-import { abi as verifierAbi } from "../assets/verifier.json";
 import { getHonkCallData, init as initGaraga } from "garaga";
 import { bytecode, abi } from "../assets/circuit.json";
 import { flattenFieldsAsArray } from "../helpers/proof";

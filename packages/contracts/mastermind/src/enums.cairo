@@ -1,8 +1,9 @@
 use starknet::ContractAddress;
 
-#[derive(Drop, PartialEq, Serde, starknet::Store)]
-#[allow(starknet::store_no_default_variant)]
+#[derive(Debug, Drop, PartialEq, Serde, Default, starknet::Store)]
 pub enum GameResult {
+    #[default]
+    Undecided,
     Win: ContractAddress,
     Tie,
 }

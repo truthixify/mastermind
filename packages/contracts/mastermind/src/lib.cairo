@@ -5,8 +5,9 @@ pub mod structs;
 #[starknet::contract]
 pub mod Mastermind {
     use core::array::ArrayTrait;
-    use core::hash::HashStateTrait;
-    use core::poseidon::PoseidonTrait;
+    use core::circuit::u384;
+    use core::num::traits::Zero;
+    use garaga::hashes::poseidon_hash_2_bn254;
     use mastermind::enums::{GameResult, Stages};
     use mastermind::interface::IMastermind;
     use mastermind::structs::{Game, Guess, HitAndBlow, Player};
@@ -19,7 +20,7 @@ pub mod Mastermind {
 
     pub const MAX_ROUND: u64 = 10;
     pub const VERIFIER_CLASSHASH: felt252 =
-        0x057f6a6bda4e2ee16424f38a5c784dc31fc3c9dcfc0c8388fac4ba159a610edf;
+        0x01a9aa9d61d25fe04260e5e6b9ec7bdbed753a31c99f8cd47e39d6a528bb820b;
 
     #[storage]
     pub struct Storage {
@@ -45,24 +46,28 @@ pub mod Mastermind {
 
     #[derive(Drop, starknet::Event)]
     pub struct InitializeGame {
+        #[key]
         pub account: ContractAddress,
         pub game_id: u32,
     }
 
     #[derive(Drop, starknet::Event)]
     pub struct RegisterPlayer {
+        #[key]
         pub account: ContractAddress,
         pub player_id: u32,
     }
 
     #[derive(Drop, starknet::Event)]
     pub struct CommitSolutionHash {
+        #[key]
         pub account: ContractAddress,
         pub solution_hash: u256,
     }
 
     #[derive(Drop, starknet::Event)]
     pub struct SubmitGuess {
+        #[key]
         pub account: ContractAddress,
         pub current_round: u8,
         pub guess: Array<u8>,
@@ -70,6 +75,7 @@ pub mod Mastermind {
 
     #[derive(Drop, starknet::Event)]
     pub struct SubmitHitAndBlow {
+        #[key]
         pub account: ContractAddress,
         pub current_round: u8,
         pub hit: u8,
@@ -78,12 +84,17 @@ pub mod Mastermind {
 
     #[derive(Drop, starknet::Event)]
     pub struct RevealSolution {
+        #[key]
         pub account: ContractAddress,
+        #[key]
+        pub game_id: u32,
         pub solution: Array<u8>,
     }
 
     #[derive(Drop, starknet::Event)]
     pub struct GameFinish {
+        #[key]
+        pub game_id: u32,
         pub game_result: GameResult,
     }
 
@@ -94,6 +105,7 @@ pub mod Mastermind {
 
     #[derive(Drop, starknet::Event)]
     pub struct OpponentJoined {
+        #[key]
         pub account: ContractAddress,
         pub game_id: u32,
     }
@@ -166,7 +178,7 @@ pub mod Mastermind {
                 "You need to register first before you can start a game",
             );
             assert!(game.creator.read() != opponent_address, "You cannot join your own game");
-            assert!(game.opponent.read() == 0x0.try_into().unwrap(), "Opponent already joined");
+            assert!(game.opponent.read().is_zero(), "Opponent already joined");
 
             if game.stage.read() == Stages::WaitingForOpponent {
                 game.opponent.write(opponent_address);
@@ -257,15 +269,9 @@ pub mod Mastermind {
                 full_proof_with_hints,
             )
                 .unwrap_syscall();
-            // println!("Result: {:?}", result);
             let public_inputs = Serde::<Option<Span<u256>>>::deserialize(ref result)
                 .unwrap()
                 .expect('Proof is invalid');
-            // println!("Public Inputs: {:?}", public_inputs);
-            let _g1 = *public_inputs.at(0);
-            let _g2 = *public_inputs.at(1);
-            let _g3 = *public_inputs.at(2);
-            let _g4 = *public_inputs.at(3);
             let solution_hash = *public_inputs.at(4);
             let num_hit = *public_inputs.at(5);
             let num_blow = *public_inputs.at(6);
@@ -273,32 +279,42 @@ pub mod Mastermind {
             let player_address = get_caller_address();
             let hit: u8 = num_hit.try_into().unwrap();
             let blow: u8 = num_blow.try_into().unwrap();
-
             let submitted_hit_and_blow = game.submitted_hit_and_blow;
-            let player_submitted_hit_and_blow = submitted_hit_and_blow.entry(get_caller_address());
+            let player_submitted_hit_and_blow = submitted_hit_and_blow.entry(player_address);
             player_submitted_hit_and_blow.push(HitAndBlow { hit, blow, submitted: true });
+            let opponent_address = if player_address == game.creator.read() {
+                game.opponent.read()
+            } else {
+                game.creator.read()
+            };
+            let player = self.players.entry(player_address);
+            let opponent = self.players.entry(opponent_address);
 
-            if hit == 4 && game.game_result.read() != GameResult::Win(game.opponent.read()) {
+            if hit == 4 && game.game_result.read() == GameResult::Undecided {
                 assert!(
                     solution_hash == game.solution_hashes.entry(player_address).read(),
                     "Solution hash is not correct",
                 );
                 assert!(blow == 0, "Blow is not 0");
 
-                game.game_result.write(GameResult::Win(player_address));
+                game.game_result.write(GameResult::Win(opponent_address));
                 game.stage.write(Stages::Reveal);
+                opponent.games_won.write(player.games_won.read() + 1);
+                player.games_lost.write(opponent.games_lost.read() + 1);
 
                 self
                     .emit(
                         Event::GameFinish(
-                            GameFinish { game_result: GameResult::Win(player_address) },
+                            GameFinish { game_id, game_result: GameResult::Win(opponent_address) },
                         ),
                     );
-            } else if self.get_game_current_round(game_id) == MAX_ROUND.try_into().unwrap() {
+            } else if self.get_game_current_round(game_id) > MAX_ROUND.try_into().unwrap() {
                 game.game_result.write(GameResult::Tie);
                 game.stage.write(Stages::Reveal);
+                player.games_tied.write(player.games_tied.read() + 1);
+                opponent.games_tied.write(opponent.games_tied.read() + 1);
 
-                self.emit(Event::GameFinish(GameFinish { game_result: GameResult::Tie }));
+                self.emit(Event::GameFinish(GameFinish { game_id, game_result: GameResult::Tie }));
             }
 
             self
@@ -322,23 +338,21 @@ pub mod Mastermind {
 
             let caller = get_caller_address();
             let solution_hash = game.solution_hashes.entry(caller).read();
-            let mut hash_state = PoseidonTrait::new();
-            hash_state = hash_state.update(salt.try_into().unwrap());
+            let s0_u256: u256 = (*solution.at(0)).into();
+            let s1_u256: u256 = (*solution.at(1)).into();
+            let s2_u256: u256 = (*solution.at(2)).into();
+            let s3_u256: u256 = (*solution.at(3)).into();
+            let prep_solution: u384 = (s0_u256
+                + s1_u256 * 256
+                + s2_u256 * 256 * 256
+                + s3_u256 * 256 * 256 * 256)
+                .into();
+            let salt_u384: u384 = salt.into();
+            let computed_hash = poseidon_hash_2_bn254(prep_solution, salt_u384);
 
-            for i in 1..=solution.len() {
-                hash_state = hash_state.update((*solution.at(i)).into());
-            }
+            assert!(computed_hash == solution_hash.into(), "Invalid solution");
 
-            let computed_hash = hash_state.finalize();
-
-            assert!(computed_hash == solution_hash.try_into().unwrap(), "Invalid solution");
-
-            game.stage.write(Stages::Reveal);
-            self.emit(Event::RevealSolution(RevealSolution { account: caller, solution }));
-
-            if game.game_result.read() == GameResult::Win(caller) {
-                self.emit(Event::GameFinish(GameFinish { game_result: GameResult::Win(caller) }))
-            }
+            self.emit(Event::RevealSolution(RevealSolution { account: caller, game_id, solution }));
         }
 
         fn get_game_submitted_guesses(

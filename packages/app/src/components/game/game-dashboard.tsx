@@ -8,6 +8,7 @@ import {
   ArrowRight,
   RefreshCw,
   HelpCircle,
+  Settings,
 } from "lucide-react";
 import { useToast } from "../../hooks/use-toast";
 import HelpModal from "./help-modal";
@@ -15,12 +16,14 @@ import { useScaffoldReadContract } from "../../hooks/scaffold-stark/useScaffoldR
 import AvailableGame from "./available-game";
 import ActiveGame from "./active-game";
 import { useAccount } from "../../hooks/useAccount";
+import { Button } from "../ui/button";
 
 interface GameDashboardProps {
   onCreateGame: () => void;
   onJoinGame: () => void;
   onContinueGame: (gameId: number) => void;
   onJoinAvalaibleGame: () => void;
+  isAwaitingGameCreateEvent?: boolean;
   isPlayerTurn: boolean;
 }
 
@@ -29,6 +32,7 @@ export default function GameDashboard({
   onJoinGame,
   onContinueGame,
   onJoinAvalaibleGame,
+  isAwaitingGameCreateEvent,
   isPlayerTurn,
 }: GameDashboardProps) {
   const [activeTab, setActiveTab] = useState("active");
@@ -67,7 +71,7 @@ export default function GameDashboard({
         description: "Game list has been updated",
       });
       setIsLoading(false);
-    }, 3000);
+    }, 1000);
   };
 
   return (
@@ -79,28 +83,53 @@ export default function GameDashboard({
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 0.1, duration: 0.3 }}
       >
-        <button
+        <Button
           onClick={onCreateGame}
           className="retro-button retro-button-primary flex items-center gap-2 justify-center"
+          disabled={isAwaitingGameCreateEvent}
         >
           <Plus className="h-5 w-5" />
-          Create New Game
-        </button>
-        <button
+          {isAwaitingGameCreateEvent ? "Creating Game..." : "Create Game"}
+        </Button>
+        <Button
           onClick={onJoinGame}
           className="retro-button retro-button-secondary flex items-center gap-2 justify-center"
         >
           <Users className="h-5 w-5" />
           Join Game by ID
-        </button>
-        <button
+        </Button>
+        <Button
+          onClick={() =>
+            toast({
+              title: "Coming Soon",
+              description: "Stats feature is under development",
+            })
+          }
+          className="retro-button retro-button-outline w-full py-3 flex items-center justify-center gap-3"
+        >
+          <Trophy className="h-5 w-5" />
+          View Stats
+        </Button>
+        <Button
+          onClick={() =>
+            toast({
+              title: "Coming Soon",
+              description: "Settings feature is under development",
+            })
+          }
+          className="retro-button retro-button-outline w-full py-3 flex items-center justify-center gap-3"
+        >
+          <Settings className="h-5 w-5" />
+          Settings
+        </Button>
+        <Button
           onClick={refreshGames}
           className="retro-button retro-button-outline flex items-center gap-2 justify-center"
           disabled={isLoading}
         >
           <RefreshCw className={`h-5 w-5 ${isLoading ? "animate-spin" : ""}`} />
           Refresh Games
-        </button>
+        </Button>
       </motion.div>
 
       {/* Game lists */}

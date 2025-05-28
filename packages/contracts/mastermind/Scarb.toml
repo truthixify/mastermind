@@ -7,6 +7,7 @@ edition = "2024_07"
 
 [dependencies]
 starknet = "2.11.4"
+garaga = { git = "https://github.com/keep-starknet-strange/garaga.git", tag = "v0.18.0" }
 
 [dev-dependencies]
 snforge_std = "0.41.0"
@@ -26,6 +27,9 @@ allow-prebuilt-plugins = ["snforge_std"]
 name = "SEPOLIA_LATEST"
 url = "https://starknet-sepolia.public.blastapi.io/rpc/v0_8"
 block_id.tag = "latest"
+
+[cairo]
+sierra-replace-ids = false
 
 # Visit https://foundry-rs.github.io/starknet-foundry/appendix/scarb-toml.html for more information
 

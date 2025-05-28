@@ -326,7 +326,8 @@ fn test_two_player_commit_solution_hash() {
         "The committed hash should match the one onchain",
     );
     assert!(
-        mastermind.get_game_current_stage(0) == Stages::Playing, "Game should be in playing
+        mastermind.get_game_current_stage(0) == Stages::Playing,
+        "Game should be in playing
         stage",
     );
     spy
@@ -420,7 +421,8 @@ fn test_submit_guess() {
         "The committed hash should match the one onchain",
     );
     assert!(
-        mastermind.get_game_current_stage(0) == Stages::Playing, "Game should be in playing
+        mastermind.get_game_current_stage(0) == Stages::Playing,
+        "Game should be in playing
         stage",
     );
     assert!(
@@ -494,8 +496,7 @@ fn test_submit_guess() {
 
 #[test]
 #[fork("SEPOLIA_LATEST")]
-fn test_submit_hit_and_blow_proof() {
-    println!("lol");
+fn test_submit_hit_and_blow_proof_with_already_generated_calldata() {
     let calldata = array![
         2797,
         8,
@@ -3299,20 +3300,58 @@ fn test_submit_hit_and_blow_proof() {
     let call_span = calldata.span();
 
     let (mastermind, _) = deploy_contract();
-    // let mut spy = spy_events();
-    let solution_hash1 = 0x265c6daf938dfc5d71bac7f6512e6fae06a430847ea1175df63b85a5332be1e1;
-    // let solution_hash2 = 0x00123456789;
-    // let player1_guess1 = array![65, 66, 67, 68];
-    // let player2_guess1 = array![80, 81, 82, 83];
+    let mut spy = spy_events();
+    let solution_hash =
+        1343962579342075561583673414850858237393269852272307441760424877096275275426;
     let creator_name = 'lukuluku';
-    // let opponent_name = 'lamidi';
+    let opponent_name = 'lamidi';
 
     start_cheat_caller_address(mastermind.contract_address, PLAYER1);
 
     mastermind.register_player(creator_name);
     mastermind.init_game();
-    mastermind.commit_solution_hash(0, solution_hash1);
+    mastermind.commit_solution_hash(0, solution_hash);
+
+    start_cheat_caller_address(mastermind.contract_address, PLAYER2);
+
+    mastermind.register_player(opponent_name);
+    mastermind.join_game(0);
+    mastermind.commit_solution_hash(0, solution_hash);
     mastermind.submit_hit_and_blow_proof(0, call_span);
 
     stop_cheat_caller_address(mastermind.contract_address);
+
+    spy
+        .assert_emitted(
+            @array![
+                (
+                    mastermind.contract_address,
+                    Mastermind::Event::GameFinish(
+                        Mastermind::GameFinish {
+                            game_id: 0, game_result: GameResult::Win(PLAYER1),
+                        },
+                    ),
+                ),
+            ],
+        )
 }
+// This test was made to pass by commenting out the assert for checking if game stage is in Reveal.
+// The test is just to ensure the hash is computed correctly.
+// #[test]
+// fn test_reveal_solution_hashes_correctly() {
+//     let (mastermind, _) = deploy_contract();
+//     let salt = 235612432853355591950003986171753376943724203056778851738114407054268924731;
+//     let solution = array![66, 79, 78, 69];
+//     let solution_hash =
+//         10129369349250179191777876465705565084946403384172835168635831264098752027024;
+//     let creator_name = 'lukuluku';
+
+//     start_cheat_caller_address(mastermind.contract_address, PLAYER1);
+
+//     mastermind.register_player(creator_name);
+//     mastermind.init_game();
+//     mastermind.commit_solution_hash(0, solution_hash);
+//     mastermind.reveal_solution(0, solution, salt);
+// }
+
+

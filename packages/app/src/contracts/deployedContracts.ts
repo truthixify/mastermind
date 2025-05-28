@@ -7,7 +7,7 @@ const deployedContracts = {
   devnet: {
     Mastermind: {
       address:
-        "0x70e8d22907d453e7fb548eedb562e782912453be5f464b09412f8710ad2cbb5",
+        "0x216fc74cc2cee52b27f4ccedc01b9d8d1f1845b2f7c193977b2bfc523bba8be",
       abi: [
         {
           type: "impl",
@@ -100,6 +100,10 @@ const deployedContracts = {
           type: "enum",
           name: "mastermind::enums::GameResult",
           variants: [
+            {
+              name: "Undecided",
+              type: "()",
+            },
             {
               name: "Win",
               type: "core::starknet::contract_address::ContractAddress",
@@ -479,7 +483,7 @@ const deployedContracts = {
             {
               name: "account",
               type: "core::starknet::contract_address::ContractAddress",
-              kind: "data",
+              kind: "key",
             },
             {
               name: "game_id",
@@ -496,7 +500,7 @@ const deployedContracts = {
             {
               name: "account",
               type: "core::starknet::contract_address::ContractAddress",
-              kind: "data",
+              kind: "key",
             },
             {
               name: "player_id",
@@ -513,7 +517,7 @@ const deployedContracts = {
             {
               name: "account",
               type: "core::starknet::contract_address::ContractAddress",
-              kind: "data",
+              kind: "key",
             },
             {
               name: "solution_hash",
@@ -530,7 +534,7 @@ const deployedContracts = {
             {
               name: "account",
               type: "core::starknet::contract_address::ContractAddress",
-              kind: "data",
+              kind: "key",
             },
             {
               name: "current_round",
@@ -552,7 +556,7 @@ const deployedContracts = {
             {
               name: "account",
               type: "core::starknet::contract_address::ContractAddress",
-              kind: "data",
+              kind: "key",
             },
             {
               name: "current_round",
@@ -579,7 +583,12 @@ const deployedContracts = {
             {
               name: "account",
               type: "core::starknet::contract_address::ContractAddress",
-              kind: "data",
+              kind: "key",
+            },
+            {
+              name: "game_id",
+              type: "core::integer::u32",
+              kind: "key",
             },
             {
               name: "solution",
@@ -593,6 +602,11 @@ const deployedContracts = {
           name: "mastermind::Mastermind::GameFinish",
           kind: "struct",
           members: [
+            {
+              name: "game_id",
+              type: "core::integer::u32",
+              kind: "key",
+            },
             {
               name: "game_result",
               type: "mastermind::enums::GameResult",
@@ -620,7 +634,7 @@ const deployedContracts = {
             {
               name: "account",
               type: "core::starknet::contract_address::ContractAddress",
-              kind: "data",
+              kind: "key",
             },
             {
               name: "game_id",
@@ -683,7 +697,7 @@ const deployedContracts = {
         },
       ],
       classHash:
-        "0x130f819c0318e827797f240b19a2acffa958e0fdfe06068256fc3b0a79b578c",
+        "0x314ec5469a1111934145ef232639eaa84bfbad986419c46793167c4dd273703",
     },
   },
 } as const;

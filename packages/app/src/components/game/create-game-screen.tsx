@@ -46,9 +46,7 @@ export default function CreateGameScreen({
 
   // Auto-redirect when opponent joins
   useEffect(() => {
-    if (gameStage?.activeVariant() === "playing") {
-      onGameStart();
-    }
+    onGameStart();
   }, [gameStage, onGameStart]);
 
   useEffect(() => {
@@ -99,6 +97,14 @@ export default function CreateGameScreen({
               <Loader2 className="h-8 w-8 animate-spin text-slate-500 dark:text-slate-400" />
               <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
                 Waiting for opponent to join...
+              </p>
+            </div>
+          )}
+          {gameStage?.activeVariant() === "OpponentCommitSolutionHash" && (
+            <div className="flex flex-col items-center justify-center p-4">
+              <Loader2 className="h-8 w-8 animate-spin text-slate-500 dark:text-slate-400" />
+              <p className="text-sm text-slate-600 dark:text-slate-400">
+                Opponent commiting solution hash...
               </p>
             </div>
           )}

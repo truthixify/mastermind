@@ -37,4 +37,7 @@ pub struct Player {
     pub player_id: u32,
     pub player_name: felt252,
     pub player_game_ids: Vec<u32>,
+    pub games_won: u32,
+    pub games_lost: u32,
+    pub games_tied: u32,
 }
