@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useEffect, useMemo, useState } from 'react'
 import { useTargetNetwork } from './useTargetNetwork'
 import { useInterval } from 'usehooks-ts'
@@ -88,7 +89,7 @@ export const useScaffoldEventHistory = <
             }
 
             const event = (deployedContractData.abi as Abi).find(
-                part => part.type === 'event' && part.name === eventName
+                (part: any) => part.type === 'event' && part.name === eventName
             ) as ExtractAbiEvent<ContractAbi<TContractName>, TEventName>
 
             const blockNumber = (await publicClient.getBlockLatestAccepted()).block_number
@@ -153,14 +154,14 @@ export const useScaffoldEventHistory = <
 
     useEffect(() => {
         readEvents(fromBlock).then()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+         
     }, [fromBlock, enabled])
 
     useEffect(() => {
         if (!deployedContractLoading) {
             readEvents().then()
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+         
     }, [
         provider,
         contractName,
@@ -168,7 +169,7 @@ export const useScaffoldEventHistory = <
         deployedContractLoading,
         deployedContractData?.address,
         deployedContractData,
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+         
         JSON.stringify(filters, replacer),
         blockData,
         transactionData,

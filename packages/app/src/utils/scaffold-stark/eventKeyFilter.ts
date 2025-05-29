@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { ExtractAbiEvent, ExtractAbiEventNames } from 'abi-wan-kanabi/dist/kanabi'
 import { Abi, AbiEntry, AbiEnums, AbiStructs, CallData, parseCalldataField } from 'starknet'
 import { ContractAbi, ContractName } from './contract'

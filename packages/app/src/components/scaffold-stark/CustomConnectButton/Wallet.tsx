@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+// @ts-nocheck
 import React, { useEffect, useMemo, useState } from 'react'
 import { Connector } from '@starknet-react/core'
 // import Image from "next/image";

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Address as AddressType, devnet } from '@starknet-react/chains'
 import { BanknotesIcon } from '@heroicons/react/24/outline'
-import { Address, AddressInput, Balance, StarkInput } from '../scaffold-stark'
+import { AddressInput, StarkInput } from '../scaffold-stark'
 import { useNetwork, useProvider } from '@starknet-react/core'
 import { mintStrk } from '../../services/web3/faucet'
 import { notification } from '../../utils/scaffold-stark'
@@ -24,7 +24,7 @@ export const Faucet = () => {
     useEffect(() => {
         const checkChain = async () => {
             try {
-                const providerInfo = await publicClient.getBlock()
+                await publicClient.getBlock()
             } catch (error) {
                 console.error('⚡️ ~ file: Faucet.tsx:checkChain ~ error', error)
                 notification.error(
@@ -55,7 +55,7 @@ export const Faucet = () => {
             }
         }
         checkChain().then()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+         
     }, [])
 
     const sendSTRK = async () => {

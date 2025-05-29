@@ -2,7 +2,6 @@ import { motion } from 'framer-motion'
 
 const GenericModal = ({
     children,
-    className = 'modal-box modal-border bg-modal rounded-[8px] border flex flex-col gap-3 justify-around relative',
     onClose
 }: {
     children: React.ReactNode

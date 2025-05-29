@@ -22,11 +22,11 @@ const scaffoldConfig = {
             import.meta.env.NEXT_PUBLIC_PROVIDER_URL ||
             '',
         sepolia:
-            import.meta.env.NEXT_PUBLIC_SEPOLIA_PROVIDER_URL ||
+            import.meta.env.VITE_NEXT_PUBLIC_SEPOLIA_PROVIDER_URL ||
             import.meta.env.NEXT_PUBLIC_PROVIDER_URL ||
             '',
         mainnet:
-            import.meta.env.NEXT_PUBLIC_MAINNET_PROVIDER_URL ||
+            import.meta.env.VITE_NEXT_PUBLIC_MAINNET_PROVIDER_URL ||
             import.meta.env.NEXT_PUBLIC_PROVIDER_URL ||
             ''
     },

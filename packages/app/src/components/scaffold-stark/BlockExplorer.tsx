@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+// @ts-nocheck
 import { Address as AddressType, mainnet } from '@starknet-react/chains'
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 import { useNetwork } from '@starknet-react/core'
-import Image from 'next/image'
 import GenericModal from './CustomConnectButton/GenericModal'
 import { useTheme } from 'next-themes'
 

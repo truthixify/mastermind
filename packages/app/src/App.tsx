@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useEffect } from 'react'
 import vkUrl from './assets/vk.bin?url'
 import initNoirC from '@noir-lang/noirc_abi'

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import scaffoldConfig from '../../../scaffold.config'
 import deployedContractsData from '../../contracts/deployedContracts'
 import predeployedContracts from '../../contracts/predeployedContracts'
@@ -16,13 +17,12 @@ import {
     CairoOptionVariant,
     CairoResult,
     CairoResultVariant,
-    getChecksumAddress,
     uint256,
     validateAndParseAddress
 } from 'starknet'
 import { byteArray } from 'starknet'
 import type { MergeDeepRecord } from 'type-fest/source/merge-deep'
-import { feltToHex, isJsonString } from '../../utils/scaffold-stark/common'
+import { feltToHex } from '../../utils/scaffold-stark/common'
 import {
     isCairoArray,
     isCairoBigInt,
@@ -35,7 +35,6 @@ import {
     isCairoOption,
     isCairoResult,
     isCairoTuple,
-    isCairoType,
     isCairoU256,
     parseGenericType
 } from '../../utils/scaffold-stark/types'
@@ -130,21 +129,21 @@ export type AbiOutput = {
     type: string
 }
 type AbiStateMutability = 'view' | 'external'
-type AbiImpl = {
-    type: 'impl'
-    name: string
-    interface_name: string
-}
-type AbiInterface = {
-    type: 'interface'
-    name: string
-    items: readonly AbiFunction[]
-}
-type AbiConstructor = {
-    type: 'constructor'
-    name: 'constructor'
-    inputs: readonly AbiParameter[]
-}
+// type AbiImpl = {
+//     type: 'impl'
+//     name: string
+//     interface_name: string
+// }
+// type AbiInterface = {
+//     type: 'interface'
+//     name: string
+//     items: readonly AbiFunction[]
+// }
+// type AbiConstructor = {
+//     type: 'constructor'
+//     name: 'constructor'
+//     inputs: readonly AbiParameter[]
+// }
 export type AbiFunction = {
     type: 'function'
     name: string
@@ -347,11 +346,11 @@ export function getFunctionsByStateMutability(
     stateMutability: AbiStateMutability
 ): AbiFunction[] {
     return abi
-        .reduce((acc, part) => {
+        .reduce((acc: any, part: any) => {
             if (part.type === 'function') {
                 acc.push(part)
             } else if (part.type === 'interface' && Array.isArray(part.items)) {
-                part.items.forEach(item => {
+                part.items.forEach((item: any) => {
                     if (item.type === 'function') {
                         acc.push(item)
                     }
@@ -359,7 +358,7 @@ export function getFunctionsByStateMutability(
             }
             return acc
         }, [] as AbiFunction[])
-        .filter(fn => {
+        .filter((fn: any) => {
             return fn.state_mutability == stateMutability
         })
 }

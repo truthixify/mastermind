@@ -3,7 +3,6 @@ import { sepolia } from '@starknet-react/chains'
 import { BanknotesIcon } from '@heroicons/react/24/outline'
 import { useNetwork, useProvider } from '@starknet-react/core'
 import { notification } from '../../utils/scaffold-stark'
-import Image from 'next/image'
 import GenericModal from './CustomConnectButton/GenericModal'
 import { useTheme } from 'next-themes'
 
@@ -30,7 +29,7 @@ export const FaucetSepolia = () => {
     useEffect(() => {
         const checkChain = async () => {
             try {
-                const providerInfo = await publicClient.getBlock()
+                await publicClient.getBlock()
             } catch (error) {
                 console.error('⚡️ ~ file: Faucet.tsx:checkChain ~ error', error)
                 notification.error(
@@ -61,7 +60,7 @@ export const FaucetSepolia = () => {
             }
         }
         checkChain().then()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+         
     }, [])
 
     const { resolvedTheme } = useTheme()

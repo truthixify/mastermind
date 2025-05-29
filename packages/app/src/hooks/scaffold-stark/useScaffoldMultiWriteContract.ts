@@ -8,9 +8,8 @@ import {
     UseScaffoldArgsParam,
     UseScaffoldWriteConfig
 } from '../../utils/scaffold-stark/contract'
-import { useSendTransaction, useNetwork, Abi } from '@starknet-react/core'
+import { useNetwork, Abi } from '@starknet-react/core'
 import { Contract as StarknetJsContract, InvocationsDetails, Call } from 'starknet'
-import { notification } from '../../utils/scaffold-stark'
 import { useTransactor } from './useTransactor'
 
 function isRawCall(value: Call | any): value is Call {
@@ -23,7 +22,7 @@ export const useScaffoldMultiWriteContract = <
     TFunctionName extends ExtractAbiFunctionNamesScaffold<ContractAbi<TContractName>, 'external'>
 >({
     calls,
-    options
+    // options
 }: {
     calls: Array<UseScaffoldWriteConfig<TAbi, TContractName, TFunctionName> | Call>
     options?: InvocationsDetails

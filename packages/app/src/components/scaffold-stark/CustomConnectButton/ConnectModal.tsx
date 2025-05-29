@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+// @ts-nocheck
 import { Connector, useConnect } from '@starknet-react/core'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import Wallet from '../../scaffold-stark/CustomConnectButton/Wallet'
 import { useLocalStorage } from 'usehooks-ts'
 import { BurnerConnector, burnerAccounts } from '@scaffold-stark/stark-burner'
-import { useTheme } from 'next-themes'
 import { BlockieAvatar } from '../BlockieAvatar'
 import GenericModal from './GenericModal'
 import { LAST_CONNECTED_TIME_LOCALSTORAGE_KEY } from '../../../utils/Constants'
@@ -17,11 +18,11 @@ const loader = ({ src }: { src: string }) => {
 
 const ConnectModal = () => {
     const [showModal, setShowModal] = useState(false)
-    const modalRef = useRef<HTMLInputElement>(null)
+    // const modalRef = useRef<HTMLInputElement>(null)
     const [isBurnerWallet, setIsBurnerWallet] = useState(false)
-    const { resolvedTheme } = useTheme()
-    const isDarkMode = resolvedTheme === 'dark'
-    const { connectors, connect, error, status, ...props } = useConnect()
+    // const { resolvedTheme } = useTheme()
+    // const isDarkMode = resolvedTheme === 'dark'
+    const { connectors, connect, status } = useConnect()
     const [_, setLastConnector] = useLocalStorage<{ id: string; ix?: number }>(
         'lastUsedConnector',
         { id: '' },

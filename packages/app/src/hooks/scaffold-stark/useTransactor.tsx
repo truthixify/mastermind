@@ -2,7 +2,7 @@ import { useAccount } from '../../hooks/useAccount'
 import { AccountInterface, InvokeFunctionResponse, constants, Call } from 'starknet'
 import { getBlockExplorerTxLink, notification } from '../../utils/scaffold-stark'
 import { useTargetNetwork } from './useTargetNetwork'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import {
     useSendTransaction,
     UseSendTransactionResult,
@@ -53,15 +53,15 @@ export const TxnNotification = ({
  */
 export const useTransactor = (_walletClient?: AccountInterface): UseTransactorReturn => {
     let walletClient = _walletClient
-    const { account, address, status } = useAccount()
+    const { account } = useAccount()
     const { targetNetwork } = useTargetNetwork()
     if (walletClient === undefined && account) {
         walletClient = account
     }
     const sendTransactionInstance = useSendTransaction({})
 
-    const [notificationId, setNotificationId] = useState<string | null>(null)
-    const [blockExplorerTxURL, setBlockExplorerTxURL] = useState<string | undefined>(undefined)
+    const [_notificationId, setNotificationId] = useState<string | null>(null)
+    const [_blockExplorerTxURL, setBlockExplorerTxURL] = useState<string | undefined>(undefined)
     const [transactionHash, setTransactionHash] = useState<string | undefined>(undefined)
     const transactionReceiptInstance = useTransactionReceipt({
         hash: transactionHash

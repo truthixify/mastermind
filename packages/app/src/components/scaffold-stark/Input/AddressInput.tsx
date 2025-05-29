@@ -3,8 +3,6 @@ import { blo } from 'blo'
 import { useDebounceValue } from 'usehooks-ts'
 import { CommonInputProps, InputBase } from '../../scaffold-stark'
 import { Address } from '@starknet-react/chains'
-import { isAddress } from '../../../utils/scaffold-stark/common'
-import Image from 'next/image'
 
 /**
  * Address input with ENS name resolution
@@ -47,7 +45,6 @@ export const AddressInput = ({
             disabled={disabled}
             prefix={null}
             suffix={
-                // eslint-disable-next-line @next/next/no-img-element
                 value && (
                     <img
                         alt=""

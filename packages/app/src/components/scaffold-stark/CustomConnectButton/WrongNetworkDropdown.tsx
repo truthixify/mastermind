@@ -1,4 +1,3 @@
-import { NetworkOptions } from './NetworkOptions'
 import { ArrowLeftEndOnRectangleIcon, ChevronDownIcon } from '@heroicons/react/24/outline'
 import { useDisconnect } from '@starknet-react/core'
 

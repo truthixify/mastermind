@@ -41,7 +41,7 @@ export function useGameStorage(storageKey: string, gameId?: number): UseGameStor
         if (typeof window === 'undefined' || gameId == undefined) return
         const data = getGameData(gameId)
         setStoredValue(data)
-    }, [gameId])
+    }, [gameId, getGameData])
 
     return { gameData: storedValue, setGameData, getGameData }
 }

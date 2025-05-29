@@ -34,7 +34,7 @@ const ENUM_STATUSES = {
 const DEFAULT_DURATION = 3000
 const DEFAULT_POSITION: ToastPosition = 'top-center'
 
-const ToastContent = ({ t, content, status, icon, position }: NotificationProps & { t: Toast }) => {
+const ToastContent = ({ t, content, status, icon }: NotificationProps & { t: Toast }) => {
     const [isExpanded, setIsExpanded] = useState(false)
     const [needsExpand, setNeedsExpand] = useState(false)
     const contentRef = useRef<HTMLDivElement>(null)
