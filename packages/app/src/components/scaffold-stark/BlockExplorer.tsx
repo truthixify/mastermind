@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // @ts-nocheck
 import { Address as AddressType, mainnet } from '@starknet-react/chains'
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'

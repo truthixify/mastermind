@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // @ts-nocheck
 import { useState, useEffect } from 'react'
 import GameBoard from './game-board'
@@ -44,7 +43,7 @@ export default function GameContainer() {
     const [gameStage, setGameStage] = useState<CairoCustomEnum>()
     const [isPlayerTurn, setIsPlayerTurn] = useState<boolean>(true)
     const [creatorGuesses, setCreatorGuesses] = useState<string[]>(Array.from({ length: 5 }))
-    const [oppoentGuesses, setOpponentGuesses] = useState<string[]>(Array.from({ length: 5 }))
+    const [opponentGuesses, setOpponentGuesses] = useState<string[]>(Array.from({ length: 5 }))
     const [creatorHB, setCreatorHB] = useState<
         Array<{ hit: number; blow: number; submitted: boolean }>
     >(Array.from({ length: 5 }, () => ({ hit: 0, blow: 0, submitted: false })))
@@ -280,7 +279,7 @@ export default function GameContainer() {
                     description: `Successfully joined game #${gameId}`
                 })
                 setGameState('commit')
-                setGameStage(getGameCurrentStage)
+                // setGameStage(getGameCurrentStage)
             } else {
                 throw new Error('Failed to join game')
             }
@@ -403,7 +402,9 @@ export default function GameContainer() {
     useEffect(() => {
         if (gameCreationStatus !== 'waiting_event' || !createEvent?.length) return
 
-        const gameId = createEvent[0].parsedArgs.game_id
+        const firstEvent = createEvent[0]
+        const gameId = firstEvent?.parsedArgs?.game_id
+        if (!gameId) return
 
         setGameId(gameId)
         setGameStage(getGameCurrentStage)
@@ -417,14 +418,19 @@ export default function GameContainer() {
     }, [gameCreationStatus, createEvent])
 
     useEffect(() => {
-        setGameStage(getGameCurrentStage)
-    }, [getGameCurrentStage, commit])
+        if (!getGameCurrentStage) return;
+
+        setGameStage(prev => (prev !== getGameCurrentStage ? getGameCurrentStage : prev));
+    }, [getGameCurrentStage, gameStage]);
 
     useEffect(() => {
+        if (getGameCurrentRound === undefined) return
+
+        const roundNum = Number(getGameCurrentRound)
         if (playerRole === 'creator') {
-            setIsPlayerTurn(Number(getGameCurrentRound) % 2 === 1)
+            setIsPlayerTurn(roundNum % 2 === 1)
         } else if (playerRole === 'opponent') {
-            setIsPlayerTurn(Number(getGameCurrentRound) % 2 === 0)
+            setIsPlayerTurn(roundNum % 2 === 0)
         }
     }, [getGameCurrentRound, playerRole])
 
@@ -436,7 +442,7 @@ export default function GameContainer() {
                 setPlayerRole('opponent')
             }
         }
-    }, [address, creatorAddress, opponentAddress])
+    }, [address, creatorAddress, opponentAddress, playerRole])
 
     useEffect(() => {
         if (creatorSubmittedGuesses && creatorSubmittedGuesses.length > 0) {
@@ -522,7 +528,7 @@ export default function GameContainer() {
                     .join('')
             )
         }
-    }, [revealSolutionEvent, opponentRevealSolutionEvent, address])
+    }, [revealSolutionEvent, opponentRevealSolutionEvent])
 
     useEffect(() => {
         if (typeof address === 'undefined') return // Wallet not connected yet
@@ -619,8 +625,8 @@ export default function GameContainer() {
     return (
         <>
             <GameBoard
-                guesses={playerRole === 'creator' ? creatorGuesses : oppoentGuesses}
-                opponentGuesses={playerRole === 'creator' ? oppoentGuesses : creatorGuesses}
+                guesses={playerRole === 'creator' ? creatorGuesses : opponentGuesses}
+                opponentGuesses={playerRole === 'creator' ? opponentGuesses : creatorGuesses}
                 hb={playerRole === 'creator' ? opponentHB : creatorHB}
                 opponentHb={playerRole === 'creator' ? creatorHB : opponentHB}
                 isPlayerTurn={isPlayerTurn}

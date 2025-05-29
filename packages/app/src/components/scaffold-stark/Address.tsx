@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // @ts-nocheck
 import { useEffect, useMemo, useState } from 'react'
 import { Address as AddressType } from '@starknet-react/chains'

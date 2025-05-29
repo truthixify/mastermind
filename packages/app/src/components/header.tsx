@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // @ts-nocheck
 import { Button } from './ui/button'
 import { Moon, Sun, Wallet } from 'lucide-react'

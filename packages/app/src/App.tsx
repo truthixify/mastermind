@@ -35,7 +35,7 @@ function App() {
 
     useEffect(() => {
         setPlayerName(feltToString(getPlayerName))
-    }, [getPlayerName, setPlayerName])
+    }, [getPlayerName])
 
     // Initialize WASM on component mount
     useEffect(() => {

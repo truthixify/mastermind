@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useCallback } from 'react'
 import { useTargetNetwork } from './useTargetNetwork'
 import { useDeployedContractInfo, useTransactor } from '../../hooks/scaffold-stark'
@@ -7,7 +8,8 @@ import {
     ExtractAbiFunctionNamesScaffold,
     UseScaffoldWriteConfig
 } from '../../utils/scaffold-stark/contract'
-import { useNetwork, Abi } from '@starknet-react/core'
+import { useSendTransaction, useNetwork, Abi } from '@starknet-react/core'
+import { notification } from '../../utils/scaffold-stark'
 import { Contract as StarknetJsContract } from 'starknet'
 
 export const useScaffoldWriteContract = <

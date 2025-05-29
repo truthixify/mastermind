@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // @ts-nocheck
 import { useTheme } from 'next-themes'
 import { ArrowsRightLeftIcon } from '@heroicons/react/24/solid'

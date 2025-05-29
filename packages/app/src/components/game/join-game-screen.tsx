@@ -14,6 +14,7 @@ interface JoinGameScreenProps {
 }
 
 export default function JoinGameScreen({ isJoiningGame, onJoinGame, onBack }: JoinGameScreenProps) {
+    console.log('lol')
     const [gameId, setGameId] = useState<string | null>(null)
     const { toast } = useToast()
 

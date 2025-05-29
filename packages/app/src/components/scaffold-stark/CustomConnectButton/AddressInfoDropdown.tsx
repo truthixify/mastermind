@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // @ts-nocheck
 import { useEffect, useRef, useState } from 'react'
 import { NetworkOptions } from './NetworkOptions'

@@ -1,5 +1,4 @@
 // @refresh reset
-/* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { AddressInfoDropdown } from './AddressInfoDropdown'
 import { WrongNetworkDropdown } from './WrongNetworkDropdown'

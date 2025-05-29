@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // @ts-nocheck
 import { Connector, useConnect } from '@starknet-react/core'
 import { useState } from 'react'
