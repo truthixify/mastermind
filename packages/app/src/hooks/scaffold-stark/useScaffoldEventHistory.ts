@@ -154,14 +154,12 @@ export const useScaffoldEventHistory = <
 
     useEffect(() => {
         readEvents(fromBlock).then()
-         
     }, [fromBlock, enabled])
 
     useEffect(() => {
         if (!deployedContractLoading) {
             readEvents().then()
         }
-         
     }, [
         provider,
         contractName,
@@ -169,7 +167,7 @@ export const useScaffoldEventHistory = <
         deployedContractLoading,
         deployedContractData?.address,
         deployedContractData,
-         
+
         JSON.stringify(filters, replacer),
         blockData,
         transactionData,

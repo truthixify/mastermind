@@ -48,7 +48,6 @@ export const CustomConnectButton = () => {
         return () => {
             connector?.off('change', handleChainChange)
         }
-         
     }, [connector])
 
     if (status === 'disconnected' || accountChainId === 0n) return <ConnectModal />

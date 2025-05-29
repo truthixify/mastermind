@@ -21,7 +21,7 @@ export const useScaffoldMultiWriteContract = <
     TContractName extends ContractName,
     TFunctionName extends ExtractAbiFunctionNamesScaffold<ContractAbi<TContractName>, 'external'>
 >({
-    calls,
+    calls
     // options
 }: {
     calls: Array<UseScaffoldWriteConfig<TAbi, TContractName, TFunctionName> | Call>

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { Address as AddressType } from '@starknet-react/chains'
 import { devnet } from '@starknet-react/chains'

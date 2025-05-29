@@ -55,7 +55,6 @@ export const Faucet = () => {
             }
         }
         checkChain().then()
-         
     }, [])
 
     const sendSTRK = async () => {

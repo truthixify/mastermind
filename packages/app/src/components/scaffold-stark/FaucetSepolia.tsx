@@ -60,7 +60,6 @@ export const FaucetSepolia = () => {
             }
         }
         checkChain().then()
-         
     }, [])
 
     const { resolvedTheme } = useTheme()
