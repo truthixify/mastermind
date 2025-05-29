@@ -11,10 +11,6 @@ import scaffoldConfig from '../../../scaffold.config'
 import { SessionPolicies } from '@cartridge/controller'
 
 // Standard contract addresses
-export const ETH_CONTRACT_ADDRESS =
-    '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7'
-export const STRK_CONTRACT_ADDRESS =
-    '0x04718f5a0Fc34cC1AF16A1cdee98fFB20C31f5cD61D6Ab07201858f4287c938D'
 export const MASTERMIND_CONTRACT_ADDRESS =
     '0x6211bd22c8ab0b8131bc8ae4875de958c1da492365bfddac4af8a8d0f5a1dfb'
 
@@ -56,18 +52,6 @@ const chains = [
 // Session policies for contracts
 const policies: SessionPolicies = {
     contracts: {
-        [ETH_CONTRACT_ADDRESS]: {
-            methods: [
-                { name: 'approve', entrypoint: 'approve' },
-                { name: 'transfer', entrypoint: 'transfer' }
-            ]
-        },
-        [STRK_CONTRACT_ADDRESS]: {
-            methods: [
-                { name: 'approve', entrypoint: 'approve' },
-                { name: 'transfer', entrypoint: 'transfer' }
-            ]
-        },
         [MASTERMIND_CONTRACT_ADDRESS]: {
             methods: [
                 { name: 'register_player', entrypoint: 'register_player' },

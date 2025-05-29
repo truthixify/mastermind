@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Plus, Users, Clock, Trophy, RefreshCw, HelpCircle } from 'lucide-react'
+import { Plus, Users, Clock, Trophy, RefreshCw, HelpCircle, Loader2 } from 'lucide-react'
 import { useToast } from '../../hooks/use-toast'
 import HelpModal from './help-modal'
 import { useScaffoldReadContract } from '../../hooks/scaffold-stark/useScaffoldReadContract'
@@ -8,6 +8,7 @@ import AvailableGame from './available-game'
 import ActiveGame from './active-game'
 import { useAccount } from '../../hooks/useAccount'
 import { Button } from '../ui/button'
+import { GameCreationStatus } from './game-container'
 
 interface GameDashboardProps {
     onCreateGame: () => void
@@ -15,8 +16,7 @@ interface GameDashboardProps {
     onContinueGame: (gameId: number) => void
     onJoinAvalaibleGame: () => void
     onViewStats: () => void
-    isCreatingGame?: boolean
-    isPlayerTurn: boolean
+    gameCreationStatus: GameCreationStatus
 }
 
 export default function GameDashboard({
@@ -25,8 +25,7 @@ export default function GameDashboard({
     onContinueGame,
     onJoinAvalaibleGame,
     onViewStats,
-    isCreatingGame,
-    isPlayerTurn
+    gameCreationStatus
 }: GameDashboardProps) {
     const [activeTab, setActiveTab] = useState('active')
     const [isLoading, setIsLoading] = useState(false)
@@ -59,10 +58,6 @@ export default function GameDashboard({
         setAvailableGameIds(getAvailableGameIds)
 
         setTimeout(() => {
-            toast({
-                title: 'Games refreshed',
-                description: 'Game list has been updated'
-            })
             setIsLoading(false)
         }, 1000)
     }
@@ -79,11 +74,24 @@ export default function GameDashboard({
                 <Button
                     onClick={onCreateGame}
                     className="retro-button retro-button-primary flex items-center gap-2 justify-center"
-                    size={'xl'}
-                    disabled={isCreatingGame}
+                    size="xl"
+                    disabled={
+                        gameCreationStatus === 'creating' || gameCreationStatus === 'waiting_event'
+                    }
                 >
-                    <Plus className="h-5 w-5" />
-                    {isCreatingGame ? 'Creating Game...' : 'Create Game'}
+                    {gameCreationStatus === 'creating' && (
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    )}
+                    {gameCreationStatus !== 'creating' && <Plus className="h-5 w-5" />}
+                    {
+                        {
+                            creating: 'Creating Game...',
+                            waiting_event: 'Waiting for Game ID...',
+                            idle: 'Create Game',
+                            error: 'Try Again',
+                            success: 'Create Game'
+                        }[gameCreationStatus]
+                    }
                 </Button>
                 <Button
                     onClick={onJoinGame}
@@ -150,12 +158,7 @@ export default function GameDashboard({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                         {activeGameIds && activeGameIds.length > 0 ? (
                             activeGameIds.map(id => (
-                                <ActiveGame
-                                    key={id}
-                                    id={id}
-                                    onContinueGame={onContinueGame}
-                                    isPlayerTurn={isPlayerTurn}
-                                />
+                                <ActiveGame key={id} id={id} onContinueGame={onContinueGame} />
                             ))
                         ) : (
                             <div className="col-span-2 text-center py-8 text-gray-500 dark:text-gray-400">

@@ -32,6 +32,8 @@ export type GameState =
     | 'reveal'
     | 'stats'
 
+export type GameCreationStatus = 'idle' | 'creating' | 'waiting_event' | 'success' | 'error'
+
 export default function GameContainer() {
     const isMobile = useMobile()
     const [gameState, setGameState] = useState<GameState>('dashboard')
@@ -52,9 +54,14 @@ export default function GameContainer() {
     const [opponentRevealedSolution, setOpponentRevealedSolution] = useState<string>()
     const [isRevealed, setIsRevealed] = useState(false)
     const [awaitingGameCreateEvent, setAwaitingGameCreateEvent] = useState(false)
-    const [isCreatingGame, setIsCreatingGame] = useState(false)
+    const [isJoiningGame, setIsJoiningGame] = useState(false)
+    const [playerRole, setPlayerRole] = useState<'creator' | 'opponent' | null>(null)
+    const [gameCreationStatus, setGameCreationStatus] = useState<GameCreationStatus>('idle')
 
     const { getGameData } = useGameStorage('game-data', gameId)
+    const { address } = useAccount()
+
+    const { data: blockNumber } = useBlockNumber()
 
     const { sendAsync: createGame } = useScaffoldWriteContract({
         contractName: 'Mastermind',
@@ -63,17 +70,12 @@ export default function GameContainer() {
 
     const { sendAsync: joinGame } = useScaffoldWriteContract({
         contractName: 'Mastermind',
-        functionName: 'join_game',
-        args: [gameId]
+        functionName: 'join_game'
     })
-
-    const solution = getGameData(Number(gameId))?.solution
-    const salt = getGameData(Number(gameId))?.salt
 
     const { sendAsync: revealSolution } = useScaffoldWriteContract({
         contractName: 'Mastermind',
-        functionName: 'reveal_solution',
-        args: [gameId, solution, BigInt(salt || '0')]
+        functionName: 'reveal_solution'
     })
 
     const { data: getGameCurrentStage } = useScaffoldReadContract({
@@ -130,17 +132,14 @@ export default function GameContainer() {
         args: [gameId]
     })
 
-    const { address } = useAccount()
-
-    const [playerRole, setPlayerRole] = useState<'creator' | 'opponent' | null>(null)
-
-    const { data: blockNumber } = useBlockNumber()
-
     const { data: createEvent } = useScaffoldEventHistory({
         contractName: 'Mastermind',
         eventName: 'mastermind::Mastermind::InitializeGame',
         fromBlock: blockNumber ? (blockNumber > 50n ? BigInt(blockNumber - 50) : 0n) : 0n,
-        watch: true
+        watch: true,
+        filters: {
+            account: address
+        }
     })
 
     const { data: gameFinishEvent } = useScaffoldEventHistory({
@@ -194,13 +193,13 @@ export default function GameContainer() {
     // Create a new multiplayer game
     const createNewGame = async () => {
         resetGameState()
-        setIsCreatingGame(true)
+        setGameCreationStatus('creating')
 
         try {
             const res = await createGame()
-            console.log('Creating new game...')
 
             if (!res) {
+                setGameCreationStatus('error')
                 toast({
                     title: 'Game Creation Failed',
                     description: 'Failed to create a new game. Please try again.',
@@ -209,40 +208,50 @@ export default function GameContainer() {
 
                 return
             }
-            setAwaitingGameCreateEvent(true)
+
+            // Wait for event to confirm game creation
+            setGameCreationStatus('waiting_event')
         } catch (error: any) {
+            setGameCreationStatus('error')
             toast({
                 title: 'Game Creation Error',
-                description: error,
+                description: error || 'An unexpected error occurred.',
                 variant: 'destructive'
             })
-        } finally {
-            setIsCreatingGame(false)
         }
     }
 
     // Join an existing multiplayer game
     const joinExistingGame = async (gameId: number) => {
         resetGameState()
+        setIsJoiningGame(true)
 
         try {
             setGameId(gameId)
-            const res = await joinGame()
+
+            const res = await joinGame({
+                args: [gameId]
+            })
 
             if (res) {
                 toast({
                     title: 'Joining Game',
-                    description: `Joining game #${gameId}`
+                    description: `Successfully joined game #${gameId}`
                 })
                 setGameState('commit')
                 setGameStage(getGameCurrentStage)
+            } else {
+                throw new Error('Failed to join game')
             }
         } catch (error: any) {
+            console.error('Join Game Error:', error)
             toast({
                 title: 'Join Game Error',
-                description: error,
+                description: error?.message || String(error),
                 variant: 'destructive'
             })
+        } finally {
+            setIsJoiningGame(false)
         }
     }
 
@@ -270,6 +279,8 @@ export default function GameContainer() {
 
     // Start the multiplayer game when both players are ready
     const startMultiplayerGame = () => {
+        resetGameState()
+
         if (gameStage?.activeVariant() === 'Playing') {
             setGameState('playing')
         }
@@ -281,35 +292,49 @@ export default function GameContainer() {
     }
 
     const onRevealSolution = async () => {
-        if (solution && !solution.length) {
-            toast({
-                title: 'Unable to Reveal',
-                description: "The solution couldn't be loaded. Please try again.",
-                variant: 'destructive'
-            })
-            return
-        }
+        try {
+            const solution = getGameData(Number(gameId))?.solution
+            const salt = getGameData(Number(gameId))?.salt
 
-        if (!salt || salt === '0') {
-            toast({
-                title: 'Unable to Reveal',
-                description: "The salt couldn't be loaded. Please try again.",
-                variant: 'destructive'
-            })
-            return
-        }
+            if (!solution || !solution.length) {
+                toast({
+                    title: 'Unable to Reveal',
+                    description: "The solution couldn't be loaded. Please try again.",
+                    variant: 'destructive'
+                })
+                return
+            }
 
-        const res = await revealSolution()
-        if (res) {
-            toast({
-                title: 'Solution Revealed',
-                description: 'Your solution has been revealed successfully.'
+            if (!salt || salt === '0') {
+                toast({
+                    title: 'Unable to Reveal',
+                    description: "The salt couldn't be loaded. Please try again.",
+                    variant: 'destructive'
+                })
+                return
+            }
+
+            const res = await revealSolution({
+                args: [gameId, solution, BigInt(salt)]
             })
-            setIsRevealed(true)
-        } else {
+
+            if (res) {
+                toast({
+                    title: 'Solution Revealed',
+                    description: 'Your solution has been revealed successfully.'
+                })
+                setIsRevealed(true)
+            } else {
+                toast({
+                    title: 'Reveal Failed',
+                    description: 'Failed to reveal the solution. Please try again.',
+                    variant: 'destructive'
+                })
+            }
+        } catch (error: any) {
             toast({
-                title: 'Reveal Failed',
-                description: 'Failed to reveal the solution. Please try again.',
+                title: 'Reveal Error',
+                description: error?.message || 'An error occurred while revealing the solution.',
                 variant: 'destructive'
             })
         }
@@ -335,19 +360,20 @@ export default function GameContainer() {
     }
 
     useEffect(() => {
-        if (!awaitingGameCreateEvent || !createEvent || createEvent.length === 0) return
+        if (gameCreationStatus !== 'waiting_event' || !createEvent?.length) return
 
         const gameId = createEvent[0].parsedArgs.game_id
+
         setGameId(gameId)
         setGameStage(getGameCurrentStage)
         setGameState('commit')
-        setAwaitingGameCreateEvent(false)
+        setGameCreationStatus('success')
 
         toast({
             title: 'Game Created',
             description: `Created new game with ID: #${gameId}`
         })
-    }, [awaitingGameCreateEvent, createEvent])
+    }, [gameCreationStatus, createEvent])
 
     useEffect(() => {
         setGameStage(getGameCurrentStage)
@@ -463,12 +489,11 @@ export default function GameContainer() {
             <>
                 <GameDashboard
                     onCreateGame={createNewGame}
-                    isCreatingGame={isCreatingGame}
+                    gameCreationStatus={gameCreationStatus}
                     onJoinGame={() => setGameState('join')}
                     onContinueGame={continueGame}
                     onJoinAvalaibleGame={onJoinAvalaibleGame}
                     onViewStats={onViewStats}
-                    isPlayerTurn={isPlayerTurn}
                 />
                 <Toaster />
             </>
@@ -479,6 +504,7 @@ export default function GameContainer() {
         return (
             <>
                 <JoinGameScreen
+                    isJoiningGame={isJoiningGame}
                     onJoinGame={joinExistingGame}
                     onBack={() => setGameState('dashboard')}
                 />
@@ -512,6 +538,10 @@ export default function GameContainer() {
         )
     }
 
+    if (gameState === 'stats') {
+        return <ViewStats playerAddress={address} onBack={() => setGameState('dashboard')} />
+    }
+
     if (gameStage?.activeVariant() === 'Reveal' || gameState === 'reveal') {
         return (
             <>
@@ -531,10 +561,6 @@ export default function GameContainer() {
                 <Toaster />
             </>
         )
-    }
-
-    if (gameState === 'stats') {
-        return <ViewStats playerAddress={address} onBack={() => setGameState('dashboard')} />
     }
 
     return (

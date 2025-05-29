@@ -1,9 +1,11 @@
-import { Users } from 'lucide-react'
+import { Loader2, Users } from 'lucide-react'
 import { useScaffoldReadContract } from '../../hooks/scaffold-stark/useScaffoldReadContract'
 import { useScaffoldWriteContract } from '../../hooks/scaffold-stark/useScaffoldWriteContract'
 import { useGameStore } from '../../stores/gameStore'
 import { feltToString } from '../../utils/utils'
 import { Button } from '../ui/button'
+import { useToast } from '../../hooks/use-toast'
+import { useState } from 'react'
 
 type AvailableGameProps = {
     id: number
@@ -12,6 +14,9 @@ type AvailableGameProps = {
 
 const AvailableGame = ({ id, onJoinAvalaibleGame }: AvailableGameProps) => {
     const { setGameId } = useGameStore()
+    const [isJoiningGame, setIsJoiningGame] = useState(false)
+    const { toast } = useToast()
+
     const { sendAsync: joinGame } = useScaffoldWriteContract({
         contractName: 'Mastermind',
         functionName: 'join_game',
@@ -31,11 +36,35 @@ const AvailableGame = ({ id, onJoinAvalaibleGame }: AvailableGameProps) => {
     })
 
     const handleJoinGame = async () => {
-        setGameId(id)
+        setIsJoiningGame(true)
 
-        const res = await joinGame()
+        try {
+            setGameId(id)
 
-        if (res) onJoinAvalaibleGame()
+            const res = await joinGame()
+
+            if (res) {
+                onJoinAvalaibleGame()
+                toast({
+                    title: 'Joined Game',
+                    description: `You successfully joined game #${id}`
+                })
+            } else {
+                toast({
+                    title: 'Join Failed',
+                    description: 'Unable to join the selected game. Please try again.',
+                    variant: 'destructive'
+                })
+            }
+        } catch (error: any) {
+            toast({
+                title: 'Join Game Error',
+                description: error?.message || 'An unexpected error occurred.',
+                variant: 'destructive'
+            })
+        } finally {
+            setIsJoiningGame(false)
+        }
     }
 
     return (
@@ -45,9 +74,12 @@ const AvailableGame = ({ id, onJoinAvalaibleGame }: AvailableGameProps) => {
             <Button
                 onClick={handleJoinGame}
                 className="retro-button retro-button-secondary w-full flex items-center justify-center"
+                variant={'secondary'}
+                disabled={isJoiningGame}
             >
-                Join Game
-                <Users className="ml-2 h-4 w-4 inline" />
+                {isJoiningGame && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
+                {isJoiningGame ? 'Joining...' : 'Join Game'}
+                {!isJoiningGame && <Users className="ml-2 h-4 w-4 inline" />}
             </Button>
         </div>
     )

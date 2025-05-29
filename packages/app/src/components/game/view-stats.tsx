@@ -62,7 +62,9 @@ export default function ViewStats({ playerAddress, onBack }: ViewStatsProps) {
         // Calculate total games and win percentage
         const totalGames = gamesWon + gamesLost + gamesTied
         setTotalGames(totalGames)
-        setWinPercentage(totalGames > 0 ? ((gamesWon / totalGames) * 100).toFixed(1) : '0.0')
+        setWinPercentage(
+            totalGames > 0 ? (((gamesWon + 0.5 * gamesTied) / totalGames) * 100).toFixed(1) : '0.0'
+        )
     }, [playerAddress, getGamesWon, getGamesLost, getGamesTied])
 
     // Animation variants for the stats cards

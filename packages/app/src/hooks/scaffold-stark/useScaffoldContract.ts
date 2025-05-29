@@ -1,6 +1,6 @@
 'use client'
-import { useDeployedContractInfo } from '../hooks/scaffold-stark'
-import { ContractName } from '../utils/scaffold-stark/contract'
+import { useDeployedContractInfo } from '../../hooks/scaffold-stark'
+import { ContractName } from '../../utils/scaffold-stark/contract'
 import { Contract, Abi } from 'starknet'
 import { useProvider, useAccount } from '@starknet-react/core'
 import { useMemo } from 'react'

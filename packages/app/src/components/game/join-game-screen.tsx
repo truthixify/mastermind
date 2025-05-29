@@ -4,37 +4,31 @@ import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../ui/card'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Loader2 } from 'lucide-react'
 import { useToast } from '../../hooks/use-toast'
-import { useGameStore } from '../../stores/gameStore'
 
 interface JoinGameScreenProps {
+    isJoiningGame: boolean
     onJoinGame: (gameId: number) => void
     onBack: () => void
 }
 
-export default function JoinGameScreen({ onJoinGame, onBack }: JoinGameScreenProps) {
-    const [isLoading, setIsLoading] = useState(false)
+export default function JoinGameScreen({ isJoiningGame, onJoinGame, onBack }: JoinGameScreenProps) {
+    const [gameId, setGameId] = useState<string | null>(null)
     const { toast } = useToast()
-    const { gameId, setGameId } = useGameStore()
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
 
-        if (gameId === undefined) {
-            toast({
-                title: 'Game ID required',
-                description: 'Please enter a valid game ID',
+        if (!gameId || isNaN(Number(gameId)) || Number(gameId) <= 0) {
+            return toast({
+                title: 'Invalid Game ID',
+                description: 'Please enter a valid game ID.',
                 variant: 'destructive'
             })
-            return
         }
 
-        setIsLoading(true)
-
-        onJoinGame(gameId)
-
-        setIsLoading(false)
+        onJoinGame(Number(gameId))
     }
 
     return (
@@ -52,13 +46,19 @@ export default function JoinGameScreen({ onJoinGame, onBack }: JoinGameScreenPro
                             <div className="text-sm font-medium">Game ID</div>
                             <Input
                                 placeholder="Enter game ID"
-                                value={gameId}
-                                onChange={e => setGameId(Number(e.target.value))}
+                                value={gameId ?? ''}
+                                onChange={e => setGameId(e.target.value)}
                                 className="font-mono"
                             />
                         </div>
-                        <Button type="submit" className="w-full" size={'lg'} disabled={isLoading}>
-                            {isLoading ? 'Joining...' : 'Join Game'}
+                        <Button
+                            type="submit"
+                            className="w-full"
+                            size={'lg'}
+                            disabled={isJoiningGame}
+                        >
+                            {isJoiningGame && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
+                            {isJoiningGame ? 'Joining...' : 'Join Game'}
                         </Button>
                     </form>
                 </CardContent>

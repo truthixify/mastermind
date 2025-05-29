@@ -1,14 +1,20 @@
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, Loader2 } from 'lucide-react'
 import { useScaffoldReadContract } from '../../hooks/scaffold-stark/useScaffoldReadContract'
 import { feltToString } from '../../utils/utils'
+import { useEffect, useState } from 'react'
+import { useAccount } from '../../hooks/useAccount'
+import { addAddressPadding } from 'starknet'
+import { feltToHex } from '../../utils/scaffold-stark/common'
 
 type ActiveGameProps = {
     id: number
     onContinueGame: (gameId: number) => void
-    isPlayerTurn: boolean
 }
 
-const ActiveGame = ({ id, onContinueGame, isPlayerTurn }: ActiveGameProps) => {
+const ActiveGame = ({ id, onContinueGame }: ActiveGameProps) => {
+    const [isPlayerTurn, setIsPlayerTurn] = useState<boolean | null>(null)
+    const { address } = useAccount()
+
     const { data: opponentAddress } = useScaffoldReadContract({
         contractName: 'Mastermind',
         functionName: 'get_game_opponent_address',
@@ -39,6 +45,14 @@ const ActiveGame = ({ id, onContinueGame, isPlayerTurn }: ActiveGameProps) => {
         args: [id]
     })
 
+    useEffect(() => {
+        if (address === addAddressPadding(feltToHex(creatorAddress || 0n))) {
+            setIsPlayerTurn(Number(getGameCurrentRound) % 2 === 1)
+        } else if (address === addAddressPadding(feltToHex(opponentAddress || 0n))) {
+            setIsPlayerTurn(Number(getGameCurrentRound) % 2 === 0)
+        }
+    }, [getGameCurrentRound, creatorAddress, opponentAddress])
+
     return (
         <div
             key={id}
@@ -49,13 +63,24 @@ const ActiveGame = ({ id, onContinueGame, isPlayerTurn }: ActiveGameProps) => {
                 <span
                     className={`retro-badge ${isPlayerTurn ? 'retro-badge-success' : 'retro-badge-secondary'}`}
                 >
-                    {isPlayerTurn ? 'Your Turn' : 'Waiting'}
+                    {isPlayerTurn === null && '????'}
+                    {isPlayerTurn === true && 'Your Turn'}
+                    {isPlayerTurn === false && 'Waiting'}
                 </span>
             </div>
-            <p className="mb-2">
-                {feltToString(creatorName)} vs. {feltToString(opponentName)} • Round{' '}
-                {getGameCurrentRound}
-            </p>
+            {creatorName && opponentName && getGameCurrentRound ? (
+                <p className="flex justify-between mb-4">
+                    <span>
+                        {feltToString(creatorName)} vs. {feltToString(opponentName)}
+                    </span>
+                    <span>Round {getGameCurrentRound}</span>
+                </p>
+            ) : (
+                <p className="flex items-center mb-4">
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    Loading Game Details...
+                </p>
+            )}
             <button
                 onClick={() => onContinueGame(id)}
                 className={`retro-button ${isPlayerTurn ? 'retro-button-primary' : 'retro-button-outline'} w-full flex items-center justify-center`}

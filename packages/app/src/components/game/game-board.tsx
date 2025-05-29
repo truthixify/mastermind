@@ -1,16 +1,14 @@
 import type React from 'react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowLeft, User, Users, Clock, Check, AlertCircle, Send } from 'lucide-react'
+import { ArrowLeft, User, Users, Clock, Check, AlertCircle, Send, Loader2 } from 'lucide-react'
 import { useToast } from '../../hooks/use-toast'
 import { useScaffoldWriteContract } from '../../hooks/scaffold-stark/useScaffoldWriteContract'
 import { useGameStore } from '../../stores/gameStore'
-import { BigNumberish } from 'starknet'
 import { generateProof } from '../../lib/generate-proof-utils'
 import vkUrl from '../../assets/vk.bin?url'
 import { useGameStorage } from '../../hooks/use-game-storage'
 import { useScaffoldReadContract } from '../../hooks/scaffold-stark/useScaffoldReadContract'
-import { extractKnownErrorMessage } from '../../lib/error'
 import { useDictionary } from '../../context/dictionary'
 
 interface GameBoardProps {
@@ -43,15 +41,11 @@ export default function GameBoard({
     const [activeTab, setActiveTab] = useState<TabType>('combined')
     const [inputGuess, setInputGuess] = useState('')
     const [isSubmittingGuess, setIsSubmittingGuess] = useState(false)
-    const [guess, setGuess] = useState<number[]>([])
     const [inputError, setInputError] = useState<string | null>(null)
     const [isProving, setIsProving] = useState<boolean>(false)
-    const [proof, setProof] = useState<BigNumberish[]>([])
     const { toast } = useToast()
     const { gameId } = useGameStore()
     const { getGameData } = useGameStorage('game-data', Number(gameId))
-    const [shouldSubmitGuess, setShouldSubmitGuess] = useState(false)
-    const [shouldSubmitProof, setShouldSubmitProof] = useState(false)
 
     const dict = useDictionary()
 
@@ -63,14 +57,12 @@ export default function GameBoard({
 
     const { sendAsync: submitGuess } = useScaffoldWriteContract({
         contractName: 'Mastermind',
-        functionName: 'submit_guess',
-        args: [gameId, guess]
+        functionName: 'submit_guess'
     })
 
     const { sendAsync: submitHBProof } = useScaffoldWriteContract({
         contractName: 'Mastermind',
-        functionName: 'submit_hit_and_blow_proof',
-        args: [gameId, proof]
+        functionName: 'submit_hit_and_blow_proof'
     })
 
     const { data: getGameSolutionHash } = useScaffoldReadContract({
@@ -121,16 +113,17 @@ export default function GameBoard({
         setIsSubmittingGuess(true)
         playSound('play')
 
+        // Check if it's the player's turn
         if (!isPlayerTurn) {
             toast({
                 title: 'Not your turn',
-                description: 'Please wait for your opponent to make their move',
+                description: 'Please wait for your opponent to make their move.',
                 variant: 'destructive'
             })
-            setIsSubmittingGuess(false)
-            return
+            return setIsSubmittingGuess(false)
         }
 
+        // Validate guess
         const error = validateGuess(inputGuess)
         if (error) {
             setInputError(error)
@@ -139,13 +132,31 @@ export default function GameBoard({
                 description: error,
                 variant: 'destructive'
             })
-            setIsSubmittingGuess(false)
-            return
+            return setIsSubmittingGuess(false)
         }
 
+        // Prepare guess for submission
         const guessArray = inputGuess.split('').map(letter => letter.charCodeAt(0))
-        setGuess(guessArray)
-        setShouldSubmitGuess(true)
+
+        try {
+            const res = await submitGuess({ args: [gameId, guessArray] })
+
+            if (res) {
+                setInputGuess('')
+                toast({
+                    title: 'Guess submitted',
+                    description: 'Your guess has been submitted successfully.'
+                })
+            }
+        } catch (err) {
+            toast({
+                title: 'Submission Error',
+                description: 'An error occurred while submitting your guess.',
+                variant: 'destructive'
+            })
+        } finally {
+            setIsSubmittingGuess(false)
+        }
     }
 
     const handleSubmitHBProof = async (guess: string) => {
@@ -156,25 +167,46 @@ export default function GameBoard({
             const { hit, blow } = calculateHitsAndBlows(guess)
             const guessArray = guess.split('').map(letter => letter.charCodeAt(0))
 
+            const gameData = getGameData(gameId as number)
+
+            if (!gameData?.solution || !gameData?.salt) {
+                throw new Error('Missing solution or salt data.')
+            }
+
             const input = {
                 guess: guessArray,
-                solution: getGameData(gameId as number)?.solution,
-                salt: getGameData(gameId as number)?.salt,
+                solution: gameData.solution,
+                salt: gameData.salt,
                 solution_hash: getGameSolutionHash.toString(),
                 num_hit: hit,
                 num_blow: blow
             }
 
             const { callData } = await generateProof(input, vkUrl)
-            setProof(callData)
-            setShouldSubmitProof(true)
+
+            const res = await submitHBProof({
+                args: [gameId, callData]
+            })
+
+            if (res) {
+                toast({
+                    title: 'Proof submitted',
+                    description: 'Your hit and blow proof has been submitted successfully.'
+                })
+            } else {
+                toast({
+                    title: 'Error submitting proof',
+                    description: 'Failed to submit your hit and blow proof.',
+                    variant: 'destructive'
+                })
+            }
         } catch (error: any) {
             toast({
-                title: 'Error submitting proof',
-                description:
-                    getGameData(gameId as number)?.solution || 'Unexpected error occurred.',
+                title: 'Submission Error',
+                description: error || 'An unexpected error occurred.',
                 variant: 'destructive'
             })
+        } finally {
             setIsProving(false)
         }
     }
@@ -213,54 +245,6 @@ export default function GameBoard({
         return { hit, blow }
     }
 
-    useEffect(() => {
-        const submit = async () => {
-            if (!shouldSubmitGuess || !guess) return
-
-            const res = await submitGuess()
-
-            if (res) {
-                setInputGuess('')
-                setGuess([])
-                toast({
-                    title: 'Guess submitted',
-                    description: 'Your guess has been submitted successfully.'
-                })
-            }
-
-            setShouldSubmitGuess(false)
-            setIsSubmittingGuess(false)
-        }
-
-        submit()
-    }, [guess, shouldSubmitGuess])
-
-    useEffect(() => {
-        const submit = async () => {
-            if (!shouldSubmitProof || !proof) return
-
-            const res = await submitHBProof()
-
-            if (res) {
-                toast({
-                    title: 'Proof submitted',
-                    description: 'Your hit and blow proof has been submitted successfully.'
-                })
-            } else {
-                toast({
-                    title: 'Error submitting proof',
-                    description: 'Failed to submit your hit and blow proof.',
-                    variant: 'destructive'
-                })
-            }
-
-            setShouldSubmitProof(false)
-            setIsProving(false)
-        }
-
-        submit()
-    }, [proof, shouldSubmitProof])
-
     // Render a single guess with hit/blow counts
     const renderGuess = (
         guess: string,
@@ -295,7 +279,10 @@ export default function GameBoard({
                         disabled={isProving || !isPlayerTurn}
                     >
                         {isProving ? (
-                            <span className="flex items-center">Proving ...</span>
+                            <span className="flex items-center">
+                                <Loader2 className="mr-2 h-3 w-3 animate-spin" />
+                                Proving
+                            </span>
                         ) : (
                             <span className="flex items-center">
                                 <Check className="mr-2 h-3 w-3" />
@@ -420,7 +407,7 @@ export default function GameBoard({
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 0.2, duration: 0.3 }}
             >
-                <Clock className="inline-block mr-2 h-4 w-4" /> Round {round} of {maxAttempts}
+                <Clock className="inline-block mr-2 h-4 w-4" /> Round {round - 1} of {maxAttempts}
             </motion.div>
 
             <motion.div
@@ -526,10 +513,17 @@ export default function GameBoard({
                                     type="submit"
                                     className="retro-button retro-button-primary ml-2"
                                     disabled={
-                                        !isPlayerTurn || !!inputError || inputGuess.length !== 4
+                                        !isPlayerTurn ||
+                                        !!inputError ||
+                                        inputGuess.length !== 4 ||
+                                        isSubmittingGuess
                                     }
                                 >
-                                    <Send className="h-5 w-5" />
+                                    {isSubmittingGuess ? (
+                                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                                    ) : (
+                                        <Send className="h-5 w-5" />
+                                    )}
                                 </button>
                             </div>
 

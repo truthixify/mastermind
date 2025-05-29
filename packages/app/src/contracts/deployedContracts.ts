@@ -6,7 +6,7 @@
 const deployedContracts = {
     devnet: {
         Mastermind: {
-            address: '0x41d644023966c00b00bdc2c222f58e2ea6a2d9192fd27eebd75bbcea0d6e41',
+            address: '0x58239e81b33c894f0d521edc8a54d9699b3e3bc019b18acfc1b637f5fac7051',
             abi: [
                 {
                     type: 'impl',

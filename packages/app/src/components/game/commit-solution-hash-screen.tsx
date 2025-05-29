@@ -1,10 +1,10 @@
 import type React from 'react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../ui/card'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 import { useToast } from '../../hooks/use-toast'
-import { AlertCircle, ArrowLeft } from 'lucide-react'
+import { AlertCircle, ArrowLeft, Loader2 } from 'lucide-react'
 import { BigNumberish, uint256, Uint256 } from 'starknet'
 import { MaxUint256, randomBytes } from 'ethers'
 import { ReloadIcon } from '@radix-ui/react-icons'
@@ -22,8 +22,8 @@ interface commitSolutionHashProps {
 
 const randomBigInt = (num_bytes: number = 31) => {
     const randomByte = randomBytes(num_bytes)
-    let hexString = Buffer.from(randomByte).toString('hex')
-    let randomU256: BigNumberish = BigInt('0x' + hexString) % MaxUint256
+    const hexString = Buffer.from(randomByte).toString('hex')
+    const randomU256: BigNumberish = BigInt('0x' + hexString) % MaxUint256
 
     return randomU256
 }
@@ -35,7 +35,7 @@ export default function commitSolutionHash({
 }: commitSolutionHashProps) {
     const [secretWord, setSecretWord] = useState('')
     const [salt, setSalt] = useState<Uint256>(() => uint256.bnToUint256(randomBigInt()))
-    const [solutionHash, setSolutionHash] = useState<BigNumberish>()
+    const [isCommitting, setIsCommitting] = useState(false)
     const { toast } = useToast()
 
     const { gameId } = useGameStore()
@@ -45,93 +45,88 @@ export default function commitSolutionHash({
 
     const { sendAsync: commitSolutionHash } = useScaffoldWriteContract({
         contractName: 'Mastermind',
-        functionName: 'commit_solution_hash',
-        args: [gameId, solutionHash]
+        functionName: 'commit_solution_hash'
     })
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        const word = secretWord.trim().toUpperCase()
 
-        // Validate word
-        if (word.length !== 4) {
-            toast({
+        const trimmedWord = secretWord.trim().toUpperCase()
+
+        // Validation
+        if (trimmedWord.length !== 4) {
+            return toast({
                 title: 'Invalid word',
                 description: 'Your secret word must be exactly 4 letters long.',
                 variant: 'destructive'
             })
-            return
         }
 
-        if (!dict.hasWord(word)) {
+        if (!dict.hasWord(trimmedWord)) {
             toast({
                 title: 'Invalid word',
                 description:
-                    'Your secret word must contain unique letters and must be in dictionary',
+                    'Your secret word must contain unique letters and be in the dictionary.',
                 variant: 'destructive'
             })
+
             return
         }
 
-        const solutionArray = word.split('').map(letter => letter.charCodeAt(0))
-        const prepSolution =
+        const solutionArray = trimmedWord.split('').map(letter => letter.charCodeAt(0))
+        const encodedSolution =
             solutionArray[0] +
             solutionArray[1] * 256 +
             solutionArray[2] * 256 * 256 +
             solutionArray[3] * 256 * 256 * 256
 
-        await initGaraga()
-        const poseidonHashRes = poseidonHashBN254(BigInt(prepSolution), uint256.uint256ToBN(salt))
+        setIsCommitting(true)
 
-        if (!poseidonHashRes) {
-            toast({
-                title: 'Invalid solution hash',
-                description: 'Solution hash is not generated. Please try again.',
-                variant: 'destructive'
-            })
-            return
-        }
+        try {
+            await initGaraga()
 
-        setSolutionHash(poseidonHashRes) // Trigger useEffect
-    }
+            const solutionHash = poseidonHashBN254(
+                BigInt(encodedSolution),
+                uint256.uint256ToBN(salt)
+            )
 
-    // Effect to handle commit when solutionHash is updated
-    useEffect(() => {
-        const commit = async () => {
-            if (!solutionHash) return
+            if (!solutionHash) {
+                throw new Error('Solution hash generation failed')
+            }
 
-            const res = await commitSolutionHash({
+            const success = await commitSolutionHash({
                 args: [gameId, solutionHash]
             })
 
-            if (res) {
-                if (gameId !== undefined) {
-                    setGameData({
-                        solution: secretWord
-                            .trim()
-                            .toUpperCase()
-                            .split('')
-                            .map(letter => letter.charCodeAt(0)),
-                        salt: uint256.uint256ToBN(salt).toString(),
-                        gameId: Number(gameId)
-                    })
-                }
-                onCommit()
-                toast({
-                    title: 'Secret word committed',
-                    description: 'Your secret word has been successfully committed.'
-                })
-            } else {
-                toast({
-                    title: 'Commit failed',
-                    description: 'Failed to commit your secret word. Please try again.',
-                    variant: 'destructive'
+            if (!success) {
+                throw new Error('Contract commit failed')
+            }
+
+            if (gameId !== undefined) {
+                setGameData({
+                    solution: solutionArray,
+                    salt: uint256.uint256ToBN(salt).toString(),
+                    gameId: Number(gameId)
                 })
             }
-        }
 
-        commit()
-    }, [solutionHash])
+            onCommit()
+
+            toast({
+                title: 'Secret word committed',
+                description: 'Your secret word has been successfully committed.'
+            })
+        } catch (err) {
+            console.error('Commit error:', err)
+            toast({
+                title: 'Commit failed',
+                description: 'Something went wrong during the commit. Please try again.',
+                variant: 'destructive'
+            })
+        } finally {
+            setIsCommitting(false)
+        }
+    }
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen p-4">
@@ -177,8 +172,14 @@ export default function commitSolutionHash({
                                 </span>
                             </div>
                         </div>
-                        <Button type="submit" className="w-full" size={'lg'}>
-                            Confirm Secret Word
+                        <Button
+                            type="submit"
+                            className="w-full"
+                            size={'lg'}
+                            disabled={isCommitting}
+                        >
+                            {isCommitting && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
+                            {isCommitting ? 'Committing...' : 'Commit Secret Word'}
                         </Button>
                     </form>
                 </CardContent>
