@@ -51,7 +51,7 @@ const ActiveGame = ({ id, onContinueGame }: ActiveGameProps) => {
         } else if (address === addAddressPadding(feltToHex(opponentAddress || 0n))) {
             setIsPlayerTurn(Number(getGameCurrentRound) % 2 === 0)
         }
-    }, [getGameCurrentRound, creatorAddress, opponentAddress])
+    }, [getGameCurrentRound, creatorAddress, opponentAddress, setIsPlayerTurn])
 
     return (
         <div

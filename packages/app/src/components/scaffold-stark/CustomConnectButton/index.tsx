@@ -40,7 +40,6 @@ export const CustomConnectButton = () => {
 
             getChainId()
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [account, status])
 
     useEffect(() => {

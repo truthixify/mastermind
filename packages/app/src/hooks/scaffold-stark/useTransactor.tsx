@@ -103,7 +103,7 @@ export const useTransactor = (_walletClient?: AccountInterface): UseTransactorRe
             return
         }
 
-        let notificationId = null
+        const notificationId = null
         let transactionHash: Awaited<InvokeFunctionResponse>['transaction_hash'] | undefined =
             undefined
         try {

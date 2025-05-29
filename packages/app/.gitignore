@@ -6,3 +6,4 @@ build
 accounts.json
 garaga-venv
 .yarn/**
+.vercel

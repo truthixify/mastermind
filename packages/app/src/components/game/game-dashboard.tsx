@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Plus, Users, Clock, Trophy, RefreshCw, HelpCircle, Loader2 } from 'lucide-react'
-import { useToast } from '../../hooks/use-toast'
 import HelpModal from './help-modal'
 import { useScaffoldReadContract } from '../../hooks/scaffold-stark/useScaffoldReadContract'
 import AvailableGame from './available-game'
@@ -28,11 +27,10 @@ export default function GameDashboard({
     gameCreationStatus
 }: GameDashboardProps) {
     const [activeTab, setActiveTab] = useState('active')
-    const [isLoading, setIsLoading] = useState(false)
+    const [isRefreshing, setIsRefreshing] = useState(false)
     const [activeGameIds, setActiveGameIds] = useState<number[]>([1])
     const [availableGameIds, setAvailableGameIds] = useState<number[]>([1])
     const [showHelp, setShowHelp] = useState(false)
-    const { toast } = useToast()
     const { address } = useAccount()
 
     const { data: getAvailableGameIds } = useScaffoldReadContract({
@@ -53,12 +51,12 @@ export default function GameDashboard({
     }, [getAvailableGameIds, getAvailableGameIds])
 
     const refreshGames = () => {
-        setIsLoading(true)
+        setIsRefreshing(true)
         setActiveGameIds(getActiveGameIds)
         setAvailableGameIds(getAvailableGameIds)
 
         setTimeout(() => {
-            setIsLoading(false)
+            setIsRefreshing(false)
         }, 1000)
     }
 
@@ -115,11 +113,11 @@ export default function GameDashboard({
                     onClick={refreshGames}
                     className="retro-button retro-button-outline flex items-center gap-2 justify-center"
                     size={'xl'}
-                    disabled={isLoading}
+                    disabled={isRefreshing}
                     variant={'ghost'}
                 >
-                    <RefreshCw className={`h-5 w-5 ${isLoading ? 'animate-spin' : ''}`} />
-                    Refresh Games
+                    <RefreshCw className={`h-5 w-5 ${isRefreshing ? 'animate-spin' : ''}`} />
+                    {isRefreshing ? 'Refreshing...' : 'Refresh Games'}
                 </Button>
             </motion.div>
 

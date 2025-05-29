@@ -2,21 +2,16 @@ import type React from 'react'
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { useToast } from '../../hooks/use-toast'
 import { Loader2 } from 'lucide-react'
-import { useScaffoldWriteContract } from '../../hooks/scaffold-stark/useScaffoldWriteContract'
 
-export default function PlayerRegistration() {
+interface GameBoardProps {
+    onRegister: (username: string) => void
+    isRegistering: boolean
+}
+
+export default function PlayerRegistration({ onRegister, isRegistering }: GameBoardProps) {
     const [username, setUsername] = useState('')
-    const [isLoading, setIsLoading] = useState(false)
     const [errors, setErrors] = useState<string[]>([])
-    const { toast } = useToast()
-
-    const { sendAsync: registerPlayer } = useScaffoldWriteContract({
-        contractName: 'Mastermind',
-        functionName: 'register_player',
-        args: [username]
-    })
 
     const validateUsername = (value: string): string[] => {
         const errors: string[] = []
@@ -47,27 +42,9 @@ export default function PlayerRegistration() {
         const validationErrors = validateUsername(username)
         setErrors(validationErrors)
 
-        if (validationErrors.length > 0) {
-            return
-        }
+        if (validationErrors.length > 0) return
 
-        setIsLoading(true)
-
-        try {
-            await registerPlayer()
-            toast({
-                title: 'Registration successful!',
-                description: `Welcome to Word Mastermind, ${username}!`
-            })
-        } catch (error) {
-            toast({
-                title: 'Registration failed',
-                description: 'There was an error registering your username. Please try again.',
-                variant: 'destructive'
-            })
-        } finally {
-            setIsLoading(false)
-        }
+        onRegister(username)
     }
 
     return (
@@ -97,7 +74,7 @@ export default function PlayerRegistration() {
                             }}
                             className="retro-input w-full input"
                             placeholder="Enter username"
-                            disabled={isLoading}
+                            disabled={isRegistering}
                         />
 
                         {errors.length > 0 && (
@@ -116,9 +93,9 @@ export default function PlayerRegistration() {
                     <button
                         type="submit"
                         className="retro-button retro-button-primary w-full py-3"
-                        disabled={isLoading}
+                        disabled={isRegistering}
                     >
-                        {isLoading ? (
+                        {isRegistering ? (
                             <>
                                 <Loader2 className="h-5 w-5 mr-2 animate-spin" />
                                 Registering...

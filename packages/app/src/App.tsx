@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import vkUrl from './assets/vk.bin?url'
 import initNoirC from '@noir-lang/noirc_abi'
 import initACVM from '@noir-lang/acvm_js'
@@ -8,7 +8,6 @@ import { useScaffoldReadContract } from './hooks/scaffold-stark/useScaffoldReadC
 import { useAccount } from './hooks/useAccount'
 import { usePlayerStore } from './stores/playerStore'
 import GameContainer from './components/game/game-container'
-import PlayerRegistration from './components/game/user-registration'
 import { feltToString } from './utils/utils'
 import { Buffer } from 'buffer'
 import { toast } from './hooks/use-toast'
@@ -35,14 +34,12 @@ function App() {
 
     useEffect(() => {
         setPlayerName(feltToString(getPlayerName))
-    }, [])
+    }, [getPlayerName, setPlayerName])
 
     // Initialize WASM on component mount
     useEffect(() => {
         const initWasm = async () => {
             try {
-                // This might have already been initialized in main.tsx,
-                // but we're adding it here as a fallback
                 if (typeof window !== 'undefined') {
                     await Promise.all([initACVM(fetch(acvm)), initNoirC(fetch(noirc))])
                     console.log('WASM initialization in App complete')
@@ -69,7 +66,7 @@ function App() {
         loadVk()
     }, [])
 
-    return <>{getPlayerName !== 0n ? <GameContainer /> : <PlayerRegistration />}</>
+    return <GameContainer />
 }
 
 export default App

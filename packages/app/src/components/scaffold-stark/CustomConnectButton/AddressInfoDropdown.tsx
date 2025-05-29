@@ -1,17 +1,5 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { NetworkOptions } from './NetworkOptions'
-import CopyToClipboard from 'react-copy-to-clipboard'
-import { createPortal } from 'react-dom'
-import {
-    ArrowLeftEndOnRectangleIcon,
-    ArrowTopRightOnSquareIcon,
-    ArrowsRightLeftIcon,
-    CheckCircleIcon,
-    ChevronDownIcon,
-    DocumentDuplicateIcon,
-    QrCodeIcon,
-    UserCircleIcon
-} from '@heroicons/react/24/outline'
 import { useLocalStorage } from 'usehooks-ts'
 import { BlockieAvatar, isENS } from '../../scaffold-stark'
 import { useOutsideClick } from '../../../hooks/scaffold-stark'
@@ -23,7 +11,6 @@ import { getStarknetPFPIfExists } from '../../../utils/profile'
 import { useScaffoldStarkProfile } from '../../../hooks/scaffold-stark/useScaffoldStarkProfile'
 import { useTheme } from 'next-themes'
 import { useScaffoldReadContract } from '../../../hooks/scaffold-stark/useScaffoldReadContract'
-import { usePlayerStore } from '../../../stores/playerStore'
 import { feltToString } from '../../../utils/utils'
 import {
     ArrowLeftFromLine,
@@ -31,8 +18,6 @@ import {
     ChevronDown,
     Copy,
     ExternalLink,
-    Image,
-    QrCode,
     UserCircle,
     X
 } from 'lucide-react'
@@ -59,6 +44,7 @@ export const AddressInfoDropdown = ({
     const { chain } = useNetwork()
     const [showBurnerAccounts, setShowBurnerAccounts] = useState(false)
     const [selectingNetwork, setSelectingNetwork] = useState(false)
+    const [playerName, setPlayerName] = useState<string | null>(null)
     const { connectors, connect } = useConnect()
     const { resolvedTheme } = useTheme()
     const isDarkMode = resolvedTheme === 'dark'
@@ -99,11 +85,15 @@ export const AddressInfoDropdown = ({
         }
     }
 
-    const { data: playerName } = useScaffoldReadContract({
+    const { data: getPlayerName } = useScaffoldReadContract({
         contractName: 'Mastermind',
         functionName: 'get_player_name',
         args: [address]
     })
+
+    useEffect(() => {
+        setPlayerName(feltToString(getPlayerName))
+    }, [getPlayerName, setPlayerName])
 
     return (
         <>
@@ -127,7 +117,7 @@ export const AddressInfoDropdown = ({
                     </div>
                     <span className="ml-2 mr-2 text-sm font-bold">
                         {playerName
-                            ? feltToString(playerName)
+                            ? playerName
                             : isENS(displayName)
                               ? displayName
                               : profile?.name || address?.slice(0, 6) + '...' + address?.slice(-4)}

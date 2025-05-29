@@ -12,7 +12,7 @@ import { SessionPolicies } from '@cartridge/controller'
 
 // Standard contract addresses
 export const MASTERMIND_CONTRACT_ADDRESS =
-    '0x6211bd22c8ab0b8131bc8ae4875de958c1da492365bfddac4af8a8d0f5a1dfb'
+    '0x56fbc5a282631b8e0f2f04b4affbfef9074de9dedc5e18f10f338da56efcc94'
 
 // Function to check for devnet networks
 const containsDevnet = (networks: readonly Chain[]) => {

@@ -13,23 +13,22 @@ export type ScaffoldConfig = {
 }
 
 const scaffoldConfig = {
-    targetNetworks: [chains.devnet],
+    targetNetworks: [chains.sepolia],
     // Only show the Burner Wallet when running on devnet
     onlyLocalBurnerWallet: false,
     rpcProviderUrl: {
-        devnet: 'http://127.0.0.1:5050',
-        // process.env.NEXT_PUBLIC_DEVNET_PROVIDER_URL ||
-        // process.env.NEXT_PUBLIC_PROVIDER_URL ||
-        // "",
+        devnet:
+            import.meta.env.NEXT_PUBLIC_DEVNET_PROVIDER_URL ||
+            import.meta.env.NEXT_PUBLIC_PROVIDER_URL ||
+            '',
         sepolia:
-            'https://starknet-sepolia.blastapi.io/64168c77-3fa5-4e1e-9fe4-41675d212522/rpc/v0_8'
-        //   process.env.NEXT_PUBLIC_SEPOLIA_PROVIDER_URL ||
-        //   process.env.NEXT_PUBLIC_PROVIDER_URL ||
-        //   "",
-        // mainnet:
-        //   process.env.NEXT_PUBLIC_MAINNET_PROVIDER_URL ||
-        //   process.env.NEXT_PUBLIC_PROVIDER_URL ||
-        //   "",
+            import.meta.env.NEXT_PUBLIC_SEPOLIA_PROVIDER_URL ||
+            import.meta.env.NEXT_PUBLIC_PROVIDER_URL ||
+            '',
+        mainnet:
+            import.meta.env.NEXT_PUBLIC_MAINNET_PROVIDER_URL ||
+            import.meta.env.NEXT_PUBLIC_PROVIDER_URL ||
+            ''
     },
     // The interval at which your front-end polls the RPC servers for new data
     // it has no effect if you only target the local network (default is 30_000)

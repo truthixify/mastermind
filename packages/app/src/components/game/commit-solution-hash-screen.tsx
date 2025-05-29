@@ -16,7 +16,6 @@ import { useDictionary } from '../../context/dictionary'
 
 interface commitSolutionHashProps {
     onCommit: () => void
-    isMobile: boolean
     onBack: () => void
 }
 
@@ -28,11 +27,7 @@ const randomBigInt = (num_bytes: number = 31) => {
     return randomU256
 }
 
-export default function commitSolutionHash({
-    onCommit,
-    isMobile,
-    onBack
-}: commitSolutionHashProps) {
+export default function commitSolutionHash({ onCommit, onBack }: commitSolutionHashProps) {
     const [secretWord, setSecretWord] = useState('')
     const [salt, setSalt] = useState<Uint256>(() => uint256.bnToUint256(randomBigInt()))
     const [isCommitting, setIsCommitting] = useState(false)
@@ -130,7 +125,7 @@ export default function commitSolutionHash({
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen p-4">
-            <Card className={`${isMobile ? 'w-full' : 'w-full max-w-md'}`}>
+            <Card className={'w-full w-full max-w-md'}>
                 <CardHeader>
                     <CardTitle className="text-2xl text-center">Set Your Secret Word</CardTitle>
                     <CardDescription className="text-center">

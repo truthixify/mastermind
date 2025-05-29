@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import Link from 'next/link'
+import {Link} from 'react-router-dom'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { Address as AddressType } from '@starknet-react/chains'
 import { devnet } from '@starknet-react/chains'
@@ -35,7 +35,7 @@ export const ClassHash = ({ classHash, format, size = 'xs' }: ClasshashProps) =>
             </div>
             {targetNetwork.network === devnet.network ? (
                 <span className={`ml-1.5 text-${size} font-normal`}>
-                    <Link href={blockExplorerAddressLink}>{displayClasshash}</Link>
+                    <Link to={blockExplorerAddressLink}>{displayClasshash}</Link>
                 </span>
             ) : (
                 <a

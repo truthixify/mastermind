@@ -62,7 +62,7 @@ export enum ContractCodeStatus {
 export type GenericContract = {
     address: Address
     abi: Abi
-    classHash: String
+    classHash: string
 }
 
 export type GenericContractsDeclaration = {
@@ -590,7 +590,7 @@ const encodeParamsWithType = (
             }
 
             // encode to object (v3)
-            else if (!!isReadArgsParsing) {
+            else if (isReadArgsParsing) {
                 return Object.keys(param).reduce(
                     (acc, key) => {
                         const parsed = encodeParamsWithType(

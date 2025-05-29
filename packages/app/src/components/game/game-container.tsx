@@ -7,7 +7,6 @@ import JoinGameScreen from './join-game-screen'
 import CommitSolutionHash from './commit-solution-hash-screen'
 import { useToast } from '../../hooks/use-toast'
 import { Toaster } from '../ui/toaster'
-import { useMobile } from '../../hooks/use-mobile'
 import { useScaffoldWriteContract } from '../../hooks/scaffold-stark/useScaffoldWriteContract'
 import { useScaffoldReadContract } from '../../hooks/scaffold-stark/useScaffoldReadContract'
 import { useGameStore } from '../../stores/gameStore'
@@ -18,8 +17,10 @@ import { useAccount } from '../../hooks/useAccount'
 import { feltToHex } from '../../utils/scaffold-stark/common'
 import { useGameStorage } from '../../hooks/use-game-storage'
 import ViewStats from './view-stats'
+import PlayerRegistration from './user-registration'
 
 export type GameState =
+    | 'register'
     | 'dashboard'
     | 'create'
     | 'join'
@@ -35,7 +36,6 @@ export type GameState =
 export type GameCreationStatus = 'idle' | 'creating' | 'waiting_event' | 'success' | 'error'
 
 export default function GameContainer() {
-    const isMobile = useMobile()
     const [gameState, setGameState] = useState<GameState>('dashboard')
     const { gameId, setGameId } = useGameStore()
     const { toast } = useToast()
@@ -57,6 +57,7 @@ export default function GameContainer() {
     const [isJoiningGame, setIsJoiningGame] = useState(false)
     const [playerRole, setPlayerRole] = useState<'creator' | 'opponent' | null>(null)
     const [gameCreationStatus, setGameCreationStatus] = useState<GameCreationStatus>('idle')
+    const [isRegistering, setIsRegistering] = useState(false)
 
     const { getGameData } = useGameStorage('game-data', gameId)
     const { address } = useAccount()
@@ -76,6 +77,11 @@ export default function GameContainer() {
     const { sendAsync: revealSolution } = useScaffoldWriteContract({
         contractName: 'Mastermind',
         functionName: 'reveal_solution'
+    })
+
+    const { sendAsync: registerPlayer } = useScaffoldWriteContract({
+        contractName: 'Mastermind',
+        functionName: 'register_player'
     })
 
     const { data: getGameCurrentStage } = useScaffoldReadContract({
@@ -130,6 +136,12 @@ export default function GameContainer() {
         contractName: 'Mastermind',
         functionName: 'get_game_result',
         args: [gameId]
+    })
+
+    const { data: getPlayerName } = useScaffoldReadContract({
+        contractName: 'Mastermind',
+        functionName: 'get_player_name',
+        args: [address]
     })
 
     const { data: createEvent } = useScaffoldEventHistory({
@@ -188,6 +200,33 @@ export default function GameContainer() {
         setIsRevealed(false)
         setAwaitingGameCreateEvent(false)
         setGameStage(undefined)
+    }
+
+    // Register a new player
+    const onRegister = async (username: string) => {
+        setIsRegistering(true)
+        try {
+            await registerPlayer({
+                args: [username]
+            })
+
+            toast({
+                title: 'Registration successful!',
+                description: `Welcome to Word Mastermind, ${username}!`
+            })
+
+            setGameState('dashboard')
+        } catch (error: any) {
+            toast({
+                title: 'Registration failed',
+                description:
+                    error?.message ||
+                    'There was an error registering your username. Please try again.',
+                variant: 'destructive'
+            })
+        } finally {
+            setIsRegistering(false)
+        }
     }
 
     // Create a new multiplayer game
@@ -399,7 +438,7 @@ export default function GameContainer() {
 
     useEffect(() => {
         if (creatorSubmittedGuesses && creatorSubmittedGuesses.length > 0) {
-            let arr: string[] = Array.from({ length: 5 }, () => '')
+            const arr: string[] = Array.from({ length: 5 }, () => '')
 
             for (let i = 0; i < creatorSubmittedGuesses.length; i++) {
                 arr[i] =
@@ -412,7 +451,7 @@ export default function GameContainer() {
             setCreatorGuesses(arr)
         }
         if (opponentSubmittedGuesses && opponentSubmittedGuesses.length > 0) {
-            let arr: string[] = Array.from({ length: 5 }, () => '')
+            const arr: string[] = Array.from({ length: 5 }, () => '')
 
             for (let i = 0; i < opponentSubmittedGuesses.length; i++) {
                 arr[i] =
@@ -428,7 +467,7 @@ export default function GameContainer() {
 
     useEffect(() => {
         if (creatorSubmittedHB && creatorSubmittedHB.length > 0) {
-            let arr: { hit: number; blow: number; submitted: boolean }[] = Array.from(
+            const arr: { hit: number; blow: number; submitted: boolean }[] = Array.from(
                 { length: 5 },
                 () => ({ hit: 0, blow: 0, submitted: false })
             )
@@ -442,7 +481,7 @@ export default function GameContainer() {
             setCreatorHB(arr)
         }
         if (opponentSubmittedHB && opponentSubmittedHB.length > 0) {
-            let arr: { hit: number; blow: number; submitted: boolean }[] = Array.from(
+            const arr: { hit: number; blow: number; submitted: boolean }[] = Array.from(
                 { length: 5 },
                 () => ({ hit: 0, blow: 0, submitted: false })
             )
@@ -483,6 +522,18 @@ export default function GameContainer() {
         }
     }, [revealSolutionEvent, opponentRevealSolutionEvent, address])
 
+    useEffect(() => {
+        if (typeof address === 'undefined') return // Wallet not connected yet
+
+        if (getPlayerName === undefined) return
+
+        if (!getPlayerName) {
+            setGameState('register')
+        } else {
+            setGameState('dashboard')
+        }
+    }, [address, getPlayerName])
+
     // Render appropriate screen based on game state
     if (gameState === 'dashboard') {
         return (
@@ -498,6 +549,10 @@ export default function GameContainer() {
                 <Toaster />
             </>
         )
+    }
+
+    if (gameState === 'register') {
+        return <PlayerRegistration onRegister={onRegister} isRegistering={isRegistering} />
     }
 
     if (gameState === 'join') {
@@ -516,11 +571,7 @@ export default function GameContainer() {
     if (gameState === 'commit') {
         return (
             <>
-                <CommitSolutionHash
-                    onCommit={commit}
-                    isMobile={isMobile}
-                    onBack={() => setGameState('dashboard')}
-                />
+                <CommitSolutionHash onCommit={commit} onBack={() => setGameState('dashboard')} />
                 <Toaster />
             </>
         )
