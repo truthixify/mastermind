@@ -77,17 +77,17 @@ export default function GameDashboard({
                         gameCreationStatus === 'creating' || gameCreationStatus === 'waiting_event'
                     }
                 >
-                    {gameCreationStatus === 'creating' && (
+                    {gameCreationStatus === 'creating' || gameCreationStatus === 'waiting_event' ? (
                         <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    ) : (
+                        <Plus className="h-5 w-5" />
                     )}
-                    {gameCreationStatus !== 'creating' && <Plus className="h-5 w-5" />}
                     {
                         {
                             creating: 'Creating Game...',
                             waiting_event: 'Waiting for Game ID...',
                             idle: 'Create Game',
-                            error: 'Try Again',
-                            success: 'Create Game'
+                            error: 'Try Again'
                         }[gameCreationStatus]
                     }
                 </Button>

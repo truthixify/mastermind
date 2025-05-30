@@ -94,7 +94,7 @@ export const AddressInfoDropdown = ({
 
     useEffect(() => {
         setPlayerName(feltToString(getPlayerName))
-    }, [getPlayerName])
+    }, [getPlayerName, address])
 
     return (
         <>

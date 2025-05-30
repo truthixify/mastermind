@@ -34,7 +34,7 @@ export type GameState =
     | 'reveal'
     | 'stats'
 
-export type GameCreationStatus = 'idle' | 'creating' | 'waiting_event' | 'success' | 'error'
+export type GameCreationStatus = 'idle' | 'creating' | 'waiting_event' | 'error'
 
 export default function GameContainer() {
     const [gameState, setGameState] = useState<GameState>('dashboard')
@@ -408,7 +408,7 @@ export default function GameContainer() {
         setGameId(gameId)
         setGameStage(getGameCurrentStage)
         setGameState('commit')
-        setGameCreationStatus('success')
+        setGameCreationStatus('idle')
 
         toast({
             title: 'Game Created',
