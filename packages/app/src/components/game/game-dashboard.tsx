@@ -46,7 +46,6 @@ export default function GameDashboard({
 
     useEffect(() => {
         setActiveGameIds(getActiveGameIds)
-
         setAvailableGameIds(getAvailableGameIds)
     }, [getAvailableGameIds, getAvailableGameIds])
 
@@ -57,7 +56,7 @@ export default function GameDashboard({
 
         setTimeout(() => {
             setIsRefreshing(false)
-        }, 1000)
+        }, 500)
     }
 
     return (

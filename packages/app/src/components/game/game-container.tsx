@@ -487,6 +487,7 @@ export default function GameContainer() {
 
             setCreatorHB(arr)
         }
+        
         if (opponentSubmittedHB && opponentSubmittedHB.length > 0) {
             const arr: { hit: number; blow: number; submitted: boolean }[] = Array.from(
                 { length: 5 },

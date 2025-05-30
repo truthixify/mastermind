@@ -459,7 +459,7 @@ export default function GameBoard({
                                     : 'text-gray-500'
                             }`}
                         >
-                            <Users className="h-4 w-4 inline mr-2" />
+                            <User className="h-4 w-4 inline mr-2" />
                             Opponent
                         </button>
                         <button
