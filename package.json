@@ -17,6 +17,7 @@
     "deploy:no-reset": "yarn workspace @mastermind/contracts deploy --no-reset",
     "test": "yarn workspace @mastermind/contracts test",
     "compile": "yarn workspace @mastermind/contracts compile",
+    "install:client": "yarn workspace @mastermind/app install",
     "start": "yarn workspace @mastermind/app dev",
     "vercel": "yarn workspace @mastermind/app vercel",
     "vercel:yolo": "yarn workspace @mastermind/app vercel:yolo",
