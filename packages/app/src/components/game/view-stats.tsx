@@ -52,9 +52,9 @@ export default function ViewStats({ playerAddress, onBack }: ViewStatsProps) {
             return
         }
 
-        const gamesWon = Number(getGamesWon)
-        const gamesLost = Number(getGamesLost)
-        const gamesTied = Number(getGamesTied)
+        const gamesWon = getGamesWon ? Number(getGamesWon) : 0
+        const gamesLost = getGamesLost ? Number(getGamesLost) : 0
+        const gamesTied = getGamesTied ? Number(getGamesTied) : 0
 
         setGamesWon(gamesWon)
         setGamesLost(gamesLost)

@@ -14,7 +14,7 @@ export default function HelpModal({ isOpen, onClose }: HelpModalProps) {
             {isOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
                     <motion.div
-                        className="retro-card max-w-lg w-full"
+                        className="retro-card max-w-lg w-full max-h-[90vh] overflow-y-auto"
                         initial={{ scale: 0.9, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.9, opacity: 0 }}
@@ -41,18 +41,12 @@ export default function HelpModal({ isOpen, onClose }: HelpModalProps) {
                                 <ul className="list-disc pl-5 space-y-1">
                                     <li>The secret word is always 4 letters long</li>
                                     <li>All letters in the word are unique (no repeats)</li>
-                                    <li>You have 6 attempts to guess the word</li>
+                                    <li>You have 5 attempts to guess the word</li>
                                     <li>After each guess, you'll get feedback:</li>
                                 </ul>
                             </div>
 
                             <div className="flex flex-col items-center space-y-2">
-                                <div className="flex gap-2">
-                                    <div className="retro-letter retro-letter-correct">A</div>
-                                    <div className="retro-letter retro-letter-partial">B</div>
-                                    <div className="retro-letter retro-letter-incorrect">C</div>
-                                    <div className="retro-letter retro-letter-incorrect">D</div>
-                                </div>
                                 <div className="retro-legend">
                                     <div className="retro-legend-item">
                                         <div className="retro-legend-indicator bg-retro-green"></div>
@@ -63,12 +57,6 @@ export default function HelpModal({ isOpen, onClose }: HelpModalProps) {
                                     <div className="retro-legend-item">
                                         <div className="retro-legend-indicator bg-retro-yellow"></div>
                                         <span>Correct letter in wrong position</span>
-                                    </div>
-                                </div>
-                                <div className="retro-legend">
-                                    <div className="retro-legend-item">
-                                        <div className="retro-legend-indicator bg-gray-400 dark:bg-gray-600"></div>
-                                        <span>Letter not in the word</span>
                                     </div>
                                 </div>
                             </div>
@@ -112,6 +100,35 @@ export default function HelpModal({ isOpen, onClose }: HelpModalProps) {
                                     <li>Try to use different letters in each guess</li>
                                     <li>Remember that all letters in the secret word are unique</li>
                                 </ul>
+                            </div>
+
+                            <div className="mt-6 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                                <h3 className="text-center font-bold mb-2">How to Read HB</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="flex items-center">
+                                        <div className="w-8 h-8 rounded-full bg-retro-green flex items-center justify-center text-white font-bold mr-3">
+                                            2
+                                        </div>
+                                        <span>
+                                            <strong>Hits:</strong> Letters in the correct position
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center">
+                                        <div className="w-8 h-8 rounded-full bg-retro-yellow flex items-center justify-center text-black font-bold mr-3">
+                                            1
+                                        </div>
+                                        <span>
+                                            <strong>Blows:</strong> Correct letters in wrong position
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="mt-3 text-sm text-center text-gray-600 dark:text-gray-400">
+                                    Example: If the secret word is "WORD" and you guess "WORK", you
+                                    would get 3 Hits and 0 Blows.
+                                </div>
+                                <div className="mt-2 text-sm text-center font-semibold text-retro-blue">
+                                    To win, you need <strong>4 Hits</strong> and <strong>0 Blows</strong> — that means you guessed the word exactly!
+                                </div>
                             </div>
                         </div>
 
