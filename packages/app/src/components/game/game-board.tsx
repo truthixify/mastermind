@@ -17,7 +17,7 @@ interface GameBoardProps {
     opponentGuesses: string[]
     opponentHb: Array<{ hit: number; blow: number; submitted: boolean }>
     isPlayerTurn: boolean
-    round: number
+    round: number | undefined
     playerRole: 'creator' | 'opponent' | null
     playerAddress: string
     onBack: () => void
@@ -410,7 +410,7 @@ export default function GameBoard({
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 0.2, duration: 0.3 }}
             >
-                <Clock className="inline-block mr-2 h-4 w-4" /> Round {Number(round) - 1} of{' '}
+                <Clock className="inline-block mr-2 h-4 w-4" /> Round {round ? round - 1 : '?'} of{' '}
                 {maxAttempts}
             </motion.div>
 

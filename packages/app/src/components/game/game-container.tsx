@@ -629,7 +629,7 @@ export default function GameContainer() {
                 hb={playerRole === 'creator' ? opponentHB : creatorHB}
                 opponentHb={playerRole === 'creator' ? creatorHB : opponentHB}
                 isPlayerTurn={isPlayerTurn}
-                round={getGameCurrentRound}
+                round={getGameCurrentRound ? Number(getGameCurrentRound) : undefined}
                 playerRole={playerRole}
                 onBack={() => setGameState('dashboard')}
                 playerAddress={playerRole === 'creator' ? creatorAddress : opponentAddress}

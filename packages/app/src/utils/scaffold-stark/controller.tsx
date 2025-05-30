@@ -8,11 +8,11 @@ import {
 import { constants } from 'starknet'
 import scaffoldConfig from '../../../scaffold.config'
 import ControllerConnector from '@cartridge/connector/controller'
-import { SessionPolicies } from '@cartridge/presets'
+import { SessionPolicies } from '@cartridge/controller'
 
 // Standard contract addresses
 export const MASTERMIND_CONTRACT_ADDRESS =
-    '0xd8008b0dde070b66edd2d6e0def1a389d323797ab85eb652425173853a03e4'
+    '0x3044ac1b12dcdbb9032e6b633a55c487cabe3ba2fd21c6599fee9a9c8725c14'
 
 // Function to check for devnet networks
 const containsDevnet = (networks: readonly Chain[]) => {
@@ -39,14 +39,14 @@ const chains = [
         id: constants.StarknetChainId.SN_SEPOLIA,
         name: 'Sepolia',
         rpcUrl:
-            import.meta.env.VITE_NEXT_PUBLIC_RPC_SEPOLIA ??
+            import.meta.env.NEXT_PUBLIC_RPC_SEPOLIA ??
             'https://api.cartridge.gg/x/starknet/sepolia'
     },
     {
         id: constants.StarknetChainId.SN_MAIN,
         name: 'Mainnet',
         rpcUrl:
-            import.meta.env.VITE_NEXT_PUBLIC_SEPOLIA_PROVIDER_URL ??
+            import.meta.env.NEXT_PUBLIC_SEPOLIA_PROVIDER_URL ??
             'https://api.cartridge.gg/x/starknet/mainnet'
     }
 ]
