@@ -38,8 +38,6 @@ export type GameCreationStatus = 'idle' | 'creating' | 'waiting_event' | 'succes
 
 export default function GameContainer() {
     const [gameState, setGameState] = useState<GameState>('dashboard')
-    const { gameId, setGameId } = useGameStore()
-    const { toast } = useToast()
     const [gameStage, setGameStage] = useState<CairoCustomEnum>()
     const [isPlayerTurn, setIsPlayerTurn] = useState<boolean>(true)
     const [creatorGuesses, setCreatorGuesses] = useState<string[]>(Array.from({ length: 5 }))
@@ -60,7 +58,9 @@ export default function GameContainer() {
     const [gameCreationStatus, setGameCreationStatus] = useState<GameCreationStatus>('idle')
     const [isRegistering, setIsRegistering] = useState(false)
 
-    const { getGameData } = useGameStorage('game-data', gameId)
+    const { gameId, setGameId } = useGameStore()
+    const { toast } = useToast()
+    const { getGameData } = useGameStorage('game-data')
     const { address } = useAccount()
 
     const { data: blockNumber } = useBlockNumber()
@@ -279,7 +279,6 @@ export default function GameContainer() {
                     description: `Successfully joined game #${gameId}`
                 })
                 setGameState('commit')
-                // setGameStage(getGameCurrentStage)
             } else {
                 throw new Error('Failed to join game')
             }
@@ -309,7 +308,7 @@ export default function GameContainer() {
         setGameState('playing')
     }
 
-    const commit = () => {
+    const onCcommit = () => {
         if (playerRole === 'creator') {
             setGameState('waiting')
         } else {
@@ -418,10 +417,10 @@ export default function GameContainer() {
     }, [gameCreationStatus, createEvent])
 
     useEffect(() => {
-        if (!getGameCurrentStage) return;
+        if (!getGameCurrentStage) return
 
-        setGameStage(prev => (prev !== getGameCurrentStage ? getGameCurrentStage : prev));
-    }, [getGameCurrentStage, gameStage]);
+        setGameStage(prev => (prev !== getGameCurrentStage ? getGameCurrentStage : prev))
+    }, [getGameCurrentStage, gameStage])
 
     useEffect(() => {
         if (getGameCurrentRound === undefined) return
@@ -579,7 +578,7 @@ export default function GameContainer() {
     if (gameState === 'commit') {
         return (
             <>
-                <CommitSolutionHash onCommit={commit} onBack={() => setGameState('dashboard')} />
+                <CommitSolutionHash onCommit={onCcommit} onBack={() => setGameState('dashboard')} />
                 <Toaster />
             </>
         )

@@ -32,10 +32,8 @@ export default function commitSolutionHash({ onCommit, onBack }: commitSolutionH
     const [salt, setSalt] = useState<Uint256>(() => uint256.bnToUint256(randomBigInt()))
     const [isCommitting, setIsCommitting] = useState(false)
     const { toast } = useToast()
-
     const { gameId } = useGameStore()
-    const { setGameData } = useGameStorage('game-data', gameId)
-
+    const { setGameData } = useGameStorage('game-data')
     const dict = useDictionary()
 
     const { sendAsync: commitSolutionHash } = useScaffoldWriteContract({
@@ -89,11 +87,11 @@ export default function commitSolutionHash({ onCommit, onBack }: commitSolutionH
                 throw new Error('Solution hash generation failed')
             }
 
-            const success = await commitSolutionHash({
+            const res = await commitSolutionHash({
                 args: [gameId, solutionHash]
             })
 
-            if (!success) {
+            if (!res) {
                 throw new Error('Contract commit failed')
             }
 
@@ -105,17 +103,18 @@ export default function commitSolutionHash({ onCommit, onBack }: commitSolutionH
                 })
             }
 
-            onCommit()
-
             toast({
                 title: 'Secret word committed',
                 description: 'Your secret word has been successfully committed.'
             })
-        } catch (err) {
-            console.error('Commit error:', err)
+
+            onCommit()
+        } catch (error) {
             toast({
                 title: 'Commit failed',
-                description: 'Something went wrong during the commit. Please try again.',
+                description: error.message
+                    ? error.message
+                    : error || 'Something went wrong during the commit. Please try again.',
                 variant: 'destructive'
             })
         } finally {

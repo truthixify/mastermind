@@ -5,10 +5,10 @@ import {
     starknetChainId,
     InjectedConnector
 } from '@starknet-react/core'
-import ControllerConnector from '@cartridge/connector/controller'
 import { constants } from 'starknet'
 import scaffoldConfig from '../../../scaffold.config'
-import { SessionPolicies } from '@cartridge/controller'
+import ControllerConnector from '@cartridge/connector/controller'
+import { SessionPolicies } from '@cartridge/presets'
 
 // Standard contract addresses
 export const MASTERMIND_CONTRACT_ADDRESS =
@@ -39,13 +39,13 @@ const chains = [
         id: constants.StarknetChainId.SN_SEPOLIA,
         name: 'Sepolia',
         rpcUrl:
-            import.meta.env.NEXT_PUBLIC_RPC_SEPOLIA ?? 'https://api.cartridge.gg/x/starknet/sepolia'
+            import.meta.env.VITE_NEXT_PUBLIC_RPC_SEPOLIA ?? 'https://api.cartridge.gg/x/starknet/sepolia'
     },
     {
         id: constants.StarknetChainId.SN_MAIN,
         name: 'Mainnet',
         rpcUrl:
-            import.meta.env.NEXT_PUBLIC_RPC_MAINNET ?? 'https://api.cartridge.gg/x/starknet/mainnet'
+            import.meta.env.VITE_NEXT_PUBLIC_SEPOLIA_PROVIDER_URL ?? 'https://api.cartridge.gg/x/starknet/mainnet'
     }
 ]
 

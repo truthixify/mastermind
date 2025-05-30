@@ -7,7 +7,7 @@ const deployedContracts = {
   devnet: {
     Mastermind: {
       address:
-        "0x11a0d4503f329e6bb762f28f56b194db34b4531a478c878418abd5dd13b2100",
+        "0x2a742d0138865002b747b3e59287eae2501f18b2a2b49d1dc89b866d0947ce7",
       abi: [
         {
           type: "impl",
@@ -767,7 +767,7 @@ const deployedContracts = {
   sepolia: {
     Mastermind: {
       address:
-        "0xd8008b0dde070b66edd2d6e0def1a389d323797ab85eb652425173853a03e4",
+        "0x3044ac1b12dcdbb9032e6b633a55c487cabe3ba2fd21c6599fee9a9c8725c14",
       abi: [
         {
           type: "impl",

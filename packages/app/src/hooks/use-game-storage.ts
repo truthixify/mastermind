@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react'
-
 type GameData = {
     solution: number[]
     salt: string
@@ -7,14 +5,11 @@ type GameData = {
 }
 
 type UseGameStorageReturn = {
-    gameData: GameData | null
     setGameData: (value: GameData) => void
     getGameData: (id: number) => GameData | null
 }
 
-export function useGameStorage(storageKey: string, gameId?: number): UseGameStorageReturn {
-    const [storedValue, setStoredValue] = useState<GameData | null>(null)
-
+export function useGameStorage(storageKey: string): UseGameStorageReturn {
     const getGameData = (id: number): GameData | null => {
         if (typeof window === 'undefined') return null
         try {
@@ -33,15 +28,8 @@ export function useGameStorage(storageKey: string, gameId?: number): UseGameStor
             const allData: Record<string, GameData> = raw ? JSON.parse(raw) : {}
             const updated = { ...allData, [String(value.gameId)]: value }
             window.localStorage.setItem(storageKey, JSON.stringify(updated))
-            setStoredValue(value)
         } catch {}
     }
 
-    useEffect(() => {
-        if (typeof window === 'undefined' || gameId == undefined) return
-        const data = getGameData(gameId)
-        setStoredValue(data)
-    }, [gameId, getGameData])
-
-    return { gameData: storedValue, setGameData, getGameData }
+    return { getGameData, setGameData }
 }

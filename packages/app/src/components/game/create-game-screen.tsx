@@ -38,7 +38,7 @@ export default function CreateGameScreen({ onGameStart, onBack }: CreateGameScre
     // Auto-redirect when opponent joins
     useEffect(() => {
         onGameStart()
-    }, [gameStage, onGameStart])
+    }, [gameStage])
 
     useEffect(() => {
         setGameStage(getGameCurrentStage)

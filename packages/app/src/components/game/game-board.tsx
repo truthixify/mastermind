@@ -45,8 +45,7 @@ export default function GameBoard({
     const [isProving, setIsProving] = useState<boolean>(false)
     const { toast } = useToast()
     const { gameId } = useGameStore()
-    const { getGameData } = useGameStorage('game-data', Number(gameId))
-
+    const { getGameData } = useGameStorage('game-data')
     const dict = useDictionary()
 
     const maxAttempts = 10
@@ -148,10 +147,12 @@ export default function GameBoard({
                     description: 'Your guess has been submitted successfully.'
                 })
             }
-        } catch (err) {
+        } catch (error: any) {
             toast({
                 title: 'Submission Error',
-                description: 'An error occurred while submitting your guess.',
+                description: error.message
+                    ? error.message
+                    : error || 'An error occurred while submitting your guess.',
                 variant: 'destructive'
             })
         } finally {
@@ -203,7 +204,9 @@ export default function GameBoard({
         } catch (error: any) {
             toast({
                 title: 'Submission Error',
-                description: error || 'An unexpected error occurred.',
+                description: error.message
+                    ? error.message
+                    : error || 'An unexpected error occurred.',
                 variant: 'destructive'
             })
         } finally {
@@ -407,7 +410,8 @@ export default function GameBoard({
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 0.2, duration: 0.3 }}
             >
-                <Clock className="inline-block mr-2 h-4 w-4" /> Round {round - 1} of {maxAttempts}
+                <Clock className="inline-block mr-2 h-4 w-4" /> Round {Number(round) - 1} of{' '}
+                {maxAttempts}
             </motion.div>
 
             <motion.div

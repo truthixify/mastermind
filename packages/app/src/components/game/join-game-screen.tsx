@@ -1,5 +1,4 @@
 import type React from 'react'
-
 import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../ui/card'
 import { Button } from '../ui/button'
@@ -9,19 +8,20 @@ import { useToast } from '../../hooks/use-toast'
 
 interface JoinGameScreenProps {
     isJoiningGame: boolean
-    onJoinGame: (gameId: number) => void
+    onJoinGame: (internalGameId: number) => void
     onBack: () => void
 }
 
 export default function JoinGameScreen({ isJoiningGame, onJoinGame, onBack }: JoinGameScreenProps) {
-    console.log('lol')
-    const [gameId, setGameId] = useState<string | null>(null)
+    const [internalGameId, setinternalGameId] = useState<string | null>(null)
     const { toast } = useToast()
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
 
-        if (!gameId || isNaN(Number(gameId)) || Number(gameId) <= 0) {
+        const numInternalGameId = Number(internalGameId)
+
+        if (!internalGameId || isNaN(numInternalGameId) || numInternalGameId <= 0) {
             return toast({
                 title: 'Invalid Game ID',
                 description: 'Please enter a valid game ID.',
@@ -29,7 +29,7 @@ export default function JoinGameScreen({ isJoiningGame, onJoinGame, onBack }: Jo
             })
         }
 
-        onJoinGame(Number(gameId))
+        onJoinGame(numInternalGameId)
     }
 
     return (
@@ -47,8 +47,8 @@ export default function JoinGameScreen({ isJoiningGame, onJoinGame, onBack }: Jo
                             <div className="text-sm font-medium">Game ID</div>
                             <Input
                                 placeholder="Enter game ID"
-                                value={gameId ?? ''}
-                                onChange={e => setGameId(e.target.value)}
+                                value={internalGameId ?? ''}
+                                onChange={e => setinternalGameId(e.target.value)}
                                 className="font-mono"
                             />
                         </div>
