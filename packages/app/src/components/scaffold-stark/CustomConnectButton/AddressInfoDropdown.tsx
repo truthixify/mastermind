@@ -47,7 +47,7 @@ export const AddressInfoDropdown = ({
     const [selectingNetwork, setSelectingNetwork] = useState(false)
     const { connectors, connect } = useConnect()
     const { resolvedTheme } = useTheme()
-    const {playerName} = usePlayerStore()
+    const { playerName } = usePlayerStore()
     const isDarkMode = resolvedTheme === 'dark'
     const dropdownRef = useRef<HTMLDetailsElement>(null)
     const closeDropdown = () => {

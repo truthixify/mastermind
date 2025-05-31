@@ -118,7 +118,8 @@ export default function HelpModal({ isOpen, onClose }: HelpModalProps) {
                                             1
                                         </div>
                                         <span>
-                                            <strong>Blows:</strong> Correct letters in wrong position
+                                            <strong>Blows:</strong> Correct letters in wrong
+                                            position
                                         </span>
                                     </div>
                                 </div>
@@ -127,7 +128,9 @@ export default function HelpModal({ isOpen, onClose }: HelpModalProps) {
                                     would get 3 Hits and 0 Blows.
                                 </div>
                                 <div className="mt-2 text-sm text-center font-semibold text-retro-blue">
-                                    To win, you need <strong>4 Hits</strong> and <strong>0 Blows</strong> — that means you guessed the word exactly!
+                                    To win, you need <strong>4 Hits</strong> and{' '}
+                                    <strong>0 Blows</strong> — that means you guessed the word
+                                    exactly!
                                 </div>
                             </div>
                         </div>

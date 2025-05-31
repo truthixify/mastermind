@@ -39,8 +39,7 @@ const chains = [
         id: constants.StarknetChainId.SN_SEPOLIA,
         name: 'Sepolia',
         rpcUrl:
-            import.meta.env.NEXT_PUBLIC_RPC_SEPOLIA ??
-            'https://api.cartridge.gg/x/starknet/sepolia'
+            import.meta.env.NEXT_PUBLIC_RPC_SEPOLIA ?? 'https://api.cartridge.gg/x/starknet/sepolia'
     },
     {
         id: constants.StarknetChainId.SN_MAIN,

@@ -59,8 +59,8 @@ export default function GameContainer() {
     const [playerRole, setPlayerRole] = useState<'creator' | 'opponent' | null>(null)
     const [gameCreationStatus, setGameCreationStatus] = useState<GameCreationStatus>('idle')
     const [isRegistering, setIsRegistering] = useState(false)
-    
-    const {setPlayerName} = usePlayerStore()
+
+    const { setPlayerName } = usePlayerStore()
     const { gameId, setGameId } = useGameStore()
     const { toast } = useToast()
     const { getGameData } = useGameStorage('game-data')

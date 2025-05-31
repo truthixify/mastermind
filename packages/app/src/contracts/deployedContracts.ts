@@ -4,1526 +4,1522 @@
  */
 
 const deployedContracts = {
-  devnet: {
-    Mastermind: {
-      address:
-        "0x4a62766345e16ff9aad03e8a6d71c414156cc17ffef7d68bddd4571bbb52d11",
-      abi: [
-        {
-          type: "impl",
-          name: "MasterMindImpl",
-          interface_name: "mastermind::interface::IMastermind",
-        },
-        {
-          type: "struct",
-          name: "core::integer::u256",
-          members: [
-            {
-              name: "low",
-              type: "core::integer::u128",
-            },
-            {
-              name: "high",
-              type: "core::integer::u128",
-            },
-          ],
-        },
-        {
-          type: "struct",
-          name: "core::array::Span::<core::felt252>",
-          members: [
-            {
-              name: "snapshot",
-              type: "@core::array::Array::<core::felt252>",
-            },
-          ],
-        },
-        {
-          type: "enum",
-          name: "core::bool",
-          variants: [
-            {
-              name: "False",
-              type: "()",
-            },
-            {
-              name: "True",
-              type: "()",
-            },
-          ],
-        },
-        {
-          type: "struct",
-          name: "mastermind::structs::Guess",
-          members: [
-            {
-              name: "g1",
-              type: "core::integer::u8",
-            },
-            {
-              name: "g2",
-              type: "core::integer::u8",
-            },
-            {
-              name: "g3",
-              type: "core::integer::u8",
-            },
-            {
-              name: "g4",
-              type: "core::integer::u8",
-            },
-            {
-              name: "submitted",
-              type: "core::bool",
-            },
-          ],
-        },
-        {
-          type: "struct",
-          name: "mastermind::structs::HitAndBlow",
-          members: [
-            {
-              name: "hit",
-              type: "core::integer::u8",
-            },
-            {
-              name: "blow",
-              type: "core::integer::u8",
-            },
-            {
-              name: "submitted",
-              type: "core::bool",
-            },
-          ],
-        },
-        {
-          type: "enum",
-          name: "mastermind::enums::GameResult",
-          variants: [
-            {
-              name: "Undecided",
-              type: "()",
-            },
-            {
-              name: "Win",
-              type: "core::starknet::contract_address::ContractAddress",
-            },
-            {
-              name: "Tie",
-              type: "()",
-            },
-          ],
-        },
-        {
-          type: "enum",
-          name: "mastermind::enums::Stages",
-          variants: [
-            {
-              name: "Init",
-              type: "()",
-            },
-            {
-              name: "CreatorCommitSolutionHash",
-              type: "()",
-            },
-            {
-              name: "WaitingForOpponent",
-              type: "()",
-            },
-            {
-              name: "OpponentCommitSolutionHash",
-              type: "()",
-            },
-            {
-              name: "Playing",
-              type: "()",
-            },
-            {
-              name: "Reveal",
-              type: "()",
-            },
-          ],
-        },
-        {
-          type: "interface",
-          name: "mastermind::interface::IMastermind",
-          items: [
-            {
-              type: "function",
-              name: "init_game",
-              inputs: [],
-              outputs: [],
-              state_mutability: "external",
-            },
-            {
-              type: "function",
-              name: "register_player",
-              inputs: [
+    devnet: {
+        Mastermind: {
+            address: '0x4a62766345e16ff9aad03e8a6d71c414156cc17ffef7d68bddd4571bbb52d11',
+            abi: [
                 {
-                  name: "player_name",
-                  type: "core::felt252",
-                },
-              ],
-              outputs: [],
-              state_mutability: "external",
-            },
-            {
-              type: "function",
-              name: "join_game",
-              inputs: [
-                {
-                  name: "game_id",
-                  type: "core::integer::u32",
-                },
-              ],
-              outputs: [],
-              state_mutability: "external",
-            },
-            {
-              type: "function",
-              name: "commit_solution_hash",
-              inputs: [
-                {
-                  name: "game_id",
-                  type: "core::integer::u32",
+                    type: 'impl',
+                    name: 'MasterMindImpl',
+                    interface_name: 'mastermind::interface::IMastermind'
                 },
                 {
-                  name: "solution_hash",
-                  type: "core::integer::u256",
-                },
-              ],
-              outputs: [],
-              state_mutability: "external",
-            },
-            {
-              type: "function",
-              name: "submit_guess",
-              inputs: [
-                {
-                  name: "game_id",
-                  type: "core::integer::u32",
+                    type: 'struct',
+                    name: 'core::integer::u256',
+                    members: [
+                        {
+                            name: 'low',
+                            type: 'core::integer::u128'
+                        },
+                        {
+                            name: 'high',
+                            type: 'core::integer::u128'
+                        }
+                    ]
                 },
                 {
-                  name: "guess",
-                  type: "core::array::Array::<core::integer::u8>",
-                },
-              ],
-              outputs: [],
-              state_mutability: "external",
-            },
-            {
-              type: "function",
-              name: "submit_hit_and_blow_proof",
-              inputs: [
-                {
-                  name: "game_id",
-                  type: "core::integer::u32",
+                    type: 'struct',
+                    name: 'core::array::Span::<core::felt252>',
+                    members: [
+                        {
+                            name: 'snapshot',
+                            type: '@core::array::Array::<core::felt252>'
+                        }
+                    ]
                 },
                 {
-                  name: "full_proof_with_hints",
-                  type: "core::array::Span::<core::felt252>",
-                },
-              ],
-              outputs: [],
-              state_mutability: "external",
-            },
-            {
-              type: "function",
-              name: "reveal_solution",
-              inputs: [
-                {
-                  name: "game_id",
-                  type: "core::integer::u32",
+                    type: 'enum',
+                    name: 'core::bool',
+                    variants: [
+                        {
+                            name: 'False',
+                            type: '()'
+                        },
+                        {
+                            name: 'True',
+                            type: '()'
+                        }
+                    ]
                 },
                 {
-                  name: "solution",
-                  type: "core::array::Array::<core::integer::u8>",
+                    type: 'struct',
+                    name: 'mastermind::structs::Guess',
+                    members: [
+                        {
+                            name: 'g1',
+                            type: 'core::integer::u8'
+                        },
+                        {
+                            name: 'g2',
+                            type: 'core::integer::u8'
+                        },
+                        {
+                            name: 'g3',
+                            type: 'core::integer::u8'
+                        },
+                        {
+                            name: 'g4',
+                            type: 'core::integer::u8'
+                        },
+                        {
+                            name: 'submitted',
+                            type: 'core::bool'
+                        }
+                    ]
                 },
                 {
-                  name: "salt",
-                  type: "core::integer::u256",
-                },
-              ],
-              outputs: [],
-              state_mutability: "external",
-            },
-            {
-              type: "function",
-              name: "get_player_id",
-              inputs: [
-                {
-                  name: "player_address",
-                  type: "core::starknet::contract_address::ContractAddress",
-                },
-              ],
-              outputs: [
-                {
-                  type: "core::integer::u32",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_player_name",
-              inputs: [
-                {
-                  name: "player_address",
-                  type: "core::starknet::contract_address::ContractAddress",
-                },
-              ],
-              outputs: [
-                {
-                  type: "core::felt252",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_game_opponent_address",
-              inputs: [
-                {
-                  name: "game_id",
-                  type: "core::integer::u32",
-                },
-              ],
-              outputs: [
-                {
-                  type: "core::starknet::contract_address::ContractAddress",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_game_creator_address",
-              inputs: [
-                {
-                  name: "game_id",
-                  type: "core::integer::u32",
-                },
-              ],
-              outputs: [
-                {
-                  type: "core::starknet::contract_address::ContractAddress",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_game_submitted_guesses",
-              inputs: [
-                {
-                  name: "game_id",
-                  type: "core::integer::u32",
+                    type: 'struct',
+                    name: 'mastermind::structs::HitAndBlow',
+                    members: [
+                        {
+                            name: 'hit',
+                            type: 'core::integer::u8'
+                        },
+                        {
+                            name: 'blow',
+                            type: 'core::integer::u8'
+                        },
+                        {
+                            name: 'submitted',
+                            type: 'core::bool'
+                        }
+                    ]
                 },
                 {
-                  name: "player_address",
-                  type: "core::starknet::contract_address::ContractAddress",
-                },
-              ],
-              outputs: [
-                {
-                  type: "core::array::Array::<mastermind::structs::Guess>",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_game_submitted_hit_and_blow",
-              inputs: [
-                {
-                  name: "game_id",
-                  type: "core::integer::u32",
+                    type: 'enum',
+                    name: 'mastermind::enums::GameResult',
+                    variants: [
+                        {
+                            name: 'Undecided',
+                            type: '()'
+                        },
+                        {
+                            name: 'Win',
+                            type: 'core::starknet::contract_address::ContractAddress'
+                        },
+                        {
+                            name: 'Tie',
+                            type: '()'
+                        }
+                    ]
                 },
                 {
-                  name: "player_address",
-                  type: "core::starknet::contract_address::ContractAddress",
-                },
-              ],
-              outputs: [
-                {
-                  type: "core::array::Array::<mastermind::structs::HitAndBlow>",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_game_result",
-              inputs: [
-                {
-                  name: "game_id",
-                  type: "core::integer::u32",
-                },
-              ],
-              outputs: [
-                {
-                  type: "mastermind::enums::GameResult",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_game_current_stage",
-              inputs: [
-                {
-                  name: "game_id",
-                  type: "core::integer::u32",
-                },
-              ],
-              outputs: [
-                {
-                  type: "mastermind::enums::Stages",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_game_solution_hash",
-              inputs: [
-                {
-                  name: "game_id",
-                  type: "core::integer::u32",
+                    type: 'enum',
+                    name: 'mastermind::enums::Stages',
+                    variants: [
+                        {
+                            name: 'Init',
+                            type: '()'
+                        },
+                        {
+                            name: 'CreatorCommitSolutionHash',
+                            type: '()'
+                        },
+                        {
+                            name: 'WaitingForOpponent',
+                            type: '()'
+                        },
+                        {
+                            name: 'OpponentCommitSolutionHash',
+                            type: '()'
+                        },
+                        {
+                            name: 'Playing',
+                            type: '()'
+                        },
+                        {
+                            name: 'Reveal',
+                            type: '()'
+                        }
+                    ]
                 },
                 {
-                  name: "player_address",
-                  type: "core::starknet::contract_address::ContractAddress",
+                    type: 'interface',
+                    name: 'mastermind::interface::IMastermind',
+                    items: [
+                        {
+                            type: 'function',
+                            name: 'init_game',
+                            inputs: [],
+                            outputs: [],
+                            state_mutability: 'external'
+                        },
+                        {
+                            type: 'function',
+                            name: 'register_player',
+                            inputs: [
+                                {
+                                    name: 'player_name',
+                                    type: 'core::felt252'
+                                }
+                            ],
+                            outputs: [],
+                            state_mutability: 'external'
+                        },
+                        {
+                            type: 'function',
+                            name: 'join_game',
+                            inputs: [
+                                {
+                                    name: 'game_id',
+                                    type: 'core::integer::u32'
+                                }
+                            ],
+                            outputs: [],
+                            state_mutability: 'external'
+                        },
+                        {
+                            type: 'function',
+                            name: 'commit_solution_hash',
+                            inputs: [
+                                {
+                                    name: 'game_id',
+                                    type: 'core::integer::u32'
+                                },
+                                {
+                                    name: 'solution_hash',
+                                    type: 'core::integer::u256'
+                                }
+                            ],
+                            outputs: [],
+                            state_mutability: 'external'
+                        },
+                        {
+                            type: 'function',
+                            name: 'submit_guess',
+                            inputs: [
+                                {
+                                    name: 'game_id',
+                                    type: 'core::integer::u32'
+                                },
+                                {
+                                    name: 'guess',
+                                    type: 'core::array::Array::<core::integer::u8>'
+                                }
+                            ],
+                            outputs: [],
+                            state_mutability: 'external'
+                        },
+                        {
+                            type: 'function',
+                            name: 'submit_hit_and_blow_proof',
+                            inputs: [
+                                {
+                                    name: 'game_id',
+                                    type: 'core::integer::u32'
+                                },
+                                {
+                                    name: 'full_proof_with_hints',
+                                    type: 'core::array::Span::<core::felt252>'
+                                }
+                            ],
+                            outputs: [],
+                            state_mutability: 'external'
+                        },
+                        {
+                            type: 'function',
+                            name: 'reveal_solution',
+                            inputs: [
+                                {
+                                    name: 'game_id',
+                                    type: 'core::integer::u32'
+                                },
+                                {
+                                    name: 'solution',
+                                    type: 'core::array::Array::<core::integer::u8>'
+                                },
+                                {
+                                    name: 'salt',
+                                    type: 'core::integer::u256'
+                                }
+                            ],
+                            outputs: [],
+                            state_mutability: 'external'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_player_id',
+                            inputs: [
+                                {
+                                    name: 'player_address',
+                                    type: 'core::starknet::contract_address::ContractAddress'
+                                }
+                            ],
+                            outputs: [
+                                {
+                                    type: 'core::integer::u32'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_player_name',
+                            inputs: [
+                                {
+                                    name: 'player_address',
+                                    type: 'core::starknet::contract_address::ContractAddress'
+                                }
+                            ],
+                            outputs: [
+                                {
+                                    type: 'core::felt252'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_game_opponent_address',
+                            inputs: [
+                                {
+                                    name: 'game_id',
+                                    type: 'core::integer::u32'
+                                }
+                            ],
+                            outputs: [
+                                {
+                                    type: 'core::starknet::contract_address::ContractAddress'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_game_creator_address',
+                            inputs: [
+                                {
+                                    name: 'game_id',
+                                    type: 'core::integer::u32'
+                                }
+                            ],
+                            outputs: [
+                                {
+                                    type: 'core::starknet::contract_address::ContractAddress'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_game_submitted_guesses',
+                            inputs: [
+                                {
+                                    name: 'game_id',
+                                    type: 'core::integer::u32'
+                                },
+                                {
+                                    name: 'player_address',
+                                    type: 'core::starknet::contract_address::ContractAddress'
+                                }
+                            ],
+                            outputs: [
+                                {
+                                    type: 'core::array::Array::<mastermind::structs::Guess>'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_game_submitted_hit_and_blow',
+                            inputs: [
+                                {
+                                    name: 'game_id',
+                                    type: 'core::integer::u32'
+                                },
+                                {
+                                    name: 'player_address',
+                                    type: 'core::starknet::contract_address::ContractAddress'
+                                }
+                            ],
+                            outputs: [
+                                {
+                                    type: 'core::array::Array::<mastermind::structs::HitAndBlow>'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_game_result',
+                            inputs: [
+                                {
+                                    name: 'game_id',
+                                    type: 'core::integer::u32'
+                                }
+                            ],
+                            outputs: [
+                                {
+                                    type: 'mastermind::enums::GameResult'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_game_current_stage',
+                            inputs: [
+                                {
+                                    name: 'game_id',
+                                    type: 'core::integer::u32'
+                                }
+                            ],
+                            outputs: [
+                                {
+                                    type: 'mastermind::enums::Stages'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_game_solution_hash',
+                            inputs: [
+                                {
+                                    name: 'game_id',
+                                    type: 'core::integer::u32'
+                                },
+                                {
+                                    name: 'player_address',
+                                    type: 'core::starknet::contract_address::ContractAddress'
+                                }
+                            ],
+                            outputs: [
+                                {
+                                    type: 'core::integer::u256'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_game_current_round',
+                            inputs: [
+                                {
+                                    name: 'game_id',
+                                    type: 'core::integer::u32'
+                                }
+                            ],
+                            outputs: [
+                                {
+                                    type: 'core::integer::u8'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_total_players_count',
+                            inputs: [],
+                            outputs: [
+                                {
+                                    type: 'core::integer::u32'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_total_games_count',
+                            inputs: [],
+                            outputs: [
+                                {
+                                    type: 'core::integer::u32'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_player_active_game_ids',
+                            inputs: [
+                                {
+                                    name: 'player_address',
+                                    type: 'core::starknet::contract_address::ContractAddress'
+                                }
+                            ],
+                            outputs: [
+                                {
+                                    type: 'core::array::Array::<core::integer::u32>'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_available_game_ids',
+                            inputs: [],
+                            outputs: [
+                                {
+                                    type: 'core::array::Array::<core::integer::u32>'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_player_total_games_won',
+                            inputs: [
+                                {
+                                    name: 'player_address',
+                                    type: 'core::starknet::contract_address::ContractAddress'
+                                }
+                            ],
+                            outputs: [
+                                {
+                                    type: 'core::integer::u32'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_player_total_games_lost',
+                            inputs: [
+                                {
+                                    name: 'player_address',
+                                    type: 'core::starknet::contract_address::ContractAddress'
+                                }
+                            ],
+                            outputs: [
+                                {
+                                    type: 'core::integer::u32'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_player_total_games_tied',
+                            inputs: [
+                                {
+                                    name: 'player_address',
+                                    type: 'core::starknet::contract_address::ContractAddress'
+                                }
+                            ],
+                            outputs: [
+                                {
+                                    type: 'core::integer::u32'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_player_total_games_played',
+                            inputs: [
+                                {
+                                    name: 'player_address',
+                                    type: 'core::starknet::contract_address::ContractAddress'
+                                }
+                            ],
+                            outputs: [
+                                {
+                                    type: 'core::integer::u32'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        }
+                    ]
                 },
-              ],
-              outputs: [
                 {
-                  type: "core::integer::u256",
+                    type: 'constructor',
+                    name: 'constructor',
+                    inputs: []
                 },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_game_current_round",
-              inputs: [
                 {
-                  name: "game_id",
-                  type: "core::integer::u32",
+                    type: 'event',
+                    name: 'mastermind::Mastermind::InitializeGame',
+                    kind: 'struct',
+                    members: [
+                        {
+                            name: 'account',
+                            type: 'core::starknet::contract_address::ContractAddress',
+                            kind: 'key'
+                        },
+                        {
+                            name: 'game_id',
+                            type: 'core::integer::u32',
+                            kind: 'data'
+                        }
+                    ]
                 },
-              ],
-              outputs: [
                 {
-                  type: "core::integer::u8",
+                    type: 'event',
+                    name: 'mastermind::Mastermind::RegisterPlayer',
+                    kind: 'struct',
+                    members: [
+                        {
+                            name: 'account',
+                            type: 'core::starknet::contract_address::ContractAddress',
+                            kind: 'key'
+                        },
+                        {
+                            name: 'player_id',
+                            type: 'core::integer::u32',
+                            kind: 'data'
+                        }
+                    ]
                 },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_total_players_count",
-              inputs: [],
-              outputs: [
                 {
-                  type: "core::integer::u32",
+                    type: 'event',
+                    name: 'mastermind::Mastermind::CommitSolutionHash',
+                    kind: 'struct',
+                    members: [
+                        {
+                            name: 'account',
+                            type: 'core::starknet::contract_address::ContractAddress',
+                            kind: 'key'
+                        },
+                        {
+                            name: 'solution_hash',
+                            type: 'core::integer::u256',
+                            kind: 'data'
+                        }
+                    ]
                 },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_total_games_count",
-              inputs: [],
-              outputs: [
                 {
-                  type: "core::integer::u32",
+                    type: 'event',
+                    name: 'mastermind::Mastermind::SubmitGuess',
+                    kind: 'struct',
+                    members: [
+                        {
+                            name: 'account',
+                            type: 'core::starknet::contract_address::ContractAddress',
+                            kind: 'key'
+                        },
+                        {
+                            name: 'current_round',
+                            type: 'core::integer::u8',
+                            kind: 'data'
+                        },
+                        {
+                            name: 'guess',
+                            type: 'core::array::Array::<core::integer::u8>',
+                            kind: 'data'
+                        }
+                    ]
                 },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_player_active_game_ids",
-              inputs: [
                 {
-                  name: "player_address",
-                  type: "core::starknet::contract_address::ContractAddress",
+                    type: 'event',
+                    name: 'mastermind::Mastermind::SubmitHitAndBlow',
+                    kind: 'struct',
+                    members: [
+                        {
+                            name: 'account',
+                            type: 'core::starknet::contract_address::ContractAddress',
+                            kind: 'key'
+                        },
+                        {
+                            name: 'current_round',
+                            type: 'core::integer::u8',
+                            kind: 'data'
+                        },
+                        {
+                            name: 'hit',
+                            type: 'core::integer::u8',
+                            kind: 'data'
+                        },
+                        {
+                            name: 'blow',
+                            type: 'core::integer::u8',
+                            kind: 'data'
+                        }
+                    ]
                 },
-              ],
-              outputs: [
                 {
-                  type: "core::array::Array::<core::integer::u32>",
+                    type: 'event',
+                    name: 'mastermind::Mastermind::RevealSolution',
+                    kind: 'struct',
+                    members: [
+                        {
+                            name: 'account',
+                            type: 'core::starknet::contract_address::ContractAddress',
+                            kind: 'key'
+                        },
+                        {
+                            name: 'game_id',
+                            type: 'core::integer::u32',
+                            kind: 'key'
+                        },
+                        {
+                            name: 'solution',
+                            type: 'core::array::Array::<core::integer::u8>',
+                            kind: 'data'
+                        }
+                    ]
                 },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_available_game_ids",
-              inputs: [],
-              outputs: [
                 {
-                  type: "core::array::Array::<core::integer::u32>",
+                    type: 'event',
+                    name: 'mastermind::Mastermind::GameFinish',
+                    kind: 'struct',
+                    members: [
+                        {
+                            name: 'game_id',
+                            type: 'core::integer::u32',
+                            kind: 'key'
+                        },
+                        {
+                            name: 'game_result',
+                            type: 'mastermind::enums::GameResult',
+                            kind: 'data'
+                        }
+                    ]
                 },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_player_total_games_won",
-              inputs: [
                 {
-                  name: "player_address",
-                  type: "core::starknet::contract_address::ContractAddress",
+                    type: 'event',
+                    name: 'mastermind::Mastermind::StageChange',
+                    kind: 'struct',
+                    members: [
+                        {
+                            name: 'stage',
+                            type: 'mastermind::enums::Stages',
+                            kind: 'data'
+                        }
+                    ]
                 },
-              ],
-              outputs: [
                 {
-                  type: "core::integer::u32",
+                    type: 'event',
+                    name: 'mastermind::Mastermind::OpponentJoined',
+                    kind: 'struct',
+                    members: [
+                        {
+                            name: 'account',
+                            type: 'core::starknet::contract_address::ContractAddress',
+                            kind: 'key'
+                        },
+                        {
+                            name: 'game_id',
+                            type: 'core::integer::u32',
+                            kind: 'data'
+                        }
+                    ]
                 },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_player_total_games_lost",
-              inputs: [
                 {
-                  name: "player_address",
-                  type: "core::starknet::contract_address::ContractAddress",
-                },
-              ],
-              outputs: [
-                {
-                  type: "core::integer::u32",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_player_total_games_tied",
-              inputs: [
-                {
-                  name: "player_address",
-                  type: "core::starknet::contract_address::ContractAddress",
-                },
-              ],
-              outputs: [
-                {
-                  type: "core::integer::u32",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_player_total_games_played",
-              inputs: [
-                {
-                  name: "player_address",
-                  type: "core::starknet::contract_address::ContractAddress",
-                },
-              ],
-              outputs: [
-                {
-                  type: "core::integer::u32",
-                },
-              ],
-              state_mutability: "view",
-            },
-          ],
-        },
-        {
-          type: "constructor",
-          name: "constructor",
-          inputs: [],
-        },
-        {
-          type: "event",
-          name: "mastermind::Mastermind::InitializeGame",
-          kind: "struct",
-          members: [
-            {
-              name: "account",
-              type: "core::starknet::contract_address::ContractAddress",
-              kind: "key",
-            },
-            {
-              name: "game_id",
-              type: "core::integer::u32",
-              kind: "data",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "mastermind::Mastermind::RegisterPlayer",
-          kind: "struct",
-          members: [
-            {
-              name: "account",
-              type: "core::starknet::contract_address::ContractAddress",
-              kind: "key",
-            },
-            {
-              name: "player_id",
-              type: "core::integer::u32",
-              kind: "data",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "mastermind::Mastermind::CommitSolutionHash",
-          kind: "struct",
-          members: [
-            {
-              name: "account",
-              type: "core::starknet::contract_address::ContractAddress",
-              kind: "key",
-            },
-            {
-              name: "solution_hash",
-              type: "core::integer::u256",
-              kind: "data",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "mastermind::Mastermind::SubmitGuess",
-          kind: "struct",
-          members: [
-            {
-              name: "account",
-              type: "core::starknet::contract_address::ContractAddress",
-              kind: "key",
-            },
-            {
-              name: "current_round",
-              type: "core::integer::u8",
-              kind: "data",
-            },
-            {
-              name: "guess",
-              type: "core::array::Array::<core::integer::u8>",
-              kind: "data",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "mastermind::Mastermind::SubmitHitAndBlow",
-          kind: "struct",
-          members: [
-            {
-              name: "account",
-              type: "core::starknet::contract_address::ContractAddress",
-              kind: "key",
-            },
-            {
-              name: "current_round",
-              type: "core::integer::u8",
-              kind: "data",
-            },
-            {
-              name: "hit",
-              type: "core::integer::u8",
-              kind: "data",
-            },
-            {
-              name: "blow",
-              type: "core::integer::u8",
-              kind: "data",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "mastermind::Mastermind::RevealSolution",
-          kind: "struct",
-          members: [
-            {
-              name: "account",
-              type: "core::starknet::contract_address::ContractAddress",
-              kind: "key",
-            },
-            {
-              name: "game_id",
-              type: "core::integer::u32",
-              kind: "key",
-            },
-            {
-              name: "solution",
-              type: "core::array::Array::<core::integer::u8>",
-              kind: "data",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "mastermind::Mastermind::GameFinish",
-          kind: "struct",
-          members: [
-            {
-              name: "game_id",
-              type: "core::integer::u32",
-              kind: "key",
-            },
-            {
-              name: "game_result",
-              type: "mastermind::enums::GameResult",
-              kind: "data",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "mastermind::Mastermind::StageChange",
-          kind: "struct",
-          members: [
-            {
-              name: "stage",
-              type: "mastermind::enums::Stages",
-              kind: "data",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "mastermind::Mastermind::OpponentJoined",
-          kind: "struct",
-          members: [
-            {
-              name: "account",
-              type: "core::starknet::contract_address::ContractAddress",
-              kind: "key",
-            },
-            {
-              name: "game_id",
-              type: "core::integer::u32",
-              kind: "data",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "mastermind::Mastermind::Event",
-          kind: "enum",
-          variants: [
-            {
-              name: "InitializeGame",
-              type: "mastermind::Mastermind::InitializeGame",
-              kind: "nested",
-            },
-            {
-              name: "RegisterPlayer",
-              type: "mastermind::Mastermind::RegisterPlayer",
-              kind: "nested",
-            },
-            {
-              name: "CommitSolutionHash",
-              type: "mastermind::Mastermind::CommitSolutionHash",
-              kind: "nested",
-            },
-            {
-              name: "SubmitGuess",
-              type: "mastermind::Mastermind::SubmitGuess",
-              kind: "nested",
-            },
-            {
-              name: "SubmitHitAndBlow",
-              type: "mastermind::Mastermind::SubmitHitAndBlow",
-              kind: "nested",
-            },
-            {
-              name: "RevealSolution",
-              type: "mastermind::Mastermind::RevealSolution",
-              kind: "nested",
-            },
-            {
-              name: "GameFinish",
-              type: "mastermind::Mastermind::GameFinish",
-              kind: "nested",
-            },
-            {
-              name: "StageChange",
-              type: "mastermind::Mastermind::StageChange",
-              kind: "nested",
-            },
-            {
-              name: "OpponentJoined",
-              type: "mastermind::Mastermind::OpponentJoined",
-              kind: "nested",
-            },
-          ],
-        },
-      ],
-      classHash:
-        "0x25492665225da3d5c1293d28bf52901061208acb9fe56dfbaeffd7d70cb85c9",
+                    type: 'event',
+                    name: 'mastermind::Mastermind::Event',
+                    kind: 'enum',
+                    variants: [
+                        {
+                            name: 'InitializeGame',
+                            type: 'mastermind::Mastermind::InitializeGame',
+                            kind: 'nested'
+                        },
+                        {
+                            name: 'RegisterPlayer',
+                            type: 'mastermind::Mastermind::RegisterPlayer',
+                            kind: 'nested'
+                        },
+                        {
+                            name: 'CommitSolutionHash',
+                            type: 'mastermind::Mastermind::CommitSolutionHash',
+                            kind: 'nested'
+                        },
+                        {
+                            name: 'SubmitGuess',
+                            type: 'mastermind::Mastermind::SubmitGuess',
+                            kind: 'nested'
+                        },
+                        {
+                            name: 'SubmitHitAndBlow',
+                            type: 'mastermind::Mastermind::SubmitHitAndBlow',
+                            kind: 'nested'
+                        },
+                        {
+                            name: 'RevealSolution',
+                            type: 'mastermind::Mastermind::RevealSolution',
+                            kind: 'nested'
+                        },
+                        {
+                            name: 'GameFinish',
+                            type: 'mastermind::Mastermind::GameFinish',
+                            kind: 'nested'
+                        },
+                        {
+                            name: 'StageChange',
+                            type: 'mastermind::Mastermind::StageChange',
+                            kind: 'nested'
+                        },
+                        {
+                            name: 'OpponentJoined',
+                            type: 'mastermind::Mastermind::OpponentJoined',
+                            kind: 'nested'
+                        }
+                    ]
+                }
+            ],
+            classHash: '0x25492665225da3d5c1293d28bf52901061208acb9fe56dfbaeffd7d70cb85c9'
+        }
     },
-  },
-  sepolia: {
-    Mastermind: {
-      address:
-        "0x3044ac1b12dcdbb9032e6b633a55c487cabe3ba2fd21c6599fee9a9c8725c14",
-      abi: [
-        {
-          type: "impl",
-          name: "MasterMindImpl",
-          interface_name: "mastermind::interface::IMastermind",
-        },
-        {
-          type: "struct",
-          name: "core::integer::u256",
-          members: [
-            {
-              name: "low",
-              type: "core::integer::u128",
-            },
-            {
-              name: "high",
-              type: "core::integer::u128",
-            },
-          ],
-        },
-        {
-          type: "struct",
-          name: "core::array::Span::<core::felt252>",
-          members: [
-            {
-              name: "snapshot",
-              type: "@core::array::Array::<core::felt252>",
-            },
-          ],
-        },
-        {
-          type: "enum",
-          name: "core::bool",
-          variants: [
-            {
-              name: "False",
-              type: "()",
-            },
-            {
-              name: "True",
-              type: "()",
-            },
-          ],
-        },
-        {
-          type: "struct",
-          name: "mastermind::structs::Guess",
-          members: [
-            {
-              name: "g1",
-              type: "core::integer::u8",
-            },
-            {
-              name: "g2",
-              type: "core::integer::u8",
-            },
-            {
-              name: "g3",
-              type: "core::integer::u8",
-            },
-            {
-              name: "g4",
-              type: "core::integer::u8",
-            },
-            {
-              name: "submitted",
-              type: "core::bool",
-            },
-          ],
-        },
-        {
-          type: "struct",
-          name: "mastermind::structs::HitAndBlow",
-          members: [
-            {
-              name: "hit",
-              type: "core::integer::u8",
-            },
-            {
-              name: "blow",
-              type: "core::integer::u8",
-            },
-            {
-              name: "submitted",
-              type: "core::bool",
-            },
-          ],
-        },
-        {
-          type: "enum",
-          name: "mastermind::enums::GameResult",
-          variants: [
-            {
-              name: "Undecided",
-              type: "()",
-            },
-            {
-              name: "Win",
-              type: "core::starknet::contract_address::ContractAddress",
-            },
-            {
-              name: "Tie",
-              type: "()",
-            },
-          ],
-        },
-        {
-          type: "enum",
-          name: "mastermind::enums::Stages",
-          variants: [
-            {
-              name: "Init",
-              type: "()",
-            },
-            {
-              name: "CreatorCommitSolutionHash",
-              type: "()",
-            },
-            {
-              name: "WaitingForOpponent",
-              type: "()",
-            },
-            {
-              name: "OpponentCommitSolutionHash",
-              type: "()",
-            },
-            {
-              name: "Playing",
-              type: "()",
-            },
-            {
-              name: "Reveal",
-              type: "()",
-            },
-          ],
-        },
-        {
-          type: "interface",
-          name: "mastermind::interface::IMastermind",
-          items: [
-            {
-              type: "function",
-              name: "init_game",
-              inputs: [],
-              outputs: [],
-              state_mutability: "external",
-            },
-            {
-              type: "function",
-              name: "register_player",
-              inputs: [
+    sepolia: {
+        Mastermind: {
+            address: '0x3044ac1b12dcdbb9032e6b633a55c487cabe3ba2fd21c6599fee9a9c8725c14',
+            abi: [
                 {
-                  name: "player_name",
-                  type: "core::felt252",
-                },
-              ],
-              outputs: [],
-              state_mutability: "external",
-            },
-            {
-              type: "function",
-              name: "join_game",
-              inputs: [
-                {
-                  name: "game_id",
-                  type: "core::integer::u32",
-                },
-              ],
-              outputs: [],
-              state_mutability: "external",
-            },
-            {
-              type: "function",
-              name: "commit_solution_hash",
-              inputs: [
-                {
-                  name: "game_id",
-                  type: "core::integer::u32",
+                    type: 'impl',
+                    name: 'MasterMindImpl',
+                    interface_name: 'mastermind::interface::IMastermind'
                 },
                 {
-                  name: "solution_hash",
-                  type: "core::integer::u256",
-                },
-              ],
-              outputs: [],
-              state_mutability: "external",
-            },
-            {
-              type: "function",
-              name: "submit_guess",
-              inputs: [
-                {
-                  name: "game_id",
-                  type: "core::integer::u32",
+                    type: 'struct',
+                    name: 'core::integer::u256',
+                    members: [
+                        {
+                            name: 'low',
+                            type: 'core::integer::u128'
+                        },
+                        {
+                            name: 'high',
+                            type: 'core::integer::u128'
+                        }
+                    ]
                 },
                 {
-                  name: "guess",
-                  type: "core::array::Array::<core::integer::u8>",
-                },
-              ],
-              outputs: [],
-              state_mutability: "external",
-            },
-            {
-              type: "function",
-              name: "submit_hit_and_blow_proof",
-              inputs: [
-                {
-                  name: "game_id",
-                  type: "core::integer::u32",
+                    type: 'struct',
+                    name: 'core::array::Span::<core::felt252>',
+                    members: [
+                        {
+                            name: 'snapshot',
+                            type: '@core::array::Array::<core::felt252>'
+                        }
+                    ]
                 },
                 {
-                  name: "full_proof_with_hints",
-                  type: "core::array::Span::<core::felt252>",
-                },
-              ],
-              outputs: [],
-              state_mutability: "external",
-            },
-            {
-              type: "function",
-              name: "reveal_solution",
-              inputs: [
-                {
-                  name: "game_id",
-                  type: "core::integer::u32",
+                    type: 'enum',
+                    name: 'core::bool',
+                    variants: [
+                        {
+                            name: 'False',
+                            type: '()'
+                        },
+                        {
+                            name: 'True',
+                            type: '()'
+                        }
+                    ]
                 },
                 {
-                  name: "solution",
-                  type: "core::array::Array::<core::integer::u8>",
+                    type: 'struct',
+                    name: 'mastermind::structs::Guess',
+                    members: [
+                        {
+                            name: 'g1',
+                            type: 'core::integer::u8'
+                        },
+                        {
+                            name: 'g2',
+                            type: 'core::integer::u8'
+                        },
+                        {
+                            name: 'g3',
+                            type: 'core::integer::u8'
+                        },
+                        {
+                            name: 'g4',
+                            type: 'core::integer::u8'
+                        },
+                        {
+                            name: 'submitted',
+                            type: 'core::bool'
+                        }
+                    ]
                 },
                 {
-                  name: "salt",
-                  type: "core::integer::u256",
-                },
-              ],
-              outputs: [],
-              state_mutability: "external",
-            },
-            {
-              type: "function",
-              name: "get_player_id",
-              inputs: [
-                {
-                  name: "player_address",
-                  type: "core::starknet::contract_address::ContractAddress",
-                },
-              ],
-              outputs: [
-                {
-                  type: "core::integer::u32",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_player_name",
-              inputs: [
-                {
-                  name: "player_address",
-                  type: "core::starknet::contract_address::ContractAddress",
-                },
-              ],
-              outputs: [
-                {
-                  type: "core::felt252",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_game_opponent_address",
-              inputs: [
-                {
-                  name: "game_id",
-                  type: "core::integer::u32",
-                },
-              ],
-              outputs: [
-                {
-                  type: "core::starknet::contract_address::ContractAddress",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_game_creator_address",
-              inputs: [
-                {
-                  name: "game_id",
-                  type: "core::integer::u32",
-                },
-              ],
-              outputs: [
-                {
-                  type: "core::starknet::contract_address::ContractAddress",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_game_submitted_guesses",
-              inputs: [
-                {
-                  name: "game_id",
-                  type: "core::integer::u32",
+                    type: 'struct',
+                    name: 'mastermind::structs::HitAndBlow',
+                    members: [
+                        {
+                            name: 'hit',
+                            type: 'core::integer::u8'
+                        },
+                        {
+                            name: 'blow',
+                            type: 'core::integer::u8'
+                        },
+                        {
+                            name: 'submitted',
+                            type: 'core::bool'
+                        }
+                    ]
                 },
                 {
-                  name: "player_address",
-                  type: "core::starknet::contract_address::ContractAddress",
-                },
-              ],
-              outputs: [
-                {
-                  type: "core::array::Array::<mastermind::structs::Guess>",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_game_submitted_hit_and_blow",
-              inputs: [
-                {
-                  name: "game_id",
-                  type: "core::integer::u32",
+                    type: 'enum',
+                    name: 'mastermind::enums::GameResult',
+                    variants: [
+                        {
+                            name: 'Undecided',
+                            type: '()'
+                        },
+                        {
+                            name: 'Win',
+                            type: 'core::starknet::contract_address::ContractAddress'
+                        },
+                        {
+                            name: 'Tie',
+                            type: '()'
+                        }
+                    ]
                 },
                 {
-                  name: "player_address",
-                  type: "core::starknet::contract_address::ContractAddress",
-                },
-              ],
-              outputs: [
-                {
-                  type: "core::array::Array::<mastermind::structs::HitAndBlow>",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_game_result",
-              inputs: [
-                {
-                  name: "game_id",
-                  type: "core::integer::u32",
-                },
-              ],
-              outputs: [
-                {
-                  type: "mastermind::enums::GameResult",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_game_current_stage",
-              inputs: [
-                {
-                  name: "game_id",
-                  type: "core::integer::u32",
-                },
-              ],
-              outputs: [
-                {
-                  type: "mastermind::enums::Stages",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_game_solution_hash",
-              inputs: [
-                {
-                  name: "game_id",
-                  type: "core::integer::u32",
+                    type: 'enum',
+                    name: 'mastermind::enums::Stages',
+                    variants: [
+                        {
+                            name: 'Init',
+                            type: '()'
+                        },
+                        {
+                            name: 'CreatorCommitSolutionHash',
+                            type: '()'
+                        },
+                        {
+                            name: 'WaitingForOpponent',
+                            type: '()'
+                        },
+                        {
+                            name: 'OpponentCommitSolutionHash',
+                            type: '()'
+                        },
+                        {
+                            name: 'Playing',
+                            type: '()'
+                        },
+                        {
+                            name: 'Reveal',
+                            type: '()'
+                        }
+                    ]
                 },
                 {
-                  name: "player_address",
-                  type: "core::starknet::contract_address::ContractAddress",
+                    type: 'interface',
+                    name: 'mastermind::interface::IMastermind',
+                    items: [
+                        {
+                            type: 'function',
+                            name: 'init_game',
+                            inputs: [],
+                            outputs: [],
+                            state_mutability: 'external'
+                        },
+                        {
+                            type: 'function',
+                            name: 'register_player',
+                            inputs: [
+                                {
+                                    name: 'player_name',
+                                    type: 'core::felt252'
+                                }
+                            ],
+                            outputs: [],
+                            state_mutability: 'external'
+                        },
+                        {
+                            type: 'function',
+                            name: 'join_game',
+                            inputs: [
+                                {
+                                    name: 'game_id',
+                                    type: 'core::integer::u32'
+                                }
+                            ],
+                            outputs: [],
+                            state_mutability: 'external'
+                        },
+                        {
+                            type: 'function',
+                            name: 'commit_solution_hash',
+                            inputs: [
+                                {
+                                    name: 'game_id',
+                                    type: 'core::integer::u32'
+                                },
+                                {
+                                    name: 'solution_hash',
+                                    type: 'core::integer::u256'
+                                }
+                            ],
+                            outputs: [],
+                            state_mutability: 'external'
+                        },
+                        {
+                            type: 'function',
+                            name: 'submit_guess',
+                            inputs: [
+                                {
+                                    name: 'game_id',
+                                    type: 'core::integer::u32'
+                                },
+                                {
+                                    name: 'guess',
+                                    type: 'core::array::Array::<core::integer::u8>'
+                                }
+                            ],
+                            outputs: [],
+                            state_mutability: 'external'
+                        },
+                        {
+                            type: 'function',
+                            name: 'submit_hit_and_blow_proof',
+                            inputs: [
+                                {
+                                    name: 'game_id',
+                                    type: 'core::integer::u32'
+                                },
+                                {
+                                    name: 'full_proof_with_hints',
+                                    type: 'core::array::Span::<core::felt252>'
+                                }
+                            ],
+                            outputs: [],
+                            state_mutability: 'external'
+                        },
+                        {
+                            type: 'function',
+                            name: 'reveal_solution',
+                            inputs: [
+                                {
+                                    name: 'game_id',
+                                    type: 'core::integer::u32'
+                                },
+                                {
+                                    name: 'solution',
+                                    type: 'core::array::Array::<core::integer::u8>'
+                                },
+                                {
+                                    name: 'salt',
+                                    type: 'core::integer::u256'
+                                }
+                            ],
+                            outputs: [],
+                            state_mutability: 'external'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_player_id',
+                            inputs: [
+                                {
+                                    name: 'player_address',
+                                    type: 'core::starknet::contract_address::ContractAddress'
+                                }
+                            ],
+                            outputs: [
+                                {
+                                    type: 'core::integer::u32'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_player_name',
+                            inputs: [
+                                {
+                                    name: 'player_address',
+                                    type: 'core::starknet::contract_address::ContractAddress'
+                                }
+                            ],
+                            outputs: [
+                                {
+                                    type: 'core::felt252'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_game_opponent_address',
+                            inputs: [
+                                {
+                                    name: 'game_id',
+                                    type: 'core::integer::u32'
+                                }
+                            ],
+                            outputs: [
+                                {
+                                    type: 'core::starknet::contract_address::ContractAddress'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_game_creator_address',
+                            inputs: [
+                                {
+                                    name: 'game_id',
+                                    type: 'core::integer::u32'
+                                }
+                            ],
+                            outputs: [
+                                {
+                                    type: 'core::starknet::contract_address::ContractAddress'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_game_submitted_guesses',
+                            inputs: [
+                                {
+                                    name: 'game_id',
+                                    type: 'core::integer::u32'
+                                },
+                                {
+                                    name: 'player_address',
+                                    type: 'core::starknet::contract_address::ContractAddress'
+                                }
+                            ],
+                            outputs: [
+                                {
+                                    type: 'core::array::Array::<mastermind::structs::Guess>'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_game_submitted_hit_and_blow',
+                            inputs: [
+                                {
+                                    name: 'game_id',
+                                    type: 'core::integer::u32'
+                                },
+                                {
+                                    name: 'player_address',
+                                    type: 'core::starknet::contract_address::ContractAddress'
+                                }
+                            ],
+                            outputs: [
+                                {
+                                    type: 'core::array::Array::<mastermind::structs::HitAndBlow>'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_game_result',
+                            inputs: [
+                                {
+                                    name: 'game_id',
+                                    type: 'core::integer::u32'
+                                }
+                            ],
+                            outputs: [
+                                {
+                                    type: 'mastermind::enums::GameResult'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_game_current_stage',
+                            inputs: [
+                                {
+                                    name: 'game_id',
+                                    type: 'core::integer::u32'
+                                }
+                            ],
+                            outputs: [
+                                {
+                                    type: 'mastermind::enums::Stages'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_game_solution_hash',
+                            inputs: [
+                                {
+                                    name: 'game_id',
+                                    type: 'core::integer::u32'
+                                },
+                                {
+                                    name: 'player_address',
+                                    type: 'core::starknet::contract_address::ContractAddress'
+                                }
+                            ],
+                            outputs: [
+                                {
+                                    type: 'core::integer::u256'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_game_current_round',
+                            inputs: [
+                                {
+                                    name: 'game_id',
+                                    type: 'core::integer::u32'
+                                }
+                            ],
+                            outputs: [
+                                {
+                                    type: 'core::integer::u8'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_total_players_count',
+                            inputs: [],
+                            outputs: [
+                                {
+                                    type: 'core::integer::u32'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_total_games_count',
+                            inputs: [],
+                            outputs: [
+                                {
+                                    type: 'core::integer::u32'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_player_active_game_ids',
+                            inputs: [
+                                {
+                                    name: 'player_address',
+                                    type: 'core::starknet::contract_address::ContractAddress'
+                                }
+                            ],
+                            outputs: [
+                                {
+                                    type: 'core::array::Array::<core::integer::u32>'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_available_game_ids',
+                            inputs: [],
+                            outputs: [
+                                {
+                                    type: 'core::array::Array::<core::integer::u32>'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_player_total_games_won',
+                            inputs: [
+                                {
+                                    name: 'player_address',
+                                    type: 'core::starknet::contract_address::ContractAddress'
+                                }
+                            ],
+                            outputs: [
+                                {
+                                    type: 'core::integer::u32'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_player_total_games_lost',
+                            inputs: [
+                                {
+                                    name: 'player_address',
+                                    type: 'core::starknet::contract_address::ContractAddress'
+                                }
+                            ],
+                            outputs: [
+                                {
+                                    type: 'core::integer::u32'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_player_total_games_tied',
+                            inputs: [
+                                {
+                                    name: 'player_address',
+                                    type: 'core::starknet::contract_address::ContractAddress'
+                                }
+                            ],
+                            outputs: [
+                                {
+                                    type: 'core::integer::u32'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        },
+                        {
+                            type: 'function',
+                            name: 'get_player_total_games_played',
+                            inputs: [
+                                {
+                                    name: 'player_address',
+                                    type: 'core::starknet::contract_address::ContractAddress'
+                                }
+                            ],
+                            outputs: [
+                                {
+                                    type: 'core::integer::u32'
+                                }
+                            ],
+                            state_mutability: 'view'
+                        }
+                    ]
                 },
-              ],
-              outputs: [
                 {
-                  type: "core::integer::u256",
+                    type: 'constructor',
+                    name: 'constructor',
+                    inputs: []
                 },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_game_current_round",
-              inputs: [
                 {
-                  name: "game_id",
-                  type: "core::integer::u32",
+                    type: 'event',
+                    name: 'mastermind::Mastermind::InitializeGame',
+                    kind: 'struct',
+                    members: [
+                        {
+                            name: 'account',
+                            type: 'core::starknet::contract_address::ContractAddress',
+                            kind: 'key'
+                        },
+                        {
+                            name: 'game_id',
+                            type: 'core::integer::u32',
+                            kind: 'data'
+                        }
+                    ]
                 },
-              ],
-              outputs: [
                 {
-                  type: "core::integer::u8",
+                    type: 'event',
+                    name: 'mastermind::Mastermind::RegisterPlayer',
+                    kind: 'struct',
+                    members: [
+                        {
+                            name: 'account',
+                            type: 'core::starknet::contract_address::ContractAddress',
+                            kind: 'key'
+                        },
+                        {
+                            name: 'player_id',
+                            type: 'core::integer::u32',
+                            kind: 'data'
+                        }
+                    ]
                 },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_total_players_count",
-              inputs: [],
-              outputs: [
                 {
-                  type: "core::integer::u32",
+                    type: 'event',
+                    name: 'mastermind::Mastermind::CommitSolutionHash',
+                    kind: 'struct',
+                    members: [
+                        {
+                            name: 'account',
+                            type: 'core::starknet::contract_address::ContractAddress',
+                            kind: 'key'
+                        },
+                        {
+                            name: 'solution_hash',
+                            type: 'core::integer::u256',
+                            kind: 'data'
+                        }
+                    ]
                 },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_total_games_count",
-              inputs: [],
-              outputs: [
                 {
-                  type: "core::integer::u32",
+                    type: 'event',
+                    name: 'mastermind::Mastermind::SubmitGuess',
+                    kind: 'struct',
+                    members: [
+                        {
+                            name: 'account',
+                            type: 'core::starknet::contract_address::ContractAddress',
+                            kind: 'key'
+                        },
+                        {
+                            name: 'current_round',
+                            type: 'core::integer::u8',
+                            kind: 'data'
+                        },
+                        {
+                            name: 'guess',
+                            type: 'core::array::Array::<core::integer::u8>',
+                            kind: 'data'
+                        }
+                    ]
                 },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_player_active_game_ids",
-              inputs: [
                 {
-                  name: "player_address",
-                  type: "core::starknet::contract_address::ContractAddress",
+                    type: 'event',
+                    name: 'mastermind::Mastermind::SubmitHitAndBlow',
+                    kind: 'struct',
+                    members: [
+                        {
+                            name: 'account',
+                            type: 'core::starknet::contract_address::ContractAddress',
+                            kind: 'key'
+                        },
+                        {
+                            name: 'current_round',
+                            type: 'core::integer::u8',
+                            kind: 'data'
+                        },
+                        {
+                            name: 'hit',
+                            type: 'core::integer::u8',
+                            kind: 'data'
+                        },
+                        {
+                            name: 'blow',
+                            type: 'core::integer::u8',
+                            kind: 'data'
+                        }
+                    ]
                 },
-              ],
-              outputs: [
                 {
-                  type: "core::array::Array::<core::integer::u32>",
+                    type: 'event',
+                    name: 'mastermind::Mastermind::RevealSolution',
+                    kind: 'struct',
+                    members: [
+                        {
+                            name: 'account',
+                            type: 'core::starknet::contract_address::ContractAddress',
+                            kind: 'key'
+                        },
+                        {
+                            name: 'game_id',
+                            type: 'core::integer::u32',
+                            kind: 'key'
+                        },
+                        {
+                            name: 'solution',
+                            type: 'core::array::Array::<core::integer::u8>',
+                            kind: 'data'
+                        }
+                    ]
                 },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_available_game_ids",
-              inputs: [],
-              outputs: [
                 {
-                  type: "core::array::Array::<core::integer::u32>",
+                    type: 'event',
+                    name: 'mastermind::Mastermind::GameFinish',
+                    kind: 'struct',
+                    members: [
+                        {
+                            name: 'game_id',
+                            type: 'core::integer::u32',
+                            kind: 'key'
+                        },
+                        {
+                            name: 'game_result',
+                            type: 'mastermind::enums::GameResult',
+                            kind: 'data'
+                        }
+                    ]
                 },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_player_total_games_won",
-              inputs: [
                 {
-                  name: "player_address",
-                  type: "core::starknet::contract_address::ContractAddress",
+                    type: 'event',
+                    name: 'mastermind::Mastermind::StageChange',
+                    kind: 'struct',
+                    members: [
+                        {
+                            name: 'stage',
+                            type: 'mastermind::enums::Stages',
+                            kind: 'data'
+                        }
+                    ]
                 },
-              ],
-              outputs: [
                 {
-                  type: "core::integer::u32",
+                    type: 'event',
+                    name: 'mastermind::Mastermind::OpponentJoined',
+                    kind: 'struct',
+                    members: [
+                        {
+                            name: 'account',
+                            type: 'core::starknet::contract_address::ContractAddress',
+                            kind: 'key'
+                        },
+                        {
+                            name: 'game_id',
+                            type: 'core::integer::u32',
+                            kind: 'data'
+                        }
+                    ]
                 },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_player_total_games_lost",
-              inputs: [
                 {
-                  name: "player_address",
-                  type: "core::starknet::contract_address::ContractAddress",
-                },
-              ],
-              outputs: [
-                {
-                  type: "core::integer::u32",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_player_total_games_tied",
-              inputs: [
-                {
-                  name: "player_address",
-                  type: "core::starknet::contract_address::ContractAddress",
-                },
-              ],
-              outputs: [
-                {
-                  type: "core::integer::u32",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_player_total_games_played",
-              inputs: [
-                {
-                  name: "player_address",
-                  type: "core::starknet::contract_address::ContractAddress",
-                },
-              ],
-              outputs: [
-                {
-                  type: "core::integer::u32",
-                },
-              ],
-              state_mutability: "view",
-            },
-          ],
-        },
-        {
-          type: "constructor",
-          name: "constructor",
-          inputs: [],
-        },
-        {
-          type: "event",
-          name: "mastermind::Mastermind::InitializeGame",
-          kind: "struct",
-          members: [
-            {
-              name: "account",
-              type: "core::starknet::contract_address::ContractAddress",
-              kind: "key",
-            },
-            {
-              name: "game_id",
-              type: "core::integer::u32",
-              kind: "data",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "mastermind::Mastermind::RegisterPlayer",
-          kind: "struct",
-          members: [
-            {
-              name: "account",
-              type: "core::starknet::contract_address::ContractAddress",
-              kind: "key",
-            },
-            {
-              name: "player_id",
-              type: "core::integer::u32",
-              kind: "data",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "mastermind::Mastermind::CommitSolutionHash",
-          kind: "struct",
-          members: [
-            {
-              name: "account",
-              type: "core::starknet::contract_address::ContractAddress",
-              kind: "key",
-            },
-            {
-              name: "solution_hash",
-              type: "core::integer::u256",
-              kind: "data",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "mastermind::Mastermind::SubmitGuess",
-          kind: "struct",
-          members: [
-            {
-              name: "account",
-              type: "core::starknet::contract_address::ContractAddress",
-              kind: "key",
-            },
-            {
-              name: "current_round",
-              type: "core::integer::u8",
-              kind: "data",
-            },
-            {
-              name: "guess",
-              type: "core::array::Array::<core::integer::u8>",
-              kind: "data",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "mastermind::Mastermind::SubmitHitAndBlow",
-          kind: "struct",
-          members: [
-            {
-              name: "account",
-              type: "core::starknet::contract_address::ContractAddress",
-              kind: "key",
-            },
-            {
-              name: "current_round",
-              type: "core::integer::u8",
-              kind: "data",
-            },
-            {
-              name: "hit",
-              type: "core::integer::u8",
-              kind: "data",
-            },
-            {
-              name: "blow",
-              type: "core::integer::u8",
-              kind: "data",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "mastermind::Mastermind::RevealSolution",
-          kind: "struct",
-          members: [
-            {
-              name: "account",
-              type: "core::starknet::contract_address::ContractAddress",
-              kind: "key",
-            },
-            {
-              name: "game_id",
-              type: "core::integer::u32",
-              kind: "key",
-            },
-            {
-              name: "solution",
-              type: "core::array::Array::<core::integer::u8>",
-              kind: "data",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "mastermind::Mastermind::GameFinish",
-          kind: "struct",
-          members: [
-            {
-              name: "game_id",
-              type: "core::integer::u32",
-              kind: "key",
-            },
-            {
-              name: "game_result",
-              type: "mastermind::enums::GameResult",
-              kind: "data",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "mastermind::Mastermind::StageChange",
-          kind: "struct",
-          members: [
-            {
-              name: "stage",
-              type: "mastermind::enums::Stages",
-              kind: "data",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "mastermind::Mastermind::OpponentJoined",
-          kind: "struct",
-          members: [
-            {
-              name: "account",
-              type: "core::starknet::contract_address::ContractAddress",
-              kind: "key",
-            },
-            {
-              name: "game_id",
-              type: "core::integer::u32",
-              kind: "data",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "mastermind::Mastermind::Event",
-          kind: "enum",
-          variants: [
-            {
-              name: "InitializeGame",
-              type: "mastermind::Mastermind::InitializeGame",
-              kind: "nested",
-            },
-            {
-              name: "RegisterPlayer",
-              type: "mastermind::Mastermind::RegisterPlayer",
-              kind: "nested",
-            },
-            {
-              name: "CommitSolutionHash",
-              type: "mastermind::Mastermind::CommitSolutionHash",
-              kind: "nested",
-            },
-            {
-              name: "SubmitGuess",
-              type: "mastermind::Mastermind::SubmitGuess",
-              kind: "nested",
-            },
-            {
-              name: "SubmitHitAndBlow",
-              type: "mastermind::Mastermind::SubmitHitAndBlow",
-              kind: "nested",
-            },
-            {
-              name: "RevealSolution",
-              type: "mastermind::Mastermind::RevealSolution",
-              kind: "nested",
-            },
-            {
-              name: "GameFinish",
-              type: "mastermind::Mastermind::GameFinish",
-              kind: "nested",
-            },
-            {
-              name: "StageChange",
-              type: "mastermind::Mastermind::StageChange",
-              kind: "nested",
-            },
-            {
-              name: "OpponentJoined",
-              type: "mastermind::Mastermind::OpponentJoined",
-              kind: "nested",
-            },
-          ],
-        },
-      ],
-      classHash:
-        "0x25492665225da3d5c1293d28bf52901061208acb9fe56dfbaeffd7d70cb85c9",
-    },
-  },
-} as const;
+                    type: 'event',
+                    name: 'mastermind::Mastermind::Event',
+                    kind: 'enum',
+                    variants: [
+                        {
+                            name: 'InitializeGame',
+                            type: 'mastermind::Mastermind::InitializeGame',
+                            kind: 'nested'
+                        },
+                        {
+                            name: 'RegisterPlayer',
+                            type: 'mastermind::Mastermind::RegisterPlayer',
+                            kind: 'nested'
+                        },
+                        {
+                            name: 'CommitSolutionHash',
+                            type: 'mastermind::Mastermind::CommitSolutionHash',
+                            kind: 'nested'
+                        },
+                        {
+                            name: 'SubmitGuess',
+                            type: 'mastermind::Mastermind::SubmitGuess',
+                            kind: 'nested'
+                        },
+                        {
+                            name: 'SubmitHitAndBlow',
+                            type: 'mastermind::Mastermind::SubmitHitAndBlow',
+                            kind: 'nested'
+                        },
+                        {
+                            name: 'RevealSolution',
+                            type: 'mastermind::Mastermind::RevealSolution',
+                            kind: 'nested'
+                        },
+                        {
+                            name: 'GameFinish',
+                            type: 'mastermind::Mastermind::GameFinish',
+                            kind: 'nested'
+                        },
+                        {
+                            name: 'StageChange',
+                            type: 'mastermind::Mastermind::StageChange',
+                            kind: 'nested'
+                        },
+                        {
+                            name: 'OpponentJoined',
+                            type: 'mastermind::Mastermind::OpponentJoined',
+                            kind: 'nested'
+                        }
+                    ]
+                }
+            ],
+            classHash: '0x25492665225da3d5c1293d28bf52901061208acb9fe56dfbaeffd7d70cb85c9'
+        }
+    }
+} as const
 
-export default deployedContracts;
+export default deployedContracts
