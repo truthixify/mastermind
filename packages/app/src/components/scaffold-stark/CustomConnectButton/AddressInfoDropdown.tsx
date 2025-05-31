@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useEffect, useRef, useState } from 'react'
 import { NetworkOptions } from './NetworkOptions'
 import { useLocalStorage } from 'usehooks-ts'
@@ -23,6 +22,7 @@ import {
     X
 } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { usePlayerStore } from '../../../stores/playerStore'
 
 const allowedNetworks = getTargetNetworks()
 
@@ -45,9 +45,9 @@ export const AddressInfoDropdown = ({
     const { chain } = useNetwork()
     const [showBurnerAccounts, setShowBurnerAccounts] = useState(false)
     const [selectingNetwork, setSelectingNetwork] = useState(false)
-    const [playerName, setPlayerName] = useState<string | null>(null)
     const { connectors, connect } = useConnect()
     const { resolvedTheme } = useTheme()
+    const {playerName} = usePlayerStore()
     const isDarkMode = resolvedTheme === 'dark'
     const dropdownRef = useRef<HTMLDetailsElement>(null)
     const closeDropdown = () => {
@@ -85,16 +85,6 @@ export const AddressInfoDropdown = ({
             }, 800)
         }
     }
-
-    const { data: getPlayerName } = useScaffoldReadContract({
-        contractName: 'Mastermind',
-        functionName: 'get_player_name',
-        args: [address]
-    })
-
-    useEffect(() => {
-        setPlayerName(feltToString(getPlayerName))
-    }, [getPlayerName, address])
 
     return (
         <>

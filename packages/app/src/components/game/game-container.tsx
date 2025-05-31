@@ -19,6 +19,8 @@ import { feltToHex } from '../../utils/scaffold-stark/common'
 import { useGameStorage } from '../../hooks/use-game-storage'
 import ViewStats from './view-stats'
 import PlayerRegistration from './user-registration'
+import { usePlayerStore } from '../../stores/playerStore'
+import { feltToString } from '../../utils/utils'
 
 export type GameState =
     | 'register'
@@ -57,7 +59,8 @@ export default function GameContainer() {
     const [playerRole, setPlayerRole] = useState<'creator' | 'opponent' | null>(null)
     const [gameCreationStatus, setGameCreationStatus] = useState<GameCreationStatus>('idle')
     const [isRegistering, setIsRegistering] = useState(false)
-
+    
+    const {setPlayerName} = usePlayerStore()
     const { gameId, setGameId } = useGameStore()
     const { toast } = useToast()
     const { getGameData } = useGameStorage('game-data')
@@ -487,7 +490,7 @@ export default function GameContainer() {
 
             setCreatorHB(arr)
         }
-        
+
         if (opponentSubmittedHB && opponentSubmittedHB.length > 0) {
             const arr: { hit: number; blow: number; submitted: boolean }[] = Array.from(
                 { length: 5 },
@@ -541,6 +544,10 @@ export default function GameContainer() {
             setGameState('dashboard')
         }
     }, [address, getPlayerName])
+
+    useEffect(() => {
+        setPlayerName(feltToString(getPlayerName))
+    }, [getPlayerName, address])
 
     // Render appropriate screen based on game state
     if (gameState === 'dashboard') {

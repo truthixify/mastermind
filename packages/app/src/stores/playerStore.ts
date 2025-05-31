@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 
 interface PlayerState {
-    playerName?: string
+    playerName: string
     setPlayerName: (playerName: string) => void
 }
 

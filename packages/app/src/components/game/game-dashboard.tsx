@@ -127,10 +127,10 @@ export default function GameDashboard({
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.2, duration: 0.3 }}
             >
-                <div className="retro-tabs">
+                <div className="retro-tabs flex justify-center">
                     <button
                         onClick={() => setActiveTab('active')}
-                        className={`retro-tab ${activeTab === 'active' ? 'retro-tab-active' : 'retro-tab-inactive'}`}
+                        className={`w-1/2 retro-tab ${activeTab === 'active' ? 'retro-tab-active' : 'retro-tab-inactive'}`}
                     >
                         <Clock className="h-4 w-4 inline mr-2" />
                         <span>Active Games</span>
@@ -140,7 +140,7 @@ export default function GameDashboard({
                     </button>
                     <button
                         onClick={() => setActiveTab('available')}
-                        className={`retro-tab ${activeTab === 'available' ? 'retro-tab-active' : 'retro-tab-inactive'}`}
+                        className={`w-1/2 retro-tab ${activeTab === 'available' ? 'retro-tab-active' : 'retro-tab-inactive'}`}
                     >
                         <Users className="h-4 w-4 inline mr-2" />
                         <span>Available Games</span>

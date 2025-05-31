@@ -49,6 +49,7 @@ export default function ViewStats({ playerAddress, onBack }: ViewStatsProps) {
                 title: 'No Player Address',
                 description: 'Please connect your wallet to view stats.'
             })
+            
             return
         }
 

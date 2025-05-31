@@ -3,6 +3,7 @@ import type React from 'react'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Loader2 } from 'lucide-react'
+import { Button } from '../ui/button'
 
 interface GameBoardProps {
     onRegister: (username: string) => void
@@ -90,10 +91,11 @@ export default function PlayerRegistration({ onRegister, isRegistering }: GameBo
                         </p>
                     </div>
 
-                    <button
+                    <Button
                         type="submit"
                         className="retro-button retro-button-primary w-full py-3"
                         disabled={isRegistering}
+                        size={'xl'}
                     >
                         {isRegistering ? (
                             <>
@@ -103,7 +105,7 @@ export default function PlayerRegistration({ onRegister, isRegistering }: GameBo
                         ) : (
                             'Start Playing!'
                         )}
-                    </button>
+                    </Button>
                 </form>
             </motion.div>
         </div>
