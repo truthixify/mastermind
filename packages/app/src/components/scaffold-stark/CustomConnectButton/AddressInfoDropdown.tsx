@@ -1,17 +1,15 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { NetworkOptions } from './NetworkOptions'
 import { useLocalStorage } from 'usehooks-ts'
 import { BlockieAvatar, isENS } from '../../scaffold-stark'
 import { useOutsideClick } from '../../../hooks/scaffold-stark'
 import { BurnerConnector, burnerAccounts } from '@scaffold-stark/stark-burner'
-import { getTargetNetworks } from '../../../utils/scaffold-stark'
+// import { getTargetNetworks } from '../../../utils/scaffold-stark'
 import { Address } from '@starknet-react/chains'
 import { useDisconnect, useNetwork, useConnect } from '@starknet-react/core'
 import { getStarknetPFPIfExists } from '../../../utils/profile'
 import { useScaffoldStarkProfile } from '../../../hooks/scaffold-stark/useScaffoldStarkProfile'
-import { useTheme } from 'next-themes'
-import { useScaffoldReadContract } from '../../../hooks/scaffold-stark/useScaffoldReadContract'
-import { feltToString } from '../../../utils/utils'
+// import { useTheme } from 'next-themes'
 import {
     ArrowLeftFromLine,
     CheckCircle,
@@ -24,7 +22,7 @@ import {
 import { motion } from 'framer-motion'
 import { usePlayerStore } from '../../../stores/playerStore'
 
-const allowedNetworks = getTargetNetworks()
+// const allowedNetworks = getTargetNetworks()
 
 type AddressInfoDropdownProps = {
     address: Address
@@ -46,9 +44,9 @@ export const AddressInfoDropdown = ({
     const [showBurnerAccounts, setShowBurnerAccounts] = useState(false)
     const [selectingNetwork, setSelectingNetwork] = useState(false)
     const { connectors, connect } = useConnect()
-    const { resolvedTheme } = useTheme()
+    // const { resolvedTheme } = useTheme()
     const { playerName } = usePlayerStore()
-    const isDarkMode = resolvedTheme === 'dark'
+    // const isDarkMode = resolvedTheme === 'dark'
     const dropdownRef = useRef<HTMLDetailsElement>(null)
     const closeDropdown = () => {
         setSelectingNetwork(false)
@@ -57,7 +55,7 @@ export const AddressInfoDropdown = ({
 
     useOutsideClick(dropdownRef, closeDropdown)
 
-    function handleConnectBurner(e: React.MouseEvent<HTMLButtonElement>, ix: number) {
+    function handleConnectBurner(_: React.MouseEvent<HTMLButtonElement>, ix: number) {
         const connector = connectors.find(it => it.id == 'burner-wallet')
         if (connector && connector instanceof BurnerConnector) {
             connector.burnerAccount = burnerAccounts[ix]
